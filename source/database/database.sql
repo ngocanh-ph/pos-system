@@ -1,6 +1,44 @@
---Database--
-CREATE TABLE IF NOT EXISTS pos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+- =========================
+-- Database
+-- =========================
+CREATE DATABASE IF NOT EXISTS pos
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
 USE pos;
+
+-- =========================
+-- Users
+-- =========================
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255), --cho phép null(user được mời hoạc login bằng email token)
+    role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+    fullname VARCHAR(100) NOT NULL,
+    avatar VARCHAR(255) DEFAULT 'default_avatar.png',
+    status ENUM('active','locked') NOT NULL DEFAULT 'active',
+    require_password_change BOOLEAN DEFAULT FALSE,
+    last_login_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- Login Tokens (Email login)
+-- =========================
+CREATE TABLE login_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token CHAR(64) NOT NULL, -- hashed token (SHA-256)
+    expires_at DATETIME NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+
 --Categories Table--
 CREATE TABLE IF NOT EXISTS categories(
     id INT AUTO_INCREMENT PRIMARY KEY,
