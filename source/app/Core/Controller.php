@@ -2,16 +2,12 @@
 
 class Controller {
     public function view($view, $data = []) {
-        // Giải nén dữ liệu để view có thể dùng biến $data
         extract($data);
 
-        // Xác định đường dẫn file nội dung (ví dụ: dashboard/index.php)
         $viewFile = __DIR__ . '/../Views/' . $view . '.php';
 
         if (file_exists($viewFile)) {
-            // QUAN TRỌNG: Thay vì require $viewFile trực tiếp, 
-            // ta gọi file Layout chính (main.php).
-            // File main.php sẽ chịu trách nhiệm hiển thị $viewFile bên trong nó.
+           
             require_once __DIR__ . '/../Views/layouts/main.php';
         } else {
             die("View does not exist: " . $view);

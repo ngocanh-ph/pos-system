@@ -22,7 +22,6 @@ abstract class Model {
         return $stmt->fetch();
     }
 
-    // Basic helpers for queries
     public function query($sql, $params = []) {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);

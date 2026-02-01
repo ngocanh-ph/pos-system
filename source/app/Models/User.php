@@ -17,7 +17,7 @@ class User extends Model {
         return $stmt->fetch();
     }
     
-    // Create new user (Admin creates staff)
+
     public function create($data) {
         $sql = "INSERT INTO {$this->table} (username, email, role, fullname, status, require_password_change) 
                 VALUES (:username, :email, :role, :fullname, :status, :require_password_change)";
@@ -29,7 +29,7 @@ class User extends Model {
                 'role' => $data['role'],
                 'fullname' => $data['fullname'],
                 'status' => 'active',
-                'require_password_change' => 1 // Staff created by admin must change password
+                'require_password_change' => 1 
             ]);
             return $this->db->lastInsertId();
         } catch (PDOException $e) {
