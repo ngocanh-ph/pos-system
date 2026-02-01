@@ -28,15 +28,8 @@ class AuthController extends Controller {
                 return;
             }
 
-            $_SESSION['user'] = [
-                'id' => $user->id,
-                'username' => $user->username,
-                'role' => $user->role
-            ];
-
-
-            header('Location: /mav-web-pos/public/dashboard');
-            exit;
+            $_SESSION['user'] = $user;
+            $this->redirect('/dashboard');
 
         } else {
             $this->renderAuthView('auth/login', [
@@ -48,6 +41,7 @@ class AuthController extends Controller {
     private function renderAuthView($viewPath, $data = []) {
         extract($data);
         $file = __DIR__ . '/../Views/' . $viewPath . '.php';
+
         if (file_exists($file)) {
             require $file;
         } else {
