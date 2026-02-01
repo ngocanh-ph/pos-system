@@ -40,6 +40,16 @@ class AuthController extends Controller {
 }
 
     }
+    private function renderAuthView($viewPath, $data = []) {
+        extract($data);
+        $file = __DIR__ . '/../Views/' . $viewPath . '.php';
+        if (file_exists($file)) {
+            require $file;
+        } else {
+            echo "View not found: $file";
+        }
+        exit; 
+    }
 
     
     
