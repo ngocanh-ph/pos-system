@@ -4,7 +4,7 @@ require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/User.php';
 
 class AuthController extends Controller {
-
+    
     public function login() {
         if (isset($_SESSION['user'])) {
             $this->redirect('/dashboard');
@@ -20,11 +20,13 @@ class AuthController extends Controller {
         $user = $userModel->findByUsername($username);
 
         if ($user && password_verify($password, $user->password)) {
-
             if ($user->status === 'locked') {
-                $this->renderAuthView('auth/login', [
-                    'error' => 'Tài khoản của bạn đã bị khóa.'
-                ]);
+                $this->renderAuthView('auth/login', ['error' => 'Tài khoản của bạn đã bị khóa.']);
+                return;
+            }
+            
+            if ($user->role === 'staff' && $user->require_password_change) {
+                $this->renderAuthView('auth/login', ['error' => 'Vui lòng đăng nhập bằng liên kết trong email.']);
                 return;
             }
 
@@ -32,10 +34,20 @@ class AuthController extends Controller {
             $this->redirect('/dashboard');
 
         } else {
-            $this->renderAuthView('auth/login', [
-                'error' => 'Tên đăng nhập hoặc mật khẩu không đúng.'
-            ]);
+            $this->renderAuthView('auth/login', ['error' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
         }
+    }
+
+    public function logout() {
+        session_destroy();
+        $this->redirect('/login');
+    }
+    
+    public function forceChangePassword() {
+        if (!isset($_SESSION['user'])) {
+            $this->redirect('/login');
+        }
+        $this->renderAuthView('auth/force_change_password');
     }
 
     private function renderAuthView($viewPath, $data = []) {
@@ -49,4 +61,5 @@ class AuthController extends Controller {
         }
         exit;
     }
+     
 }
