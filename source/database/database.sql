@@ -8,7 +8,7 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255), --cho phép null(user được mời hoạc login bằng email token)
+    password VARCHAR(255), 
     role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
     fullname VARCHAR(100) NOT NULL,
     avatar VARCHAR(255) DEFAULT 'default_avatar.png',
@@ -23,7 +23,7 @@ CREATE TABLE users (
 CREATE TABLE login_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    token CHAR(64) NOT NULL, -- hashed token (SHA-256)
+    token CHAR(64) NOT NULL, 
     expires_at DATETIME NOT NULL,
     used BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS products(
     barcode VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(200) NOT NULL,
     import_price DECIMAL(15, 2) NOT NULL,
-    sale_price DECIMAL(15, 2) NOT NULL, --gia ban le--
+    sale_price DECIMAL(15, 2) NOT NULL, 
     category_id INT,
     image VARCHAR(255) DEFAULT 'default_product.png',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -65,7 +65,6 @@ CREATE TABLE IF NOT EXISTS customers(
 --Orders Table--
 CREATE TABLE IF NOT EXISTS orders(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    --order_id VARCHAR(50) NOT NULL UNIQUE,
     customer_id INT,
     user_id INT,
     --Staff--
@@ -75,9 +74,6 @@ CREATE TABLE IF NOT EXISTS orders(
     SET NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE
     SET NULL
-    -- nếu nhân viên bị xoá thì đơn hàng vẫn còn.--
-    --amount_received DECIMAL(15,2) NOT NULL,
-    --amount_back DECIMAL(15,2) NOT NULL,
 );
 --Order details Table--
 CREATE TABLE IF NOT EXISTS order_items (
@@ -86,7 +82,6 @@ CREATE TABLE IF NOT EXISTS order_items (
     product_id INT,
     quantity INT NOT NULL,
     price DECIMAL(15, 2) NOT NULL,
-    -- Giá tại thời điểm--
     total DECIMAL(15, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE
