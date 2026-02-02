@@ -24,7 +24,7 @@ switch ($uri) {
         break;
 
     case '/dashboard':
-        echo "<h1>Login thành công 🎉</h1>";
+        echo "<h1>Login thành công</h1>";
         echo "<pre>";
         print_r($_SESSION['user']);
         exit;

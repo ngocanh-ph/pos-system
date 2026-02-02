@@ -1,15 +1,9 @@
---=========================
--- Database
--- =========================
 CREATE DATABASE IF NOT EXISTS pos
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 USE pos;
 
--- =========================
--- Users
--- =========================
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -25,9 +19,7 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- =========================
--- Login Tokens (Email login)
--- =========================
+
 CREATE TABLE login_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
