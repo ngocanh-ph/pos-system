@@ -1,13 +1,12 @@
 <?php
-
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'pos');
+define('DB_NAME', 'MAVPOS'); 
 define('DB_USER', 'root');
 define('DB_PASS', ''); 
 
 define('APP_URL', 'http://localhost/mav-web-pos/public');
-define('APP_NAME', 'Pos');
+define('APP_NAME', 'MAVPOS');
 
-define('DEFAULT_EMPLOYEE_PASSWORD', 'std123');
+define('DEFAULT_EMPLOYEE_PASSWORD', '52400002');
 
 define('MAIL_SIMULATION', true); 
