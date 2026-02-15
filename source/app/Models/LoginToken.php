@@ -7,27 +7,31 @@ class LoginToken extends Model {
 
     public function createToken($userId) {
         $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', strtotime('+1 minute')); // 1 minute validity per requirements
-        
-        $sql = "INSERT INTO {$this->table} (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)";
+        // Dùng DATE_ADD(NOW()...) của MySQL để đồng bộ với hàm findValidToken bên dưới.
+        $sql = "INSERT INTO {$this->table} (user_id, token, expires_at) 
+                VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 MINUTE))";
         $this->db->prepare($sql)->execute([
             'user_id' => $userId,
-            'token' => $token,
-            'expires_at' => $expires
+            'token' => $token
         ]);
         
         return $token;
     }
     
     public function findValidToken($token) {
-        $sql = "SELECT * FROM {$this->table} WHERE token = :token AND expires_at > NOW() AND used = 0";
+        $sql = "SELECT * FROM {$this->table} 
+                WHERE token = :token 
+                AND expires_at > NOW()
+                LIMIT 1";
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['token' => $token]);
-        return $stmt->fetch();
+
+        return $stmt->fetch(PDO::FETCH_OBJ); 
     }
-    
-    public function markAsUsed($id) {
-        $sql = "UPDATE {$this->table} SET used = 1 WHERE id = :id";
-        $this->db->prepare($sql)->execute(['id' => $id]);
+
+    public function destroyToken($token) {
+        $sql = "DELETE FROM {$this->table} WHERE token = :token";
+        $this->db->prepare($sql)->execute(['token' => $token]);
     }
 }
