@@ -58,12 +58,7 @@ $router->get('/products/edit', ['ProductController', 'edit']);
 $router->post('/products/update', ['ProductController', 'update']);
 $router->post('/products/delete', ['ProductController', 'delete']);
 
-// POS
-$router->get('/pos', ['PosController', 'index']);
-$router->get('/pos/search-product', ['PosController', 'searchProduct']); 
-$router->get('/pos/search-customer', ['PosController', 'searchCustomer']); 
-$router->post('/pos/checkout', ['PosController', 'checkout']); 
-$router->get('/pos/invoice', ['PosController', 'printInvoice']);
+
 
 // Employees
 $router->get('/employees', ['EmployeeController', 'index']);
@@ -71,16 +66,6 @@ $router->post('/employees/store', ['EmployeeController', 'store']);
 $router->post('/employees/resend-email', ['EmployeeController', 'resendEmail']);
 $router->post('/employees/toggle-status', ['EmployeeController', 'toggleStatus']);
 
-// Reports
-// Reports
-$router->get('/reports', ['ReportController', 'index']);
-$router->get('/report/getReportData', ['ReportController', 'getReportData']); 
-
-// Customers
-$router->get('/customers', ['CustomerController', 'index']);
-$router->get('/customers/details', ['CustomerController', 'getDetails']);
-$router->get('/customers/order-details', ['CustomerController', 'getOrderDetails']);
-$router->get('/customers/history', ['CustomerController', 'history']);
 
 // Categories
 $router->get('/categories', ['CategoryController', 'index']);
