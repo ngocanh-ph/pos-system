@@ -1,5 +1,5 @@
 <style>
-    /* --- DESIGN SYSTEM: PRODUCT MANAGER (COMPACT BUT ROUNDED) --- */
+    /* --- DESIGN SYSTEM: PRODUCT MANAGER --- */
     :root {
         --pm-bg: #F0F8FF;         
         --pm-navy: #011628;       
@@ -7,12 +7,10 @@
         --pm-blue-light: #B0DAFD; 
         --pm-white: #FFFFFF;      
         
-        /* KHÔI PHỤC: Giữ nguyên bo góc lớn như bản gốc */
-        --pm-radius-3xl: 3rem;    /* 48px - Rất tròn */
-        --pm-radius-2xl: 2rem;    /* 32px */
-        --pm-radius-xl: 1.5rem;   /* 24px - Dạng viên thuốc */
+        --pm-radius-3xl: 3rem;    
+        --pm-radius-2xl: 2rem;    
+        --pm-radius-xl: 1.5rem;   
         
-        /* Giữ shadow nhẹ gọn để đỡ nặng nề khi thu nhỏ */
         --pm-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.1);
     }
 
@@ -21,28 +19,24 @@
         background-color: var(--pm-bg);
         font-family: 'Inter', sans-serif;
         color: var(--pm-navy);
-        padding: 0.5rem; /* Compact wrapper */
+        padding: 0.5rem;
     }
 
-    /* 1. Header & Action Bar */
+    /* Header */
     .pm-header {
         display: flex; justify-content: space-between; align-items: flex-end;
-        margin-bottom: 1rem; /* Compact margin */
-        padding: 0 0.5rem;
+        margin-bottom: 1rem; padding: 0 0.5rem;
     }
     .pm-title {
-        font-size: 1.5rem; /* Compact Font */
-        font-weight: 800; color: var(--pm-navy);
+        font-size: 1.5rem; font-weight: 800; color: var(--pm-navy);
         line-height: 1.2; letter-spacing: -0.02em;
     }
     .pm-subtitle { font-size: 0.8rem; color: #64748b; font-weight: 500; }
     
     .btn-add-new {
         background-color: var(--pm-blue); color: white;
-        padding: 0.5rem 1.25rem; /* Padding nhỏ nhưng vẫn giữ dáng pill */
-        border-radius: var(--pm-radius-xl); /* KHÔI PHỤC BO GÓC */
-        font-size: 0.875rem; 
-        font-weight: 600; display: flex; align-items: center; gap: 6px;
+        padding: 0.5rem 1.25rem; border-radius: var(--pm-radius-xl);
+        font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 6px;
         box-shadow: 0 4px 6px -1px rgba(4, 67, 119, 0.2);
         transition: all 0.2s ease; text-decoration: none; border: none;
     }
@@ -51,184 +45,139 @@
         box-shadow: 0 6px 10px -2px rgba(4, 67, 119, 0.3); color: white;
     }
 
-    /* 2. Smart Toolbar */
+    /* Toolbar */
     .pm-toolbar {
         background: var(--pm-white);
-        border-radius: var(--pm-radius-2xl); /* KHÔI PHỤC BO GÓC LỚN (32px) */
-        padding: 0.5rem 1rem; /* Compact padding bên trong */
+        border-radius: var(--pm-radius-2xl); 
+        padding: 0.5rem 1rem; 
         display: flex; gap: 0.75rem; align-items: center;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         margin-bottom: 1rem;
     }
-    
-    .search-box {
-        flex-grow: 1; position: relative;
-    }
+    .search-box { flex-grow: 1; position: relative; }
     .search-input {
         width: 100%; background: #F8FAFC; border: 1px solid #e2e8f0;
-        border-radius: var(--pm-radius-xl); /* KHÔI PHỤC BO GÓC (24px) */
-        padding: 0.5rem 0.75rem 0.5rem 2.5rem; /* Compact padding */
-        font-size: 0.875rem;
-        font-weight: 500; color: var(--pm-navy); transition: 0.2s;
+        border-radius: var(--pm-radius-xl); padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+        font-size: 0.875rem; font-weight: 500; color: var(--pm-navy); transition: 0.2s;
     }
     .search-input:focus { background: white; border-color: var(--pm-blue); outline: none; }
     .search-icon {
         position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
         color: #94a3b8; font-size: 0.875rem;
     }
-
     .filter-select {
         background: #F8FAFC; border: 1px solid #e2e8f0;
         padding: 0.5rem 2rem 0.5rem 1rem;
-        border-radius: var(--pm-radius-xl); /* KHÔI PHỤC BO GÓC */
-        font-size: 0.875rem; 
-        font-weight: 600; color: var(--pm-navy);
+        border-radius: var(--pm-radius-xl); 
+        font-size: 0.875rem; font-weight: 600; color: var(--pm-navy);
         cursor: pointer; outline: none;
     }
-
     .view-toggles {
-        background: #F1F5F9; padding: 3px; 
-        border-radius: 1rem; /* Bo góc toggle vẫn giữ tròn */
-        display: flex; gap: 2px;
+        background: #F1F5F9; padding: 3px; border-radius: 1rem; display: flex; gap: 2px;
     }
     .view-btn {
-        width: 30px; height: 30px; 
-        border-radius: 0.8rem; /* Bo góc nút con */
-        border: none;
+        width: 30px; height: 30px; border-radius: 0.8rem; border: none;
         display: flex; align-items: center; justify-content: center;
         color: #64748b; background: transparent; transition: 0.2s;
     }
     .view-btn i { font-size: 0.8rem; }
     .view-btn.active { background: white; color: var(--pm-navy); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
-    /* 3. High Density Table (List View) */
+    /* List View & Container */
     .pm-container {
         background: var(--pm-white);
-        border-radius: var(--pm-radius-3xl); /* KHÔI PHỤC BO GÓC LỚN (48px) */
+        border-radius: var(--pm-radius-3xl); 
         padding: 0; overflow: hidden;
         box-shadow: var(--pm-shadow);
-        min-height: 500px;
+        min-height: 600px; 
     }
 
+    /* Table */
     .pm-table { width: 100%; border-collapse: separate; border-spacing: 0; }
     .pm-table th {
         background: rgba(240, 248, 255, 0.5);
-        padding: 0.85rem 1.5rem; /* Compact padding */
-        font-size: 0.7rem; 
+        padding: 0.85rem 1.5rem; font-size: 0.7rem; 
         font-weight: 800; text-transform: uppercase;
         letter-spacing: 0.05em; color: #64748b; text-align: left;
         border-bottom: 1px solid #e2e8f0;
     }
     .pm-table td {
-        padding: 0.75rem 1.5rem; /* Compact padding */
-        border-bottom: 1px solid #f1f5f9;
+        padding: 0.75rem 1.5rem; border-bottom: 1px solid #f1f5f9;
         vertical-align: middle; transition: background 0.2s;
     }
     .pm-table tr:hover td { background-color: #F8FAFC; }
     
     .product-name { font-weight: 600; color: var(--pm-navy); font-size: 0.9rem; display: block; }
     .barcode-text { font-family: 'Courier New', monospace; color: #64748b; font-size: 0.75rem; }
-    
-    .badge-cat {
-        background: #e0e7ff; color: #4338ca; 
-        padding: 3px 10px; border-radius: 20px; /* Badge vẫn rất tròn */
-        font-size: 0.7rem; font-weight: 700;
-    }
-    
+    .badge-cat { background: #e0e7ff; color: #4338ca; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
     .price-text { font-family: 'Inter', sans-serif; font-weight: 700; color: var(--pm-blue); font-size: 0.95rem; }
 
-    /* Action Buttons */
-    .row-actions { opacity: 0; transition: opacity 0.2s; display: flex; gap: 6px; justify-content: flex-end; }
-    .pm-table tr:hover .row-actions { opacity: 1; }
-    
-    .btn-icon {
-        width: 30px; height: 30px; 
-        border-radius: 50%; /* KHÔI PHỤC: Hình tròn hoàn hảo */
-        border: none;
-        display: flex; align-items: center; justify-content: center;
-        transition: 0.2s; cursor: pointer;
-    }
-    .btn-edit { background: #e0f2fe; color: #0284c7; }
-    .btn-edit:hover { background: #0284c7; color: white; }
-    .btn-delete { background: #fee2e2; color: #dc2626; }
-    .btn-delete:hover { background: #dc2626; color: white; }
-
-    /* 4. Grid Mode (Gallery) */
+    /* Grid View */
     .grid-container {
         display: none;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         gap: 1rem;
     }
-    
     .product-card {
-        background: white; 
-        border-radius: var(--pm-radius-2xl); /* KHÔI PHỤC BO GÓC LỚN (32px) */
-        border: 1px solid #e2e8f0; 
+        background: white; border-radius: var(--pm-radius-2xl); border: 1px solid #e2e8f0; 
         padding: 1rem; position: relative;
         transition: transform 0.2s, box-shadow 0.2s;
+        display: flex; flex-direction: column; height: 100%;
     }
     .product-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         border-color: var(--pm-blue-light);
     }
-
     .card-img-box {
         width: 100%; aspect-ratio: 1; background: #F8FAFC;
-        border-radius: 1.5rem; /* Bo góc ảnh trong card cũng lớn */
-        margin-bottom: 0.75rem;
+        border-radius: 1.5rem; margin-bottom: 0.75rem;
         display: flex; align-items: center; justify-content: center;
         overflow: hidden;
     }
     .card-img-box img { width: 100%; height: 100%; object-fit: cover; }
     
-    .card-actions {
-        position: absolute; top: 1rem; right: 1rem;
-        opacity: 0; transition: 0.2s;
+    /* FIX: Nút sửa trên thẻ Grid luôn hiển thị */
+    .card-actions { 
+        position: absolute; top: 1rem; right: 1rem; 
+        opacity: 1; /* Luôn hiện */
+        z-index: 2;
     }
-    .product-card:hover .card-actions { opacity: 1; }
-
-    .card-price {
-        position: absolute; bottom: 1rem; left: 1rem;
-        font-size: 1rem; font-weight: 700; color: var(--pm-navy);
-    }
-
-    /* 5. Modal Design */
-    .modal-custom .modal-content {
-        border-radius: var(--pm-radius-3xl); /* KHÔI PHỤC BO GÓC MODAL LỚN */
-        border: none;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        padding: 0.5rem; /* Viền modal */
-    }
-    .modal-backdrop.show { backdrop-filter: blur(2px); opacity: 0.5; }
     
-    .modal-header { border-bottom: 1px solid #f1f5f9; padding: 1rem 1.5rem; }
-    .modal-body { padding: 1.5rem; }
-    .modal-title { font-weight: 700; color: var(--pm-navy); font-size: 1.25rem; }
+    .card-price { 
+        margin-top: auto; padding-top: 0.5rem;
+        font-size: 1.1rem; font-weight: 700; color: var(--pm-navy); 
+    }
+
+    /* FIX: Nút thao tác trên danh sách luôn hiển thị */
+    .row-actions { 
+        display: flex; gap: 6px; justify-content: flex-end;
+        opacity: 1; /* Luôn hiện */
+    }
     
+    .btn-icon { width: 30px; height: 30px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; transition: 0.2s; cursor: pointer; }
+    .btn-edit { background: #e0f2fe; color: #0284c7; } .btn-edit:hover { background: #0284c7; color: white; }
+    .btn-delete { background: #fee2e2; color: #dc2626; } .btn-delete:hover { background: #dc2626; color: white; }
+    
+    /* Empty State */
+    .empty-state {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: #94a3b8; height: 100%; width: 100%;
+    }
+
+    /* Modal */
     .form-label-caps {
         font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
         letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.25rem; display: block;
     }
     .form-input-lg {
-        width: 100%; padding: 0.6rem 1rem;
-        border-radius: var(--pm-radius-xl); /* KHÔI PHỤC BO GÓC INPUT (24px) */
+        width: 100%; padding: 0.6rem 1rem; border-radius: var(--pm-radius-xl);
         background: #F8FAFC; border: 1px solid #e2e8f0;
         font-weight: 500; font-size: 0.9rem; color: var(--pm-navy);
     }
     .form-input-lg:focus { outline: none; border-color: var(--pm-blue); background: white; }
-
-    /* Transitions */
     .fade-in { animation: fadeIn 0.3s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .pm-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-        .pm-toolbar { flex-wrap: wrap; }
-        .search-box { width: 100%; }
-        .pm-table th:nth-child(4), .pm-table td:nth-child(4) { display: none; }
-    }
 </style>
 
 <div class="product-wrapper fade-in">
@@ -264,78 +213,110 @@
         </div>
     </div>
 
-    <div id="listView" class="pm-container">
-        <div class="table-responsive">
-            <table class="pm-table">
-                <thead>
-                    <tr>
-                        <th width="50">Ảnh</th>
-                        <th>Thông tin sản phẩm</th>
-                        <th>Danh mục</th>
-                        <th>Giá bán</th>
-                        <?php if($_SESSION['user']->role === 'admin'): ?><th width="80"></th><?php endif; ?>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody">
-                    <?php foreach ($products as $p): ?>
-                    <tr class="product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
-                        <td>
-                            <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>" 
-                                 width="36" height="36" class="rounded-circle" style="object-fit:cover; background:#f1f5f9">
-                        </td>
-                        <td>
-                            <span class="product-name"><?= htmlspecialchars($p->name) ?></span>
-                            <span class="barcode-text"><?= htmlspecialchars($p->barcode) ?></span>
-                        </td>
-                        <td>
-                            <span class="badge-cat"><?= htmlspecialchars($p->category_name ?? 'N/A') ?></span>
-                        </td>
-                        <td>
-                            <span class="price-text"><?= number_format($p->sale_price) ?></span>
-                        </td>
-                        <?php if($_SESSION['user']->role === 'admin'): ?>
-                        <td>
-                            <div class="row-actions">
-                                <button class="btn-icon btn-edit" onclick='openEditModal(<?= json_encode($p) ?>)'>
-                                    <i class="fas fa-pen" style="font-size: 0.75rem"></i>
-                                </button>
-                                <button class="btn-icon btn-delete" onclick="deleteProduct(<?= $p->id ?>)">
-                                    <i class="fas fa-trash" style="font-size: 0.75rem"></i>
-                                </button>
-                            </div>
-                        </td>
-                        <?php endif; ?>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="gridView" class="grid-container">
-        <?php foreach ($products as $p): ?>
-        <div class="product-card product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
-            <div class="card-img-box">
-                <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>">
+    <?php if(empty($products)): ?>
+        <div class="pm-container d-flex align-items-center justify-content-center">
+            <div class="empty-state">
+                <i class="fas fa-box-open" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                <div style="font-weight: 600; font-size: 1.1rem;">Chưa có sản phẩm nào.</div>
+                <div style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.7;">Hãy thêm sản phẩm mới để bắt đầu quản lý.</div>
             </div>
-            
-            <h5 style="font-weight: 600; color: var(--pm-navy); margin-bottom: 0.2rem; font-size:0.95rem">
-                <?= htmlspecialchars($p->name) ?>
-            </h5>
-            <span style="font-size: 0.75rem; color:#94a3b8"><?= htmlspecialchars($p->barcode) ?></span>
-            
-            <div class="card-price"><?= number_format($p->sale_price) ?></div>
-
-            <?php if($_SESSION['user']->role === 'admin'): ?>
-            <div class="card-actions">
-                <button class="btn-icon btn-edit shadow-sm" style="background:white" onclick='openEditModal(<?= json_encode($p) ?>)'>
-                    <i class="fas fa-pen" style="font-size: 0.75rem"></i>
-                </button>
-            </div>
-            <?php endif; ?>
         </div>
-        <?php endforeach; ?>
-    </div>
+    <?php else: ?>
+        <div id="listView" class="pm-container">
+            <div class="table-responsive">
+                <table class="pm-table">
+                    <thead>
+                        <tr>
+                            <th width="50">Ảnh</th>
+                            <th>Thông tin sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Ngày tạo</th>
+                            <?php if($_SESSION['user']->role === 'admin'): ?><th>Giá nhập</th><?php endif; ?>
+                            <th>Giá bán</th>
+                            <?php if($_SESSION['user']->role === 'admin'): ?>
+                                <th width="100" style="text-align: right;">Thao tác</th>
+                            <?php endif; ?>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <?php foreach ($products as $p): ?>
+                        <tr class="product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
+                            <td>
+                                <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>" 
+                                     width="36" height="36" class="rounded-circle" style="object-fit:cover; background:#f1f5f9">
+                            </td>
+                            <td>
+                                <span class="product-name"><?= htmlspecialchars($p->name) ?></span>
+                                <span class="barcode-text"><?= htmlspecialchars($p->barcode) ?></span>
+                            </td>
+                            <td>
+                                <span class="badge-cat"><?= htmlspecialchars($p->category_name ?? 'N/A') ?></span>
+                            </td>
+                            <td>
+                                <span style="color:#64748b; font-size: 0.85rem">
+                                    <?= !empty($p->created_at) ? date('d/m/Y', strtotime($p->created_at)) : 'N/A' ?>
+                                </span>
+                            </td>
+                            <?php if($_SESSION['user']->role === 'admin'): ?>
+                            <td>
+                                <span class="price-text" style="color:#64748b"><?= number_format($p->import_price) ?></span>
+                            </td>
+                            <?php endif; ?>
+                            <td>
+                                <span class="price-text"><?= number_format($p->sale_price) ?></span>
+                            </td>
+                            <?php if($_SESSION['user']->role === 'admin'): ?>
+                            <td>
+                                <div class="row-actions">
+                                    <button class="btn-icon btn-edit" onclick='openEditModal(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)'>
+                                        <i class="fas fa-pen" style="font-size: 0.75rem"></i>
+                                    </button>
+                                    <button class="btn-icon btn-delete" onclick="deleteProduct(<?= $p->id ?>)">
+                                        <i class="fas fa-trash" style="font-size: 0.75rem"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <?php endif; ?>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="gridView" class="grid-container">
+            <?php foreach ($products as $p): ?>
+            <div class="product-card product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
+                <div class="card-img-box">
+                    <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>">
+                </div>
+                
+                <h5 style="font-weight: 600; color: var(--pm-navy); margin-bottom: 0.2rem; font-size:0.95rem">
+                    <?= htmlspecialchars($p->name) ?>
+                </h5>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                     <span style="font-size: 0.75rem; color:#94a3b8"><?= htmlspecialchars($p->barcode) ?></span>
+                     <span style="font-size: 0.7rem; color:#cbd5e1">
+                        <?= !empty($p->created_at) ? date('d/m/y', strtotime($p->created_at)) : '' ?>
+                     </span>
+                </div>
+                
+                <?php if($_SESSION['user']->role === 'admin'): ?>
+                <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.25rem">Nhập: <?= number_format($p->import_price) ?></div>
+                <?php endif; ?>
+                <div class="card-price"><?= number_format($p->sale_price) ?></div>
+
+                <?php if($_SESSION['user']->role === 'admin'): ?>
+                <div class="card-actions">
+                    <button class="btn-icon btn-edit shadow-sm" style="background:white" onclick='openEditModal(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)'>
+                        <i class="fas fa-pen" style="font-size: 0.75rem"></i>
+                    </button>
+                </div>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <div class="modal fade modal-custom" id="productModal" tabindex="-1">
@@ -360,11 +341,14 @@
                     </div>
 
                     <div class="row g-2 mb-3">
+                        <?php if($_SESSION['user']->role === 'admin'): ?>
                         <div class="col-6">
                             <label class="form-label-caps">Giá nhập</label>
                             <input type="number" class="form-input-lg" name="import_price" id="p_import" required>
                         </div>
-                        <div class="col-6">
+                        <?php endif; ?>
+                        
+                        <div class="<?php echo ($_SESSION['user']->role === 'admin') ? 'col-6' : 'col-12'; ?>">
                             <label class="form-label-caps">Giá bán</label>
                             <input type="number" class="form-input-lg" name="sale_price" id="p_sale" required>
                         </div>
@@ -397,8 +381,46 @@
 </div>
 
 <script>
-    // --- 1. View Toggles ---
-    function switchView(mode) {
+    const BASE_URL = "<?= APP_URL ?>";
+    let modal; 
+    let isEdit = false;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalEl = document.getElementById('productModal');
+        if (modalEl) {
+            modal = new bootstrap.Modal(modalEl);
+        }
+
+        $('#searchInput').on('keyup', filterProducts);
+        $('#categoryFilter').on('change', filterProducts);
+
+        $('#productForm').submit(function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const endpoint = isEdit ? '/products/update' : '/products/store';
+            
+            $.ajax({
+                url: BASE_URL + endpoint,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    if(res.success) {
+                        alert(isEdit ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
+                        location.reload();
+                    } else {
+                        alert('Lỗi: ' + res.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Lỗi hệ thống: ' + xhr.statusText);
+                }
+            });
+        });
+    });
+
+    window.switchView = function(mode) {
         if(mode === 'list') {
             $('#listView').show().addClass('fade-in');
             $('#gridView').hide();
@@ -412,7 +434,6 @@
         }
     }
 
-    // --- 2. Filter & Search Logic ---
     function filterProducts() {
         const term = $('#searchInput').val().toLowerCase();
         const cat = $('#categoryFilter').val();
@@ -420,72 +441,43 @@
         $('.product-row').each(function() {
             const name = $(this).data('name').toString();
             const barcode = $(this).data('barcode').toString();
-            const pCat = $(this).data('cat').toString();
+            const pCat = ($(this).data('cat') || "").toString();
             
             const matchSearch = name.includes(term) || barcode.includes(term);
             const matchCat = cat === "" || pCat === cat;
 
-            if (matchSearch && matchCat) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
+            if (matchSearch && matchCat) $(this).show();
+            else $(this).hide();
         });
     }
 
-    $('#searchInput').on('keyup', filterProducts);
-    $('#categoryFilter').on('change', filterProducts);
-
-    // --- 3. Modal Logic ---
-    let isEdit = false;
-    const modal = new bootstrap.Modal(document.getElementById('productModal'));
-
-    function openAddModal() {
+    window.openAddModal = function() {
         isEdit = false;
         $('#modalTitle').text('Thêm sản phẩm mới');
         $('#productForm')[0].reset();
         $('#p_id').val('');
-        modal.show();
+        if(modal) modal.show();
     }
 
-    function openEditModal(product) {
+    window.openEditModal = function(product) {
         isEdit = true;
         $('#modalTitle').text('Cập nhật sản phẩm');
         $('#p_id').val(product.id);
         $('#p_barcode').val(product.barcode);
         $('#p_name').val(product.name);
-        $('#p_import').val(product.import_price);
+        
+        if($('#p_import').length) {
+            $('#p_import').val(product.import_price);
+        }
+        
         $('#p_sale').val(product.sale_price);
         $('#p_category').val(product.category_id);
-        modal.show();
+        if(modal) modal.show();
     }
 
-    // --- 4. AJAX Submission ---
-    $('#productForm').submit(function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const url = isEdit ? '/products/update' : '/products/store';
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function(res) {
-                if(res.success) {
-                    location.reload();
-                } else {
-                    alert(res.message);
-                }
-            }
-        });
-    });
-
-    // --- 5. Delete Logic ---
     window.deleteProduct = function(id) {
         if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-            $.post('/products/delete', {id: id}, function(res) {
+            $.post(BASE_URL + '/products/delete', {id: id}, function(res) {
                 if(res.success) location.reload();
                 else alert(res.message);
             }, 'json');
