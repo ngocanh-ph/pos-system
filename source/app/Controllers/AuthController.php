@@ -40,16 +40,19 @@ class AuthController extends Controller {
         // Mà chuyển hướng về trang LOGIN để người dùng tự nhập User & Password
         $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
     }
+
     // Xử lý khi người dùng bấm nút "Đăng nhập" trên Form
    public function handleLogin() {
-        $username = $_POST['username'] ?? '';
+
+        $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? ''; // Nhân viên mới sẽ nhập password là ̀̀52400002 tại đây
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
 
         // Kiểm tra User và Pass trước
-        if ($user && $password === $user->password) { // (Lưu ý: Dùng password_verify nếu pass đã mã hóa)
+        // (Lưu ý: Dùng password_verify nếu pass đã mã hóa)
+        if ($user && password_verify($password, $user->password)) {
 
             //KIỂM TRA LOGIC NHÂN VIÊN MỚI 
             if ($user->role === 'staff' && $user->is_first_login == 1) {
@@ -91,6 +94,7 @@ class AuthController extends Controller {
     public function forceChangePassword() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
+            return;
         }
         $this->renderAuthView('auth/force_change_password');
     }
@@ -98,6 +102,7 @@ class AuthController extends Controller {
     public function handleForceChangePassword() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
+            return;
         }
         
         $new_password = $_POST['new_password'] ?? '';
@@ -114,7 +119,11 @@ class AuthController extends Controller {
         }
         
         $userModel = new User();
-        $userModel->updatePassword($_SESSION['user']->id, $new_password);
+
+        // HASH PASSWORD trước khi lưu DB
+        $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+
+        $userModel->updatePassword($_SESSION['user']->id, $hashedPassword);
         $_SESSION['user']->is_first_login = 0;
         
         $this->redirect('/dashboard');
@@ -130,6 +139,7 @@ class AuthController extends Controller {
         }
         exit; 
     }
+
     public function logout() {
         // Khởi động session nếu chưa có 
         if (session_status() === PHP_SESSION_NONE) {
@@ -139,8 +149,18 @@ class AuthController extends Controller {
         // Xóa tất cả dữ liệu trong session
         $_SESSION = [];
 
+        // Xóa cookie session luôn
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
         // Hủy session trên server
         session_destroy();
+
         // Chuyển hướng về trang đăng nhập
         header('Location: /login'); 
         exit;
