@@ -42,54 +42,56 @@ class AuthController extends Controller {
     }
 
     // Xử lý khi người dùng bấm nút "Đăng nhập" trên Form
-   public function handleLogin() {
+ public function handleLogin() {
 
-        $username = trim($_POST['username'] ?? '');
-        $password = $_POST['password'] ?? ''; // Nhân viên mới sẽ nhập password là ̀̀52400002 tại đây
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? ''; // Nhân viên mới sẽ nhập password là ̀̀52400002 tại đây
 
-        $userModel = new User();
-        $user = $userModel->findByUsername($username);
+    $userModel = new User();
+    $user = $userModel->findByUsername($username);
 
-        // Kiểm tra User và Pass trước
-        // (Lưu ý: Dùng password_verify nếu pass đã mã hóa)
-        if ($user && password_verify($password, $user->password)) {
+    // Kiểm tra User và Pass trước
+    // (Lưu ý: Dùng password_verify nếu pass đã mã hóa)
+    if ($user && password_verify($password, $user->password)) {
 
-            //KIỂM TRA LOGIC NHÂN VIÊN MỚI 
-            if ($user->role === 'staff' && $user->is_first_login == 1) {
-                
-                // Kiểm tra: Người này có đường link từ email chưa?
-                if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
-                    // NẾU KHÔNG CÓ -> CHẶN LẠI
-                    $this->renderAuthView('auth/login', [
-                        'error' => 'Vui lòng đăng nhập bằng cách nhấp vào liên kết trong email của bạn.'
-                    ]);
-                    return;
-                }
-
-                // NẾU CÓ  -> Hủy (dùng 1 lần thôi)
-                unset($_SESSION['can_login_first_time']);
-                
-                //BÂY GIỜ MỚI CHO ĐĂNG NHẬP
-                $_SESSION['user'] = $user;
-                
-                // Chuyển sang trang bắt buộc đổi mật khẩu
-                $this->redirect('/force-change-password');
-                return;
-            }
-
-            if ($user->status === 'locked') {
-                $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
-                return;
-            }
-
-            // Đăng nhập bình thường (Nhân viên cũ / Admin)
-            $_SESSION['user'] = $user;
-            $this->redirect('/dashboard');
-
-        } else {
-            $this->renderAuthView('auth/login', ['error' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
+        // Kiểm tra tài khoản bị khóa trước (nên check sớm)
+        if ($user->status === 'locked') {
+            $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
+            return;
         }
+
+        //KIỂM TRA LOGIC NHÂN VIÊN MỚI 
+        if ($user->role === 'staff' && $user->is_first_login == 1) {
+            
+            // Kiểm tra: Người này có đường link từ email chưa?
+            if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
+                // NẾU KHÔNG CÓ -> CHẶN LẠI
+                $this->renderAuthView('auth/login', [
+                    'error' => 'Vui lòng đăng nhập bằng cách nhấp vào liên kết trong email của bạn.'
+                ]);
+                return;
+            }
+
+            // NẾU CÓ  -> Hủy (dùng 1 lần thôi)
+            unset($_SESSION['can_login_first_time']);
+            
+            //BÂY GIỜ MỚI CHO ĐĂNG NHẬP
+            $_SESSION['user'] = $user;
+            
+            // Chuyển sang trang bắt buộc đổi mật khẩu
+            $this->redirect('/force-change-password');
+            return;
+        }
+
+        // Đăng nhập bình thường (Nhân viên cũ / Admin)
+        $_SESSION['user'] = $user;
+        $this->redirect('/dashboard');
+
+    } else {
+        $this->renderAuthView('auth/login', ['error' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
     }
+}
+
     
     public function forceChangePassword() {
         if (!isset($_SESSION['user'])) {
