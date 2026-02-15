@@ -1,7 +1,5 @@
 <?php
-
 require_once __DIR__ . '/../../config/database.php';
-
 abstract class Model {
     protected $db;
     protected $table;
@@ -21,7 +19,6 @@ abstract class Model {
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
     }
-
     public function query($sql, $params = []) {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
