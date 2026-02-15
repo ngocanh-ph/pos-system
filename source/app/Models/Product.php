@@ -28,7 +28,6 @@ class Product extends Model {
     }
 
     public function update($id, $data) {
-        // Build query dynamically based on whether image is updated
         $sql = "UPDATE {$this->table} SET 
                 barcode = :barcode, 
                 name = :name, 
