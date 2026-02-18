@@ -1,19 +1,15 @@
 <style>
-    /* --- DESIGN SYSTEM: CATEGORY MANAGER (COMPACT & ROUNDED) --- */
     :root {
         --cat-bg: #F0F8FF;        
         --cat-navy: #011628;      
         --cat-indigo: #044377;    
         --cat-accent: #508ABA;    
         --cat-white: #FFFFFF;     
+        --cat-radius-3xl: 3rem;    
+        --cat-radius-xl: 1.5rem;   
+        --cat-radius-lg: 1.25rem;  
         
-        /* GIỮ NGUYÊN: Bo góc lớn mềm mại */
-        --cat-radius-3xl: 3rem;    /* 48px */
-        --cat-radius-xl: 1.5rem;   /* 24px */
-        --cat-radius-lg: 1.25rem;  /* 20px */
-        
-        /* Shadow tinh chỉnh nhẹ hơn cho giao diện compact */
-        --cat-shadow: 0 4px 10px -1px rgba(176, 218, 253, 0.4);
+        --cat-shadow: 0 4px 10px -1px #b0dafd66;
     }
 
     /* Base Layout */
@@ -21,162 +17,279 @@
         background-color: var(--cat-bg);
         font-family: 'Inter', sans-serif;
         color: var(--cat-navy);
-        padding: 0.5rem; /* Compact padding wrapper */
+        padding: 0.5rem; 
         min-height: 85vh;
     }
 
-    /* 1. Header & Action Bar */
+    /* Header & Action Bar */
     .cat-header {
-        display: flex; justify-content: space-between; align-items: flex-end;
-        margin-bottom: 1rem; /* Giảm margin bottom */
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-end;
+        margin-bottom: 1rem; 
         padding: 0 0.5rem;
     }
     .cat-title {
-        font-size: 1.5rem; /* Giảm size tiêu đề */
+        font-size: 1.5rem; 
         font-weight: 900; 
-        color: var(--cat-navy); line-height: 1.2; letter-spacing: -0.02em;
+        color: var(--cat-navy); 
+        line-height: 1.2; 
+        letter-spacing: -0.02em;
     }
     .cat-subtitle {
-        font-size: 0.8rem; /* Giảm subtitle */
-        color: var(--cat-accent); font-weight: 600; margin-top: 2px;
+        font-size: 0.8rem; 
+        color: var(--cat-accent); 
+        font-weight: 600; 
+        margin-top: 2px;
     }
     
     .btn-add-cat {
-        background-color: var(--cat-indigo); color: white;
-        padding: 0.5rem 1.25rem; /* Compact padding button */
-        border-radius: var(--cat-radius-xl); /* Giữ bo góc tròn */
-        font-size: 0.875rem; /* Font nhỏ gọn */
-        font-weight: 700; display: flex; align-items: center; gap: 6px;
-        box-shadow: 0 4px 6px -1px rgba(4, 67, 119, 0.2);
-        transition: all 0.2s ease; border: none;
+        background-color: var(--cat-indigo); 
+        color: white;
+        padding: 0.5rem 1.25rem; 
+        border-radius: var(--cat-radius-xl); 
+        font-size: 0.875rem; 
+        font-weight: 700; 
+        display: flex; 
+        align-items: center; 
+        gap: 6px;
+        box-shadow: 0 4px 6px -1px #04437733;
+        transition: all 0.2s ease; 
+        border: none;
     }
     .btn-add-cat:hover {
         transform: translateY(-2px); 
-        box-shadow: 0 6px 12px -2px rgba(4, 67, 119, 0.3);
-        background-color: #033055; color: white;
+        box-shadow: 0 6px 12px -2px #0443774d;
+        background-color: #033055; 
+        color: white;
     }
 
-    /* 2. Smart Toolbar (Search) */
+    /* Smart Toolbar Search */
     .cat-toolbar {
         background: var(--cat-white);
-        border-radius: 2rem; /* Giữ bo góc lớn */
-        padding: 0.5rem 1rem; /* Compact padding toolbar */
-        display: flex; align-items: center;
-        box-shadow: 0 2px 4px -1px rgba(0,0,0,0.05);
-        margin-bottom: 1rem; width: 100%; 
+        border-radius: 2rem; 
+        padding: 0.5rem 1rem; 
+        display: flex; 
+        align-items: center;
+        box-shadow: 0 2px 4px -1px #0000000d;
+        margin-bottom: 1rem; 
+        width: 100%; 
         max-width: 1200px;
     }
     .search-box {
-        flex-grow: 1; position: relative;
+        flex-grow: 1; 
+        position: relative;
     }
     .search-input {
-        width: 100%; background: #F8FAFC; border: 1px solid transparent;
-        border-radius: 1.5rem; /* Giữ radius */
-        padding: 0.5rem 1rem 0.5rem 2.5rem; /* Compact padding input */
-        font-size: 0.875rem; /* Font nhỏ */
-        font-weight: 600; color: var(--cat-navy); transition: 0.2s;
+        width: 100%; 
+        background: #F8FAFC; 
+        border: 1px solid transparent;
+        border-radius: 1.5rem; 
+        padding: 0.5rem 1rem 0.5rem 2.5rem; 
+        font-size: 0.875rem; 
+        font-weight: 600; 
+        color: var(--cat-navy); 
+        transition: 0.2s;
     }
-    .search-input:focus { background: white; border-color: var(--cat-indigo); outline: none; }
+    .search-input:focus { 
+        background: white; 
+        border-color: var(--cat-indigo); 
+        outline: none; }
     .search-icon {
-        position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-        color: var(--cat-accent); font-size: 0.875rem;
+        position: absolute; 
+        left: 1rem; 
+        top: 50%; 
+        transform: translateY(-50%);
+        color: var(--cat-accent); 
+        font-size: 0.875rem;
     }
 
-    /* 3. Categories Table Container */
+    /* Categories Table Container */
     .cat-container {
         background: var(--cat-white);
-        border-radius: var(--cat-radius-3xl); /* 3rem - Giữ nguyên bo góc lớn */
-        padding: 0; overflow: hidden;
+        border-radius: var(--cat-radius-3xl); 
+        padding: 0; 
+        overflow: hidden;
         box-shadow: var(--cat-shadow);
         min-height: 400px;
     }
 
-    .cat-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .cat-table { 
+        width: 100%; 
+        border-collapse: separate; 
+        border-spacing: 0; 
+    }
     
     .cat-table th {
         background: rgba(240, 248, 255, 0.3);
-        padding: 0.85rem 1.5rem; /* GIẢM PADDING Header */
-        font-size: 0.7rem; font-weight: 900;
-        text-transform: uppercase; letter-spacing: 0.1em;
-        color: #64748b; text-align: left;
+        padding: 0.85rem 1.5rem; 
+        font-size: 0.7rem; 
+        font-weight: 900;
+        text-transform: uppercase; 
+        letter-spacing: 0.1em;
+        color: #64748b; 
+        text-align: left;
         border-bottom: 1px solid #eff6ff;
     }
     
     .cat-table td {
-        padding: 0.75rem 1.5rem; /* GIẢM PADDING Cell (Compact) */
+        padding: 0.75rem 1.5rem; 
         border-bottom: 1px solid #f8fafc;
-        vertical-align: middle; transition: background 0.2s;
+        vertical-align: middle; 
+        transition: background 0.2s;
     }
     
-    .cat-table tr:hover td { background-color: #F0F9FF; }
+    .cat-table tr:hover td { 
+        background-color: #F0F9FF; 
+    }
 
     /* Column Styles */
-    .cat-name-box { display: flex; align-items: center; gap: 0.75rem; }
+    .cat-name-box { 
+        display: flex; 
+        align-items: center; 
+        gap: 0.75rem; 
+    }
     .icon-square {
-        width: 32px; height: 32px; /* Giảm kích thước icon box */
-        border-radius: 10px; /* Bo góc nhỏ hơn xíu cho vừa size */
-        background: #e0e7ff; color: var(--cat-indigo);
-        display: flex; align-items: center; justify-content: center;
+        width: 32px; height: 32px; 
+        border-radius: 10px; 
+        background: #e0e7ff; 
+        color: var(--cat-indigo);
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
         font-size: 0.9rem;
     }
-    .cat-name-text { font-weight: 800; color: var(--cat-navy); font-size: 0.9rem; }
+    .cat-name-text { 
+        font-weight: 800; 
+        color: var(--cat-navy); 
+        font-size: 0.9rem; 
+    }
     
     .cat-desc { 
-        color: #64748b; font-size: 0.85rem; font-weight: 500; 
-        max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        color: #64748b; 
+        font-size: 0.85rem; 
+        font-weight: 500; 
+        max-width: 250px; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
     }
     
-    .meta-info { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
-    .meta-icon { color: #cbd5e1; }
-
+    .meta-info { 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; font-size: 0.8rem; 
+        color: #94a3b8; 
+        font-weight: 600; }
+    .meta-icon { 
+        color: #cbd5e1; 
+    }
     /* Actions */
-    .row-actions { opacity: 0; transition: opacity 0.2s; display: flex; gap: 6px; justify-content: flex-end; }
-    .cat-table tr:hover .row-actions { opacity: 1; }
+    .row-actions { 
+        opacity: 0; 
+        transition: opacity 0.2s; 
+        display: flex; 
+        gap: 6px; 
+        justify-content: flex-end; }
+    .cat-table tr:hover .row-actions { 
+        opacity: 1; 
+    }
     
     .btn-action {
-        width: 30px; height: 30px; /* Giảm size nút action */
-        border-radius: 10px; border: none;
-        display: flex; align-items: center; justify-content: center;
-        transition: 0.2s; cursor: pointer;
-    }
-    .btn-action i { font-size: 0.8rem; }
-    .btn-edit { background: #e0f2fe; color: var(--cat-indigo); }
-    .btn-edit:hover { background: var(--cat-indigo); color: white; }
-    .btn-delete { background: #ffe4e6; color: #e11d48; }
-    .btn-delete:hover { background: #e11d48; color: white; }
-
-    /* 4. Modal Design (Soft UI but Compact) */
-    .modal-soft .modal-content {
-        border-radius: var(--cat-radius-3xl); /* Giữ bo góc Modal lớn */
+        width: 30px; 
+        height: 30px; 
+        border-radius: 10px; 
         border: none;
-        box-shadow: 0 20px 25px -5px rgba(1, 22, 40, 0.1);
-        padding: 0.5rem; /* Viền trong */
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        transition: 0.2s; 
     }
-    .modal-backdrop.show { backdrop-filter: blur(2px); opacity: 0.5; background-color: #011628; }
+    .btn-action i { 
+        font-size: 0.8rem; 
+    }
+    .btn-edit { 
+        background: #e0f2fe; 
+        color: var(--cat-indigo); 
+    }
+    .btn-edit:hover { 
+        background: var(--cat-indigo); 
+        color: white; 
+    }
+    .btn-delete { 
+        background: #ffe4e6; 
+        color: #e11d48; 
+    }
+    .btn-delete:hover { 
+        background: #e11d48; 
+        color: white; 
+    }
+
+    .modal-soft .modal-content {
+        border-radius: var(--cat-radius-3xl); 
+        border: none;
+        box-shadow: 0 20px 25px -5px #0116281a;
+        padding: 0.5rem; 
+    }
+    .modal-backdrop.show { 
+        backdrop-filter: blur(2px); 
+        opacity: 0.5; 
+        background-color: #011628; 
+    }
     
-    .modal-header { border-bottom: none; padding: 1rem 1.5rem; } /* Compact Modal Header */
-    .modal-body { padding: 0.5rem 1.5rem 1.5rem; } /* Compact Modal Body */
-    .modal-title-custom { font-weight: 900; color: var(--cat-navy); font-size: 1.25rem; }
-    
+    .modal-header { 
+        border-bottom: none; 
+        padding: 1rem 1.5rem; 
+    } 
+    .modal-body { 
+        padding: 0.5rem 1.5rem 1.5rem; 
+    } 
+    .modal-title-custom { 
+        font-weight: 900; 
+        color: var(--cat-navy); 
+        font-size: 1.25rem; 
+    }
     .form-label-soft {
-        font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
-        letter-spacing: 0.05em; color: var(--cat-accent); margin-bottom: 0.25rem; display: block;
+        font-size: 0.7rem; 
+        font-weight: 800; 
+        text-transform: uppercase;
+        letter-spacing: 0.05em; 
+        color: var(--cat-accent); 
+        margin-bottom: 0.25rem; 
+        display: block;
     }
     .form-input-soft {
-        width: 100%; padding: 0.6rem 1rem; /* Compact Input Padding */
-        border-radius: var(--cat-radius-lg); /* Giữ bo góc input */
-        background: #F8FAFC; border: 1px solid #e2e8f0;
-        font-weight: 600; color: var(--cat-navy); font-size: 0.9rem;
+        width: 100%; padding: 0.6rem 1rem; 
+        border-radius: var(--cat-radius-lg); 
+        background: #F8FAFC; 
+        border: 1px solid #e2e8f0;
+        font-weight: 600; 
+        color: var(--cat-navy); 
+        font-size: 0.9rem;
         transition: 0.2s;
     }
-    .form-input-soft:focus { outline: none; border-color: var(--cat-indigo); background: white; box-shadow: 0 0 0 4px rgba(4, 67, 119, 0.1); }
-    textarea.form-input-soft { min-height: 100px; resize: none; }
-
+    .form-input-soft:focus { 
+        outline: none; 
+        border-color: var(--cat-indigo); 
+        background: white; 
+        box-shadow: 0 0 0 4px #0443771a; }
+    textarea.form-input-soft { 
+        min-height: 100px; 
+        resize: none; 
+    }
     /* Animation */
-    .zoom-in { animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-    @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .zoom-in { 
+        animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    }
+    @keyframes zoomIn { from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+        } to { 
+            opacity: 1; 
+            transform: scale(1); 
+            } 
+        }
 </style>
-
 <div class="cat-wrapper zoom-in">
     <div class="cat-header">
         <div>
@@ -292,7 +405,7 @@
 </div>
 
 <script>
-    // --- 1. Search Logic ---
+    // Search
     $('#searchInput').on('keyup', function() {
         const term = $(this).val().toLowerCase();
         $('.cat-row').each(function() {
@@ -302,7 +415,7 @@
         });
     });
 
-    // --- 2. Modal Logic ---
+    //Modal Logic 
     let isEdit = false;
     const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
 
@@ -323,7 +436,7 @@
         modal.show();
     }
 
-    // --- 3. AJAX Actions ---
+    // AJAX Actions 
     $('#categoryForm').submit(function(e) {
         e.preventDefault();
         const data = $(this).serialize();
@@ -339,7 +452,6 @@
     });
 
     function deleteCategory(id) {
-        // Custom Confirm Dialog could be added here, currently using browser confirm
         if(confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
             $.post('/categories/delete', {id: id}, function(res) {
                 if(res.success) location.reload();
