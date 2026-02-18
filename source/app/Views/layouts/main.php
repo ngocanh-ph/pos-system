@@ -65,7 +65,7 @@
 
         .nav-link:hover {
             color: white;
-            background: rgba(255,255,255,0.1);
+            background: #ffffff1a;
         }
 
         .nav-link.active {
@@ -88,12 +88,20 @@
             gap: 10px;
         }
         .user-avatar {
-            width: 32px; height: 32px; 
+            width: 32px; 
+            height: 32px; 
             border-radius: 6px;
             object-fit: cover;
         }
-        .user-info h6 { margin: 0; color: white; font-size: 0.85rem;  }
-        .user-info span { font-size: 0.7rem; color: #94A3B8; text-transform: uppercase; }
+        .user-info h6 { 
+            margin: 0; 
+            color: white; 
+            font-size: 0.85rem;  }
+        .user-info span { 
+            font-size: 0.7rem; 
+            color: #94A3B8; 
+            text-transform: uppercase; 
+        }
         .btn-logout {
             color: #EF4444;
             text-decoration: none;

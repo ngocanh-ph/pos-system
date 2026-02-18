@@ -84,7 +84,7 @@
         gap: 10px;
         text-decoration: none;
         transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(1, 22, 40, 0.2);
+        box-shadow: 0 4px 12px #01162833;
     }
     .btn-hero-action:hover { 
         background-color: var(--d-indigo); 
@@ -95,7 +95,8 @@
     .kpi-grid {
         display: grid; 
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem; margin-bottom: 1.5rem;
+        gap: 1.5rem; 
+        margin-bottom: 1.5rem;
     }
 
     .kpi-card {
@@ -105,7 +106,8 @@
         box-shadow: var(--d-shadow-card);
         border: 1px solid rgba(176, 218, 253, 0.3);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
-        position: relative; overflow: hidden;
+        position: relative; 
+        overflow: hidden;
     }
     .kpi-card:hover { 
         transform: translateY(-4px); 
@@ -155,7 +157,7 @@
         border-radius: var(--d-radius-3xl);
         padding: 1.5rem;
         box-shadow: var(--d-shadow-card);
-        border: 1px solid rgba(176, 218, 253, 0.3);
+        border: 1px solid #b0dafd4d;
         height: 380px;
     }
     
@@ -164,8 +166,10 @@
         border-radius: var(--d-radius-3xl);
         padding: 1.5rem;
         box-shadow: var(--d-shadow-card);
-        border: 1px solid rgba(176, 218, 253, 0.3);
-        height: 380px; display: flex; flex-direction: column;
+        border: 1px solid #b0dafd4d;
+        height: 380px; 
+        display: flex; 
+        flex-direction: column;
     }
 
     .card-header-flex {
@@ -377,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const labels = <?= json_encode($chartLabels) ?>.map(h => h + 'h');
     const data = <?= json_encode(array_values($chartValues)) ?>;
-
+    /*Biểu đồ*/
     new Chart(ctx, {
         type: 'line',
         data: {
