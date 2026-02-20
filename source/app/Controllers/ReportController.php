@@ -8,7 +8,7 @@ class ReportController extends Controller {
             $this->redirect('/login');
         }
         $staffs = [];
-        // Nếu là Admin, lấy danh sách nhân viên để hiện filter
+    
         if ($_SESSION['user']->role === 'admin') {
             $userModel = new User();
             $staffs = $userModel->query("SELECT id, fullname FROM users WHERE role != 'admin'")->fetchAll();
@@ -20,14 +20,14 @@ class ReportController extends Controller {
             $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
             return;
         }
-        // 1. XỬ LÝ LOGIC THỜI GIAN 
+       
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         
         $range = $_GET['range'] ?? 'today';
         $staffId = $_GET['staff_id'] ?? null;
         if ($staffId === 'undefined' || $staffId === '') $staffId = null;
 
-        // Bảo mật: Nhân viên chỉ được xem của chính mình
+
         if ($_SESSION['user']->role !== 'admin') {
             $staffId = $_SESSION['user']->id;
         }
@@ -63,7 +63,7 @@ class ReportController extends Controller {
                 break;
         }
 
-        // 2. GỌI MODEL ĐỂ LẤY DỮ LIỆU 
+        
         $orderModel = new Order();
 
         try {
@@ -71,8 +71,6 @@ class ReportController extends Controller {
             $chartData = $orderModel->getChartData($startDate, $endDate, $chartMode, $staffId);
             $catData = $orderModel->getCategoryStats($startDate, $endDate, $staffId);
             $orderList = $orderModel->getOrdersByRange($startDate, $endDate, $staffId);
-            // 3. XỬ LÝ BẢO MẬT HIỂN THỊ (Logic View)
-            // Nếu không phải Admin, xóa dữ liệu lợi nhuận trước khi trả về client
             if ($_SESSION['user']->role !== 'admin') {
                 $kpiStats['profit'] = null;
                 foreach ($chartData as &$row) {

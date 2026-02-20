@@ -20,7 +20,7 @@ class Customer extends Model {
         }
     }
 
-    // Lấy danh sách khách hàng kèm số lượng đơn hàng (Cho trang danh sách)
+   
     public function getAllWithOrderCount() {
         $sql = "SELECT c.*, COUNT(o.id) as order_count 
                 FROM customers c 
@@ -30,16 +30,16 @@ class Customer extends Model {
         return $this->query($sql)->fetchAll();
     }
 
-    // Lấy thống kê chi tiêu của một khách hàng (Cho trang chi tiết)
+ 
     public function getSpendingStats($customerId) {
-        // Thống kê tổng tiền và tổng đơn
+       
         $sqlStats = "SELECT 
                         COUNT(id) as total_orders, 
                         COALESCE(SUM(total_amount), 0) as total_spent 
                      FROM orders WHERE customer_id = :cid";
         $basic = $this->query($sqlStats, ['cid' => $customerId])->fetch();
 
-        // Thống kê tổng số sản phẩm đã mua
+     
         $sqlProd = "SELECT SUM(oi.quantity) as total_products 
                     FROM order_items oi 
                     JOIN orders o ON oi.order_id = o.id 
@@ -53,7 +53,7 @@ class Customer extends Model {
         ];
     }
 
-    // Lấy lịch sử mua hàng của khách (Kèm số lượng item mỗi đơn)
+    
     public function getHistory($customerId) {
         $sql = "SELECT o.*, COUNT(oi.id) as items_count 
                 FROM orders o 
