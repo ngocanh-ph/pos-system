@@ -7,7 +7,6 @@ class LoginToken extends Model {
 
     public function createToken($userId) {
         $token = bin2hex(random_bytes(32));
-        // Dùng DATE_ADD(NOW()...) của MySQL để đồng bộ với hàm findValidToken bên dưới.
         $sql = "INSERT INTO {$this->table} (user_id, token, expires_at) 
                 VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 MINUTE))";
         $this->db->prepare($sql)->execute([
