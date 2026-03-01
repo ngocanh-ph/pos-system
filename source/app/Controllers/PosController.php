@@ -68,7 +68,7 @@ class PosController extends Controller {
                  'total_price' => $vItem['total_price']
              ]);
         }
-        $this->json(['success' => true, 'invoice_url' => "/pos/invoice?id=" . $orderId]);
+        $this->json(['success' => true, 'invoice_url' => "/posale/invoice?id=" . $orderId]);
     }
 
     public function printInvoice() {

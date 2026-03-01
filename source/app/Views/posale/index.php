@@ -522,7 +522,7 @@
         if (query.length < 2) { $('#search_results').hide(); return; }
 
         searchTimeout = setTimeout(() => {
-            $.get(BASE_URL + '/pos/search-product', { q: query }, function(data) {
+            $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
                 if (data && data.length > 0) {
                     if (data.length === 1 && data[0].is_exact) {
                         addToCart(data[0]); $('#product_search').val(''); $('#search_results').hide(); return;
@@ -561,7 +561,7 @@
         if (phone.length >= 10) {
             clearTimeout(customerTimeout);
             customerTimeout = setTimeout(() => {
-                $.get(BASE_URL + '/pos/search-customer', { phone: phone }, function(res) {
+                $.get(BASE_URL + '/posale/search-customer', { phone: phone }, function(res) {
                     if(res.success && res.customer) {
                         $('#cust_name').val(res.customer.name || res.customer.fullname).prop('readonly', true);
                         $('#cust_address').val(res.customer.address);
@@ -647,7 +647,7 @@
         if(!payload.customer.phone) return alert("Nhập SĐT khách!");
 
         $.ajax({
-            url: BASE_URL + '/pos/checkout', type: 'POST', data: JSON.stringify(payload), contentType: 'application/json',
+            url: BASE_URL + '/posale/checkout', type: 'POST', data: JSON.stringify(payload), contentType: 'application/json',
             success: function(res) {
                 if(res.success) {
                     $('#receipt_id').text('#' + res.invoice_url.split('=')[1]);

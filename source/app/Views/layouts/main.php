@@ -290,7 +290,7 @@
                     <i class="fas fa-th-large"></i> <span>Tổng quan</span>
                 </a>
                 
-                <a href="<?= APP_URL ?>/pos" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pos') !== false) ? 'active' : '' ?>" title="Bán hàng">
+                <a href="<?= APP_URL ?>/posale" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pos') !== false) ? 'active' : '' ?>" title="Bán hàng">
                     <i class="fas fa-shopping-basket"></i> <span>Bán hàng</span>
                 </a>
                 <a href="<?= APP_URL ?>/products" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/products') !== false) ? 'active' : '' ?>" title="Sản phẩm">

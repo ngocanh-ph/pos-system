@@ -81,7 +81,7 @@
         
         <div class="no-print" style="margin-top: 20px; text-align: center;">
             <button onclick="window.print()">In hóa đơn</button>
-            <a href="/pos">Quay lại</a>
+            <a href="/posale">Quay lại</a>
         </div>
     </div>
 </body>
