@@ -8,21 +8,13 @@ class CategoryController extends Controller {
     public function __construct() {
         // Chỉ Admin mới được quản lý danh mục
         if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
-            header("Location: /dashboard"); 
-            exit;
+            $this->redirect('/dashboard'); 
         }
     }
 
     public function index() {
         $categoryModel = new Category();
-        
-        // Lấy danh sách kèm tên người tạo
-        $sql = "SELECT c.*, u.fullname as creator_name 
-                FROM categories c 
-                LEFT JOIN users u ON c.created_by = u.id 
-                ORDER BY c.created_at DESC";
-        $stmt = $categoryModel->query($sql);
-        $categories = $stmt->fetchAll();
+        $categories = $categoryModel->getAllWithCreator();
 
         $this->view('categories/index', ['categories' => $categories]);
     }
@@ -38,13 +30,17 @@ class CategoryController extends Controller {
         }
 
         $model = new Category();
-        $model->create([
-            'name' => $name,
-            'description' => $description,
-            'created_by' => $_SESSION['user']->id
-        ]);
-
-        $this->json(['success' => true]);
+        try {
+            $model->create([
+                'name' => $name,
+                'description' => $description,
+                'created_by' => $_SESSION['user']->id
+            ]);
+            $this->json(['success' => true]);
+        } catch (Exception $e) {
+             // Bắt lỗi trùng tên (do cột name là UNIQUE)
+             $this->json(['success' => false, 'message' => 'Tên danh mục đã tồn tại hoặc lỗi hệ thống.']);
+        }
     }
 
     public function update() {
@@ -66,7 +62,6 @@ class CategoryController extends Controller {
         $this->verifyAdminJson();
         $id = $_POST['id'];
         
-        // Có thể thêm logic kiểm tra xem danh mục có sản phẩm không trước khi xóa
         $model = new Category();
         $model->delete($id);
         
@@ -74,7 +69,7 @@ class CategoryController extends Controller {
     }
 
     private function verifyAdminJson() {
-        if ($_SESSION['user']->role !== 'admin') {
+        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
              $this->json(['success' => false, 'message' => 'Unauthorized'], 403);
              exit;
         }
