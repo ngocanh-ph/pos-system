@@ -95,6 +95,7 @@
         background: white; 
         border-color: var(--pm-blue); 
         outline: none; 
+        box-shadow: 0 0 0 3px #508aba1a;
     }
     .search-icon {
         position: absolute; 
@@ -112,7 +113,6 @@
         font-size: 0.875rem; 
         font-weight: 600; 
         color: var(--pm-navy);
-        cursor: pointer; 
         outline: none;
     }
     .view-toggles {

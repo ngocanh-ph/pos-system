@@ -31,7 +31,7 @@
         gap: 0.75rem;
         align-items: center;
         margin-bottom: 0.75rem;
-        box-shadow: 0 4px 15px rgba(176, 218, 253, 0.3);
+        box-shadow: 0 4px 15px #b0dafd4d;
     }
 
     .search-input-group { 
@@ -56,7 +56,7 @@
     .search-input:focus { 
         background: white; 
         border-color: var(--pos-header);
-        box-shadow: 0 0 0 3px rgba(80, 138, 186, 0.1);
+        box-shadow: 0 0 0 3px #508aba1a;
     }
 
     .search-icon { 
@@ -493,7 +493,7 @@
                         <button class="btn-qty" onclick="updateQty(${index}, 1)">+</button>
                     </div>
                     <div class="text-end fw-bold">${Number(lineTotal).toLocaleString('vi-VN')}</div>
-                    <div class="text-end"><i class="fas fa-times text-danger cursor-pointer" onclick="removeProduct(${index})"></i></div>
+                    <div class="text-end"><i class="fas fa-times text-danger" onclick="removeProduct(${index})"></i></div>
                 </div>`);
             });
         }

@@ -84,7 +84,7 @@
         border-radius: var(--radius-card); 
         padding: 1.25rem; 
         position: relative;
-        border: 1px solid rgba(176, 218, 253, 0.4);
+        border: 1px solid #b0dafd66;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         display: flex; 
         flex-direction: column;

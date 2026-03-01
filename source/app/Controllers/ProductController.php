@@ -18,6 +18,7 @@ class ProductController extends Controller {
         $categories = $categoryModel->findAll();
 
         $this->view('products/index', [
+            'title'      => 'Sản phẩm',
             'products' => $products,
             'categories' => $categories
         ]);

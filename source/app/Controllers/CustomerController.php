@@ -6,16 +6,20 @@ require_once __DIR__ . '/../Models/Order.php';
 
 class CustomerController extends Controller {
 
-    // 1. Hiển thị danh sách khách hàng
+    // Hiển thị danh sách khách hàng
     public function index() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
+            return;
         }
 
         $customerModel = new Customer();
         $customers = $customerModel->getAllWithOrderCount();
 
-        $this->view('customers/index', ['customers' => $customers]);
+        $this->view('customers/index', [
+            'title' => 'Khách hàng',
+            'customers' => $customers
+        ]);
     }
 
     // API: Lấy thông tin chi tiết & Lịch sử mua hàng

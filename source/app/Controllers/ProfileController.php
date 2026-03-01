@@ -6,8 +6,11 @@ class ProfileController extends Controller {
     public function index() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
+            return;
         }
-        $this->view('profile/index');
+        $this->view('profile/index',[
+            'title' => 'Hồ sơ cá nhân'
+        ]);
     }
     public function updateInfo() {
         if (!isset($_SESSION['user'])) {

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class User extends Model {
     protected $table = 'users';
+
     public function findByUsername($username) {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE username = :username");
         $stmt->execute(['username' => $username]);
@@ -43,12 +44,18 @@ class User extends Model {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET password = :password, is_first_login = 0 WHERE id = :id");
         return $stmt->execute(['password' => $hashedPassword, 'id' => $id]);
     }
-    // Lấy danh sách nhân viên 
+
+    // Lấy danh sách nhân viên đầy đủ (Dùng cho trang Quản lý nhân viên)
     public function getAllStaff() {
         return $this->query("SELECT * FROM {$this->table} WHERE role = 'staff'")->fetchAll(PDO::FETCH_OBJ);
     }
 
-    // Cập nhật trạng thái 
+    // Lấy thông tin cơ bản của nhân viên (Dùng cho trang Báo cáo)
+    public function getStaffBasicInfo() {
+        return $this->query("SELECT id, fullname FROM {$this->table} WHERE role != 'admin'")->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    // Cập nhật trạng thái khóa/mở khóa tài khoản
     public function updateStatus($id, $status) {
         return $this->query("UPDATE {$this->table} SET status = :status WHERE id = :id", [
             'status' => $status,

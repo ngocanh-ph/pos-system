@@ -103,19 +103,6 @@
         background: #E0F2FE; 
         color: #0369A1; 
     }
-    .bg-status { 
-        background: #ECFDF5; 
-        color: #059669; 
-        display: flex; 
-        align-items: center; 
-        gap: 6px; 
-    }
-    .dot { 
-        width: 6px; 
-        height: 6px; 
-        background: #059669; 
-        border-radius: 50%; 
-    }
 
     /* MAIN CARDS */
     .content-card {
@@ -177,12 +164,11 @@
     
     .form-input:focus {
         background-color: white;
-        border-color: #38BDF8; 
+        border-color: #044377; 
         outline: none;
-        box-shadow: 0 0 0 4px #38bdf81a;
+        box-shadow: 0 10px 25px #0000001a;
     }
 
-    /* Căn giữa cho Icon */
     .field-icon {
         position: absolute;
         left: 0;
@@ -198,7 +184,6 @@
         transition: color 0.2s;
     }
     
-    /* Khi focus input thì icon đổi màu */
     .form-input:focus + .field-icon {
         color: #044377;
     }
@@ -213,7 +198,6 @@
         align-items: center; 
         justify-content: center;
         color: var(--p-icon-gray);
-        cursor: pointer;
     }
     .eye-toggle:hover { color: var(--p-navy); }
 
@@ -232,6 +216,7 @@
         justify-content: center; 
         gap: 10px;
         transition: transform 0.1s;
+        cursor: pointer;
     }
     .btn-action:active { 
         transform: scale(0.98); 
@@ -289,9 +274,6 @@
                 <span class="badge-custom bg-role">
                     <?= strtoupper($_SESSION['user']->role === 'admin' ? 'ADMINISTRATOR' : 'STAFF') ?>
                 </span>
-                <span class="badge-custom bg-status">
-                    <span class="dot"></span> ACTIVE
-                </span>
             </div>
         </div>
     </div>
@@ -325,7 +307,7 @@
                     </div>
                     
                     <button type="submit" class="btn-action btn-blue mt-3">
-                        <i class="far fa-save"></i> LƯU HỒ SƠ
+                        LƯU HỒ SƠ
                     </button>
                 </form>
             </div>
@@ -358,7 +340,7 @@
                     <input type="hidden" name="current_password" value="demo_bypass"> 
 
                     <button type="submit" class="btn-action btn-navy mt-3">
-                        <i class="fas fa-shield-alt"></i> ĐỔI MẬT KHẨU
+                        ĐỔI MẬT KHẨU
                     </button>
                 </form>
             </div>
@@ -368,7 +350,6 @@
 </div>
 
 <script>
-    //  Avatar Preview
     $('#avatarUpload').change(function() {
         const file = this.files[0];
         if (file) {
@@ -378,13 +359,11 @@
         }
     });
 
-    // Toggle Password
     function togglePass(id) {
         const input = document.getElementById(id);
         input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    // Toast UI
     function showToast(msg, isError = false) {
         const toast = $('#toast');
         $('#toastMsg').text(msg);
@@ -393,13 +372,12 @@
         setTimeout(() => toast.removeClass('show'), 3000);
     }
 
-    // Update Info
     $('#infoForm').submit(function(e) {
         e.preventDefault();
         const btn = $(this).find('button');
         const formData = new FormData(this);
         
-        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang lưu...');
+        btn.prop('disabled', true).text('Đang lưu...');
         
         $.ajax({
             url: '/profile/update-info',
@@ -415,15 +393,13 @@
                 }
             },
             complete: function() { 
-                btn.prop('disabled', false).html('<i class="far fa-save"></i> LƯU HỒ SƠ'); 
+                btn.prop('disabled', false).text('LƯU HỒ SƠ'); 
             }
         });
     });
 
-    // Change Password
     $('#securityForm').submit(function(e) {
         e.preventDefault();
-        
         const p1 = $('#newPass').val();
         const p2 = $('#confirmPass').val();
         if(p1 !== p2) { showToast('Mật khẩu xác nhận không khớp', true); return; }
@@ -434,7 +410,7 @@
 
         const data = $(this).serialize() + "&current_password=" + encodeURIComponent(currentPass);
         
-        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Xử lý...');
+        btn.prop('disabled', true).text('Xử lý...');
         
         $.post('/profile/change-password', data, function(res) {
             if(res.success) { 
@@ -444,7 +420,7 @@
                 showToast(res.message, true); 
             }
         }, 'json').always(function() { 
-            btn.prop('disabled', false).html('<i class="fas fa-shield-alt"></i> ĐỔI MẬT KHẨU'); 
+            btn.prop('disabled', false).text('ĐỔI MẬT KHẨU'); 
         });
     });
 </script>

@@ -12,11 +12,22 @@ class CategoryController extends Controller {
         }
     }
 
-    public function index() {
+    public function index(){
+        if(!isset($_SESSION['user'])){
+            $this->redirect('/login');
+            return;
+        }
+        //Kiểm tra phân quyền
+        if($_SESSION['user']->role!='admin'){
+            $this->redirect('/posale');
+            return;
+        }
         $categoryModel = new Category();
         $categories = $categoryModel->getAllWithCreator();
-
-        $this->view('categories/index', ['categories' => $categories]);
+        $this->view('categories/index', [
+            'title'      => 'Danh mục',
+            'categories' => $categories
+        ]);   
     }
 
     public function store() {

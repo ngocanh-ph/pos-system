@@ -8,6 +8,7 @@ class AuthController extends Controller {
     public function login() {
         if (isset($_SESSION['user'])) {
             $this->redirect('/dashboard');
+            return;
         }
         $this->renderAuthView('auth/login');
     }

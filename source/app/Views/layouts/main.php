@@ -62,7 +62,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             padding-left: 0.5rem;
             min-height: 50px;
             flex-shrink: 0; /* Không cho co lại khi scroll */
@@ -98,7 +98,6 @@
             border: none;
             color: #94A3B8;
             font-size: 1.4rem;
-            cursor: pointer;
             padding: 0 5px;
             transition: color 0.2s;
         }
@@ -272,6 +271,12 @@
     </style>
 </head>
 <body>
+    <script>
+        if (sessionStorage.getItem('sidebar-collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+    </script>
+
     <?php if(isset($_SESSION['user'])): ?>
     <div class="wrapper">
         <nav class="sidebar" id="sidebar">
@@ -334,23 +339,12 @@
         <div class="main-panel">
             <div class="top-bar">
                <div class="breadcrumbs">
-                <?php
-                $uri = $_SERVER['REQUEST_URI'];
-                $pageName = 'DASHBOARD'; 
-                if (strpos($uri, '/dashboard') !== false) { $pageName = 'TỔNG QUAN'; } 
-                elseif (strpos($uri, '/products') !== false) { $pageName = 'SẢN PHẨM'; } 
-                elseif (strpos($uri, '/categories') !== false) { $pageName = 'DANH MỤC'; } 
-                elseif (strpos($uri, '/customers') !== false) { $pageName = 'KHÁCH HÀNG'; } 
-                elseif (strpos($uri, '/employees') !== false) { $pageName = 'NHÂN VIÊN'; } 
-                elseif (strpos($uri, '/reports') !== false) { $pageName = 'BÁO CÁO'; } 
-                elseif (strpos($uri, '/profile') !== false) { $pageName = 'HỒ SƠ CÁ NHÂN'; } 
-                elseif (strpos($uri, '/pos') !== false) { $pageName = 'BÁN HÀNG'; }
-                ?>
-                <span style="color: #3B82F6;">SYSTEMS</span> 
-                <i class="fas fa-chevron-right fa-xs mx-2"></i> <?= $pageName ?>
+                <span style="color: #3B82F6;">Trang chủ</span> 
+                <i class="fas fa-chevron-right fa-xs mx-2" style="color: #94A3B8;"></i>
+                <span style="color: #64748B;"><?= mb_strtoupper($title ?? 'TỔNG QUAN', 'UTF-8') ?></span>
                </div>
                 <div class="current-date">
-                    <?= mb_strtoupper(date('l, d \t\h\á\n\g m, Y'), 'UTF-8') ?>
+                    <?= mb_strtoupper(['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][date('w')] . date(', d \t\h\á\n\g m, Y'), 'UTF-8') ?>
                 </div>
             </div>
 
@@ -364,16 +358,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
-            if (localStorage.getItem('sidebar-collapsed') === 'true') {
-                $('body').addClass('sidebar-collapsed');
-            }
-
             $('#sidebarToggle').click(function() {
                 $('body').toggleClass('sidebar-collapsed');
                 if ($('body').hasClass('sidebar-collapsed')) {
-                    localStorage.setItem('sidebar-collapsed', 'true');
+                    sessionStorage.setItem('sidebar-collapsed', 'true');
                 } else {
-                    localStorage.setItem('sidebar-collapsed', 'false');
+                    sessionStorage.setItem('sidebar-collapsed', 'false');
                 }
             });
         });

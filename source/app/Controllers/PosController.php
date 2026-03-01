@@ -6,8 +6,13 @@ require_once __DIR__ . '/../Models/Order.php';
 
 class PosController extends Controller {
     public function index() {
-        if (!isset($_SESSION['user'])) $this->redirect('/login');
-        $this->view('posale/index');
+        if (!isset($_SESSION['user'])){ 
+            $this->redirect('/login');
+            return;
+        }
+        $this->view('posale/index',[
+            'title'=> 'Bán hàng'
+        ]);
     }
     public function searchProduct() {
         $q = $_GET['q'] ?? '';

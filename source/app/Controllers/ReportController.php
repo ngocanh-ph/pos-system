@@ -6,13 +6,17 @@ class ReportController extends Controller {
     public function index() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
+            return;
         }
         $staffs = [];
         if ($_SESSION['user']->role === 'admin') {
             $userModel = new User();
-            $staffs = $userModel->query("SELECT id, fullname FROM users WHERE role != 'admin'")->fetchAll();
+            $staffs = $userModel->getStaffBasicInfo();
         }
-        $this->view('reports/index', ['staffs' => $staffs]);
+        $this->view('reports/index', [
+            'title' => 'Báo cáo',
+            'staffs' => $staffs
+        ]);
     }
     public function getReportData() {
         if (!isset($_SESSION['user'])) {

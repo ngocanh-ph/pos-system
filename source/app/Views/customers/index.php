@@ -70,7 +70,7 @@
     .search-input:focus { 
         background: #ffffff;
         border-color: var(--c-blue);
-        box-shadow: 0 0 0 2px rgba(4, 67, 119, 0.1);
+        box-shadow: 0 0 0 3px #508aba1a;
     }
 
     .search-icon {

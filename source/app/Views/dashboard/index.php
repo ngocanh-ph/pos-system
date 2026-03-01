@@ -103,7 +103,7 @@
         border-radius: var(--d-radius-3xl);
         padding: 1.5rem;
         box-shadow: var(--d-shadow-card);
-        border: 1px solid rgba(176, 218, 253, 0.3);
+        border: 1px solid #b0dafd4d;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative; overflow: hidden;
     }
@@ -155,7 +155,7 @@
         border-radius: var(--d-radius-3xl);
         padding: 1.5rem;
         box-shadow: var(--d-shadow-card);
-        border: 1px solid rgba(176, 218, 253, 0.3);
+        border: 1px solid #b0dafd4d;
         height: 380px;
     }
     
@@ -164,7 +164,7 @@
         border-radius: var(--d-radius-3xl);
         padding: 1.5rem;
         box-shadow: var(--d-shadow-card);
-        border: 1px solid rgba(176, 218, 253, 0.3);
+        border: 1px solid #b0dafd4d;
         height: 380px; display: flex; flex-direction: column;
     }
 
@@ -372,8 +372,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     
     let gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, 'rgba(4, 67, 119, 0.2)');   
-    gradient.addColorStop(1, 'rgba(240, 248, 255, 0)');   
+    gradient.addColorStop(0, '#04437733');   
+    gradient.addColorStop(1, '#f0f8ff00');   
 
     const labels = <?= json_encode($chartLabels) ?>.map(h => h + 'h');
     const data = <?= json_encode(array_values($chartValues)) ?>;

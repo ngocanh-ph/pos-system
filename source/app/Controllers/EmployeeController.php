@@ -7,10 +7,14 @@ class EmployeeController extends Controller {
     public function index() {
         if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
             $this->redirect('/login');
+            return;
         } 
         $userModel = new User();
         $employees = $userModel->getAllStaff();
-        $this->view('employees/index', ['employees' => $employees]);
+        $this->view('employees/index', [
+            'title'=> 'Nhân viên',
+            'employees' => $employees
+        ]);
     }
 
     public function store() {
