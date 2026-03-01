@@ -49,7 +49,7 @@ class ReportController extends Controller {
                 $chartMode = 'hour';
                 break;
             case '7days':
-                $startDate = date('Y-m-d 00:00:00', strtotime('-7 days'));
+                $startDate = date('Y-m-d 00:00:00', strtotime('-6 days'));
                 break;
             case 'month':
                 $startDate = date('Y-m-01 00:00:00');

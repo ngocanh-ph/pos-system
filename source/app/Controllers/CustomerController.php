@@ -6,7 +6,6 @@ require_once __DIR__ . '/../Models/Order.php';
 
 class CustomerController extends Controller {
 
-    // Hiển thị danh sách khách hàng
     public function index() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
@@ -22,7 +21,6 @@ class CustomerController extends Controller {
         ]);
     }
 
-    // API: Lấy thông tin chi tiết & Lịch sử mua hàng
     public function getDetails() {
         $id = $_GET['id'] ?? 0;
         
@@ -34,10 +32,8 @@ class CustomerController extends Controller {
             return;
         }
 
-        // Lấy thống kê chi tiêu (Đã chuyển logic sang Model)
         $stats = $customerModel->getSpendingStats($id);
 
-        // Lấy lịch sử đơn hàng (Đã chuyển logic sang Model)
         $history = $customerModel->getHistory($id);
 
         $this->json([
@@ -48,12 +44,12 @@ class CustomerController extends Controller {
         ]);
     }
 
-    // API: Lấy chi tiết một đơn hàng cụ thể (Xem hóa đơn)
+
     public function getOrderDetails() {
         $orderId = $_GET['order_id'] ?? 0;
         $orderModel = new Order();
 
-        // Tận dụng hàm có sẵn của Order Model (Không viết lại SQL)
+
         $order = $orderModel->getByIdWithDetails($orderId);
 
         if (!$order) {
@@ -61,7 +57,7 @@ class CustomerController extends Controller {
             return;
         }
         
-        // Tận dụng hàm có sẵn của Order Model
+       
         $items = $orderModel->getItemsByOrderId($orderId);
 
         $this->json([

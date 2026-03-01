@@ -22,7 +22,6 @@ class PosController extends Controller {
             $exact->is_exact = true;
             return $this->json([$exact]);
         }        
-        // Nếu không phải mã vạch, gọi hàm search từ Model
         $this->json($productModel->search($q));
     }
     public function checkout() {
@@ -31,7 +30,6 @@ class PosController extends Controller {
         $productModel = new Product();
         $calculatedTotal = 0;
         $verifiedCart = [];
-        // Xác thực giá từ DB
         foreach($data['cart'] as $item){
             $product = $productModel->find($item['id']);
             if($product){
@@ -47,7 +45,7 @@ class PosController extends Controller {
                 ];
             }
         }
-        // Xử lý Khách hàng qua Model
+      
         $customerModel = new Customer();
         $customer = $customerModel->findByPhone($data['customer']['phone']);
         $customerId = $customer ? $customer->id : $customerModel->create([
@@ -55,7 +53,7 @@ class PosController extends Controller {
             'name' => $data['customer']['name'] ?? 'Khách lẻ',
             'address' => $data['customer']['address'] ?? ''
         ]);
-        // Tạo Đơn hàng qua Model
+        
         $orderModel = new Order();
         $orderId = $orderModel->createOrder([
             'customer_id' => $customerId,
@@ -79,7 +77,6 @@ class PosController extends Controller {
     public function printInvoice() {
         $id = $_GET['id'] ?? 0;
         $orderModel = new Order();        
-        // Gọi dữ liệu đã được Model xử lý JOIN
         $order = $orderModel->getByIdWithDetails($id);
         if (!$order) die("Hóa đơn không tồn tại.");
         $items = $orderModel->getItemsByOrderId($id);
@@ -87,7 +84,6 @@ class PosController extends Controller {
     }
 public function searchCustomer() {
     $phone = $_GET['phone'] ?? '';   
-    // Sử dụng Model Customer để tìm khách theo số điện thoại
     $customerModel = new Customer(); 
     $customer = $customerModel->findByPhone($phone);
 

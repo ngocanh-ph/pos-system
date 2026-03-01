@@ -29,7 +29,7 @@ class Order extends Model {
                 VALUES (:order_id, :product_id, :quantity, :unit_price, :total_price)";
         $this->db->prepare($sql)->execute($data);
     }
-    // Lấy chỉ số KPI (Doanh thu, Đơn hàng, SP, Lợi nhuận)
+   
     public function getKpiStats($startDate, $endDate, $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -38,12 +38,12 @@ class Order extends Model {
             $whereSql .= " AND o.user_id = :staff_id";
             $params['staff_id'] = $staffId;
         }
-        // Truy vấn 1: Doanh thu & Tổng đơn
+        
         $sqlBasic = "SELECT COUNT(o.id) as total_orders, COALESCE(SUM(o.total_amount), 0) as revenue 
                      FROM orders o $whereSql";
         $basic = $this->query($sqlBasic, $params)->fetch();
 
-        // Truy vấn 2: Tổng sản phẩm & Tổng vốn (để tính lợi nhuận)
+  
         $sqlProd = "SELECT COALESCE(SUM(oi.quantity), 0) as total_products, 
                            COALESCE(SUM(oi.quantity * p.import_price), 0) as total_cost
                     FROM orders o 
@@ -60,7 +60,7 @@ class Order extends Model {
         ];
     }
 
-    // Lấy dữ liệu biểu đồ cột (Bar Chart)
+
     public function getChartData($startDate, $endDate, $mode = 'day', $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -87,7 +87,7 @@ class Order extends Model {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Lấy dữ liệu biểu đồ tròn (Category)
+
     public function getCategoryStats($startDate, $endDate, $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -108,7 +108,7 @@ class Order extends Model {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Lấy danh sách đơn hàng cho bảng (Audit Table)
+   
     public function getOrdersByRange($startDate, $endDate, $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -126,7 +126,7 @@ class Order extends Model {
 
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
-    // Lấy danh sách đơn hàng gần đây (mặc định lấy 6 đơn)
+ 
     public function getRecentOrders($limit = 6) {
         $sql = "SELECT o.id, o.total_amount, o.created_at, c.name as customer_name
                 FROM orders o
