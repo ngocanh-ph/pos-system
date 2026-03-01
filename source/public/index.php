@@ -25,7 +25,7 @@ require_once __DIR__ . '/../app/Core/Router.php';
 require_once __DIR__ . '/../app/Core/Controller.php';
 require_once __DIR__ . '/../app/Core/Model.php';
 
-// Autoload Controllers (Basic manual autoload or spl_autoload)
+// Autoload Controllers 
 spl_autoload_register(function ($class) {
     if (file_exists(__DIR__ . '/../app/Controllers/' . $class . '.php')) {
         require_once __DIR__ . '/../app/Controllers/' . $class . '.php';
