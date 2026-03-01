@@ -4,7 +4,12 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Product extends Model {
     protected $table = 'products';
-
+    public function search($q) {
+        $sql = "SELECT id, name, barcode, sale_price, image FROM products 
+                WHERE name LIKE :q OR barcode LIKE :q LIMIT 20";
+        return $this->query($sql, ['q' => "%$q%"])->fetchAll();
+    }
+    
     public function findAllWithCategory() {
         $sql = "SELECT p.*, c.name as category_name 
                 FROM products p 
@@ -58,7 +63,6 @@ class Product extends Model {
     }
 
     public function canDelete($id) {
-        // "Chỉ xóa nếu chưa từng bán" -> Check order_items
         $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM order_items WHERE product_id = :id");
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
