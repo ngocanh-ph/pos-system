@@ -7,7 +7,7 @@ require_once __DIR__ . '/../Models/Order.php';
 class PosController extends Controller {
     public function index() {
         if (!isset($_SESSION['user'])) $this->redirect('/login');
-        $this->view('pos/index');
+        $this->view('posale/index');
     }
     public function searchProduct() {
         $q = $_GET['q'] ?? '';
@@ -78,7 +78,7 @@ class PosController extends Controller {
         $order = $orderModel->getByIdWithDetails($id);
         if (!$order) die("Hóa đơn không tồn tại.");
         $items = $orderModel->getItemsByOrderId($id);
-        require __DIR__ . '/../Views/pos/invoice_pdf_mock.php';
+        require __DIR__ . '/../Views/posale/invoice_pdf_mock.php';
     }
 public function searchCustomer() {
     $phone = $_GET['phone'] ?? '';   

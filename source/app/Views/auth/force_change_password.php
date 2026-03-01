@@ -16,13 +16,14 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
     
     <style>
         :root {
-            --color-primary: #044377; 
+            --color-primary: #044377; /* Màu chủ đạo đồng bộ Login */
             --color-bg-input: #F0F8FF; 
             --color-text-label: #1a4a75;
         }
 
         body {
             background-color: #f5f9fc;
+            /* UPDATE: Đổi font sang Inter */
             font-family: 'Inter', sans-serif;
             height: 100vh;
             display: flex;
@@ -31,6 +32,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             margin: 0;
         }
 
+        /* Card Container */
         .card-custom {
             width: 100%;
             max-width: 500px;
@@ -40,6 +42,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             padding: 40px;
             position: relative;
             overflow: hidden;
+            /* UPDATE: Đảm bảo Card dùng font Inter */
             font-family: 'Inter', sans-serif;
         }
 
@@ -82,6 +85,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             font-size: 15px;
             margin-bottom: 8px;
             display: block;
+            /* UPDATE: Font Inter */
             font-family: 'Inter', sans-serif;
         }
 
@@ -99,6 +103,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             color: #333;
             transition: all 0.3s;
             font-weight: 500;
+            /* UPDATE: Font Inter */
             font-family: 'Inter', sans-serif;
         }
 
@@ -122,6 +127,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
         .btn-submit {
             background-color: var(--color-primary);
             color: white;
+            /* UPDATE: Font Inter */
             font-family: 'Inter', sans-serif;
             font-weight: 700;
             font-size: 16px;
