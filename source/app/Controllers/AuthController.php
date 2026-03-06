@@ -30,9 +30,9 @@ class AuthController extends Controller {
         $tokenData = $tokenModel->findValidToken($token);
 
         if (!$tokenData) {
-    $this->renderAuthView('auth/link_expired');
-    return;
-}
+            $this->redirect('/login?error=Liên kết đã hết hạn hoặc không hợp lệ.');
+            return;
+        }
         // Biến này chứng minh người dùng đã click vào link hợp lệ
         $_SESSION['can_login_first_time'] = true;
         
