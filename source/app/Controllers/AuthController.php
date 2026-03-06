@@ -1,7 +1,9 @@
+//Quản lý đăng nhập, xác thực link email, đổi mật khẩu lần đầu và logout
 <?php
 
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/User.php';
+
 
 class AuthController extends Controller {
     
@@ -28,9 +30,9 @@ class AuthController extends Controller {
         $tokenData = $tokenModel->findValidToken($token);
 
         if (!$tokenData) {
-            $this->redirect('/login?error=Liên kết đã hết hạn hoặc không hợp lệ.');
-            return;
-        }
+    $this->renderAuthView('auth/link_expired');
+    return;
+}
         // Biến này chứng minh người dùng đã click vào link hợp lệ
         $_SESSION['can_login_first_time'] = true;
         
