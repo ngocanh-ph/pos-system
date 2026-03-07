@@ -10,3 +10,4 @@ define('APP_NAME', 'MAVPOS');
 define('DEFAULT_EMPLOYEE_PASSWORD', '52400002');
 
 define('MAIL_SIMULATION', true); 
+define('BASE_URL', '/mav-web-pos');

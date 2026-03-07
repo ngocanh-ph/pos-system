@@ -226,7 +226,7 @@ $title = 'Đăng nhập MAVPOS';
     <div class="login-container">
         <div class="left-panel">
             <div class="logo-wrapper">
-                <img src="/mav-web-pos/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
+                <img src="<?= BASE_URL ?>/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
             </div>
 
             <div class="brand-text">
@@ -239,8 +239,7 @@ $title = 'Đăng nhập MAVPOS';
         <div class="right-panel">
             <h2 class="greeting-text">XIN CHÀO!</h2>
 
-            <?php if(isset($error)): ?>
-            <div class="alert-error">
+            <?php if(!empty($error)): ?> <div class="alert-error">
                 <i class="fas fa-exclamation-triangle"></i>
                 <span><?= htmlspecialchars($error) ?></span>
             </div>
