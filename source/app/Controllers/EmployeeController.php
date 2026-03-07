@@ -130,13 +130,13 @@ class EmployeeController extends Controller {
         $fullname = $user->fullname;
         $username = $user->username;
 
-        $subject = "[MAVPOS] Thông tin tài khoản & hướng dẫn đăng nhập hệ thống POS";
+        $subject = "[MAVPOS] Thông tin tài khoản & hướng dẫn đăng nhập lại hệ thống POS";
         
         $body = "
         <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
             <p>Kính gửi Anh/Chị <strong>{$fullname}</strong>,</p>
             
-            <p>Chúng tôi xin gửi đến Anh/Chị thông tin tài khoản để đăng nhập vào hệ thống quản lý bán hàng MAVPOS.</p>
+            <p>Chúng tôi xin gửi đến Anh/Chị thông tin tài khoản để đăng nhập lại vào hệ thống quản lý bán hàng MAVPOS.</p>
             
             <h3 style='color: #0d6efd;'>Thông tin đăng nhập</h3>
             <ul style='list-style-type: none; padding-left: 0;'>

@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -48,8 +49,8 @@
             /* CẤU HÌNH ẨN SCROLLBAR NHƯNG VẪN SCROLL ĐƯỢC */
             overflow-y: auto;
             overflow-x: hidden;
-            scrollbar-width: none;  /* Firefox */
-            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  
+            -ms-overflow-style: none;  
         }
         
         /* Ẩn scrollbar cho Chrome, Safari, Opera */
@@ -65,7 +66,7 @@
             margin-bottom: 1rem;
             padding-left: 0.5rem;
             min-height: 50px;
-            flex-shrink: 0; /* Không cho co lại khi scroll */
+            flex-shrink: 0; 
         }
 
         .brand-logo {
@@ -310,10 +311,6 @@
                     <i class="fas fa-users"></i> <span>Nhân viên</span>
                 </a>
                 <?php endif; ?>
-
-                <a href="<?= APP_URL ?>/customers" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/customers') !== false) ? 'active' : '' ?>" title="Khách hàng">
-                    <i class="fas fa-user-circle"></i> <span>Khách hàng</span>
-                </a>
                 <a href="<?= APP_URL ?>/reports" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/reports') !== false) ? 'active' : '' ?>" title="Báo cáo">
                     <i class="fas fa-chart-bar"></i> <span>Báo cáo</span>
                 </a>

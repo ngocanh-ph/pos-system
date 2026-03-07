@@ -55,7 +55,7 @@ class Customer extends Model {
 
     
     public function getHistory($customerId) {
-        $sql = "SELECT o.*, COUNT(oi.id) as items_count 
+        $sql = "SELECT o.*, COALESCE(SUM(oi.quantity), 0) as items_count 
                 FROM orders o 
                 LEFT JOIN order_items oi ON o.id = oi.order_id 
                 WHERE o.customer_id = :cid 
