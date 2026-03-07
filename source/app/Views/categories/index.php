@@ -1,4 +1,5 @@
 <style>
+    /* --- DESIGN SYSTEM: CATEGORY MANAGER --- */
     :root {
         --pm-bg: #F0F8FF;         
         --pm-navy: #011628;       
@@ -253,7 +254,7 @@
                 <tbody>
                     <?php if(!empty($categories)): ?>
                         <?php foreach ($categories as $c): ?>
-                        <tr>
+                        <tr class="category-row">
                             <td>
                                 <div class="cat-name"><?= htmlspecialchars($c->name) ?></div>
                             </td>
@@ -334,6 +335,17 @@
     </div>
 </div>
 
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage" style="font-weight: 500; font-size: 0.95rem;">
+                Thành công!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script>
     const BASE_URL = "<?= APP_URL ?>";
     let catModal;
@@ -357,15 +369,39 @@
                 contentType: false,
                 processData: false,
                 success: function(res) {
+                    const toastEl = document.getElementById('actionToast');
+                    const toast = new bootstrap.Toast(toastEl, { delay: 2500 });
+                    
                     if(res.success) {
-                        alert(isEdit ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
-                        location.reload();
+                        $('#actionToast').removeClass('bg-danger').addClass('bg-success');
+                        $('#toastMessage').text(isEdit ? 'Cập nhật danh mục thành công!' : 'Thêm mới danh mục thành công!');
+                        catModal.hide();
+                        toast.show();
+                        
+                        // Cập nhật lại HTML ngầm (ko chớp trang)
+                        $.get(location.href, function(newData) {
+                            let parsedDOM = $('<div/>').append(newData);
+                            let newTableContent = parsedDOM.find('.pm-container .table-responsive');
+                            $('.pm-container').html(newTableContent);
+                        });
                     } else {
-                        alert('Lỗi: ' + res.message);
+                        $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                        
+                        // Dịch lỗi nếu trùng danh mục
+                        let errorMsg = res.message || 'Có lỗi xảy ra!';
+                        if (errorMsg.includes('1062 Duplicate entry') && errorMsg.includes('name')) {
+                            errorMsg = 'Tên danh mục này đã tồn tại. Vui lòng nhập tên khác!';
+                        } 
+                        
+                        $('#toastMessage').text('Lỗi: ' + errorMsg);
+                        toast.show();
                     }
                 },
                 error: function(xhr) {
-                    alert('Lỗi kết nối server: ' + xhr.statusText);
+                    const toastEl = document.getElementById('actionToast');
+                    $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                    $('#toastMessage').text('Lỗi kết nối server: ' + xhr.statusText);
+                    new bootstrap.Toast(toastEl).show();
                 }
             });
         });
@@ -390,14 +426,30 @@
     }
 
     window.deleteCategory = function(id) {
-        if(confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
-            $.post(BASE_URL + '/categories/delete', {id: id}, function(res) {
-                if(res.success) {
-                    location.reload();
-                } else {
-                    alert('Lỗi: ' + (res.message || 'Không thể xóa'));
-                }
-            }, 'json');
-        }
+        // Xóa trực tiếp không hỏi confirm
+        $.post(BASE_URL + '/categories/delete', {id: id}, function(res) {
+            const toastEl = document.getElementById('actionToast');
+            const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); 
+
+            if(res.success) {
+                $('#actionToast').removeClass('bg-danger').addClass('bg-success');
+                $('#toastMessage').text('Xóa danh mục thành công!');
+                toast.show();
+                
+                // Mờ dần dòng vừa bị xóa
+                $('tr.category-row button[onclick="deleteCategory(' + id + ')"]').closest('tr').fadeOut(300, function() {
+                    $(this).remove(); 
+                });
+            } else {
+                $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể xóa danh mục này!'));
+                toast.show();
+            }
+        }, 'json').fail(function() {
+            const toastEl = document.getElementById('actionToast');
+            $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+            $('#toastMessage').text('Lỗi kết nối Server!');
+            new bootstrap.Toast(toastEl).show();
+        });
     }
 </script>
