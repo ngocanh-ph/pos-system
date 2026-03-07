@@ -464,7 +464,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" style="background: #01121E; border:none">
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" style="background: var(--emp-indigo); border:none">
                         TẠO TÀI KHOẢN
                     </button>
                 </form>
