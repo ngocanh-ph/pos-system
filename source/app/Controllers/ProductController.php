@@ -2,18 +2,22 @@
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/Product.php';
 require_once __DIR__ . '/../Models/Category.php';
+
 class ProductController extends Controller {
     public function index() {
         if (!isset($_SESSION['user'])) {
             $this->redirect('/login');
         }
+        
         $productModel = new Product();
         $products = $productModel->findAllWithCategory();
+        
         if ($_SESSION['user']->role !== 'admin') {
             foreach ($products as $key => $product) {
                 unset($products[$key]->import_price);
             }
         }        
+        
         $categoryModel = new Category();
         $categories = $categoryModel->findAll();
 
@@ -23,6 +27,7 @@ class ProductController extends Controller {
             'categories' => $categories
         ]);
     }
+
     public function store() {
         $this->verifyAdminJson();
         
@@ -45,15 +50,24 @@ class ProductController extends Controller {
                 'category_id' => $_POST['category_id'],
                 'image' => $image
             ]);
+            
             if ($result) {
                 $this->json(['success' => true]);
             } else {
-                throw new Exception('Lỗi lưu dữ liệu (có thể trùng mã vạch).');
+                throw new Exception('Lỗi lưu dữ liệu.');
             }
         } catch (Exception $e) {
-            $this->json(['success' => false, 'message' => $e->getMessage()]);
+            $msg = $e->getMessage();
+            if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
+                $msg = 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';
+            } elseif (strpos($msg, '1062') !== false) {
+                $msg = 'Dữ liệu này đã bị trùng lặp trong hệ thống!';
+            }
+            
+            $this->json(['success' => false, 'message' => $msg]);
         }
     }
+
     public function update() {
         $this->verifyAdminJson();
         $id = $_POST['id'];
@@ -69,9 +83,11 @@ class ProductController extends Controller {
                 'sale_price' => $_POST['sale_price'],
                 'category_id' => $_POST['category_id']
             ];
+            
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
                $data['image'] = $this->processImage($_FILES['image']);
             }
+            
             $productModel = new Product();
             if ($productModel->update($id, $data)) {
                  $this->json(['success' => true]);
@@ -79,9 +95,18 @@ class ProductController extends Controller {
                  throw new Exception('Lỗi cập nhật sản phẩm.');
             }
         } catch (Exception $e) {
-            $this->json(['success' => false, 'message' => $e->getMessage()]);
+            // Dịch lỗi SQL sang tiếng Việt
+            $msg = $e->getMessage();
+            if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
+                $msg = 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';
+            } elseif (strpos($msg, '1062') !== false) {
+                $msg = 'Dữ liệu này đã bị trùng lặp trong hệ thống!';
+            }
+
+            $this->json(['success' => false, 'message' => $msg]);
         }
     }
+
     public function delete() {
         $this->verifyAdminJson();
         $id = $_POST['id'];       
@@ -92,6 +117,7 @@ class ProductController extends Controller {
             $this->json(['success' => false, 'message' => 'Không thể xóa sản phẩm đã có giao dịch mua hàng.']);
         }
     }
+
     private function processImage($file) {
         $target_dir = __DIR__ . "/../../public/uploads/";       
         if (!file_exists($target_dir)) {
@@ -108,6 +134,7 @@ class ProductController extends Controller {
         }       
         return $filename;
     }
+
     private function verifyAdminJson() {
         if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
              $this->json(['success' => false, 'message' => 'Bạn không có quyền thực hiện thao tác này.'], 403);

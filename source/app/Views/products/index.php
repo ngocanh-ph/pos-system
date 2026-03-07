@@ -534,7 +534,16 @@
         </div>
     </div>
 </div>
-
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage" style="font-weight: 500; font-size: 0.95rem;">
+                Thành công!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <script>
     const BASE_URL = "<?= APP_URL ?>";
     let modal; 
@@ -561,15 +570,41 @@
                 contentType: false,
                 processData: false,
                 success: function(res) {
+                    const toastEl = document.getElementById('actionToast');
+                    const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); 
+                
                     if(res.success) {
-                        alert(isEdit ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
-                        location.reload();
-                    } else {
-                        alert('Lỗi: ' + res.message);
+                        $('#actionToast').removeClass('bg-danger').addClass('bg-success');
+                        $('#toastMessage').text(isEdit ? 'Cập nhật thành công!' : 'Thêm mới thành công!');
+                        modal.hide(); 
+                        toast.show(); 
+                        $.get(location.href, function(newData) {
+                            let parsedDOM = $('<div/>').append(newData);
+                            let newTableContent = parsedDOM.find('.product-wrapper .pm-toolbar').nextAll();
+                            
+                            $('.pm-toolbar').nextAll().remove();
+                            $('.pm-toolbar').after(newTableContent);
+                        
+                            if ($('#btnGrid').hasClass('active')) {
+                                $('#listView').hide();
+                                $('#gridView').css('display', 'grid').addClass('fade-in');
+                            } else {
+                                $('#gridView').hide();
+                                $('#listView').show().addClass('fade-in');
+                            }
+                        });
+
+                    } else { 
+                        $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                        $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể lưu sản phẩm!'));
+                        toast.show();
                     }
                 },
                 error: function(xhr) {
-                    alert('Lỗi hệ thống: ' + xhr.statusText);
+                    const toastEl = document.getElementById('actionToast');
+                    $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                    $('#toastMessage').text('Lỗi hệ thống: ' + xhr.statusText);
+                    new bootstrap.Toast(toastEl).show();
                 }
             });
         });
@@ -631,11 +666,27 @@
     }
 
     window.deleteProduct = function(id) {
-        if(confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-            $.post(BASE_URL + '/products/delete', {id: id}, function(res) {
-                if(res.success) location.reload();
-                else alert(res.message);
-            }, 'json');
-        }
+        $.post(BASE_URL + '/products/delete', {id: id}, function(res) {
+            const toastEl = document.getElementById('actionToast');
+            const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); 
+
+            if(res.success) {
+                $('#actionToast').removeClass('bg-danger').addClass('bg-success');
+                $('#toastMessage').text('Xóa sản phẩm thành công!');
+                toast.show();
+                $('button[onclick="deleteProduct(' + id + ')"]').closest('.product-row').fadeOut(300, function() {
+                    $(this).remove(); 
+                });
+            } else {
+                $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+                $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể xóa sản phẩm!'));
+                toast.show();
+            }
+        }, 'json').fail(function() {
+            const toastEl = document.getElementById('actionToast');
+            $('#actionToast').removeClass('bg-success').addClass('bg-danger');
+            $('#toastMessage').text('Lỗi kết nối Server!');
+            new bootstrap.Toast(toastEl).show();
+        });
     }
 </script>
