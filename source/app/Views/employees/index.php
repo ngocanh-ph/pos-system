@@ -430,7 +430,7 @@
                     </button>
 
                     <button class="btn-action btn-resend" onclick="resendEmail(<?= $emp->id ?>)">
-                        <i class="fas fa-paper-plane"></i> Gửi lại link
+                        <i class="fas"></i> Gửi lại link
                     </button>
                 </div>
             </div>
@@ -464,7 +464,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" style="background: var(--emp-indigo); border:none">
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" style="background: #01121E; border:none">
                         TẠO TÀI KHOẢN
                     </button>
                 </form>
@@ -488,9 +488,30 @@
         </div>
     </div>
 </div>
+<<div class="position-fixed top-0 end-0 p-3" style="z-index: 1055; margin-top: 60px;">
+    <div id="appToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fw-bold" id="toastMessage">
+                </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
 <script>
     let staffModal;
+
+    // --- HÀM TIỆN ÍCH: HIỂN THỊ TOAST ---
+    function showToast(message, type = 'success') {
+        const toastEl = document.getElementById('appToast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toastEl.className = `toast align-items-center text-white border-0 bg-${type} shadow-lg`;
+        toastMessage.innerText = message;
+        
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    }
 
     function openAddModal() {
         if (!staffModal) {
@@ -502,7 +523,6 @@
         $('#addStaffForm')[0].reset();
         $('#modalTitle').text('Thêm nhân viên mới');
         
-
         staffModal.show();
     }
 
@@ -524,15 +544,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert(data.message);
-                    window.location.reload();
+                    showToast('Thêm nhân viên thành công!', 'success');
+                    
+                    // KHÔNG RELOAD TRANG: Ẩn form và hiện UI thành công kèm link
+                    $('#addStaffForm').hide();
+                    $('#successView').fadeIn();
+                    // Lưu ý: Đảm bảo API store của bạn trả về data.debug_link giống hàm resend
+                    $('#generatedLink').text(data.debug_link || 'Link kích hoạt đã được gửi vào email'); 
                 } else {
-                    alert(data.message);
+                    showToast(data.message || 'Thêm thất bại!', 'danger');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Có lỗi xảy ra, vui lòng thử lại.');
+                showToast('Có lỗi xảy ra, vui lòng thử lại.', 'danger');
             })
             .finally(() => {
                 btn.disabled = false;
@@ -541,26 +566,42 @@
         });
     }
 
-    //Copy Link Logic 
     function copyLink() {
         const text = $('#generatedLink').text();
         navigator.clipboard.writeText(text).then(() => {
-            alert('Đã copy link vào clipboard!');
+            showToast('Đã copy link vào clipboard!', 'success');
         });
     }
 
     function toggleStatus(id, status) {
-        const action = status === 'locked' ? 'khóa' : 'mở khóa';
-        if(!confirm(`Bạn có chắc muốn ${action} tài khoản này?`)) return;
-
         $.post('<?= APP_URL ?>/employees/toggle-status', {id: id, status: status}, function(res) {
             if(res.success) {
-                location.reload(); 
+                showToast('Cập nhật trạng thái thành công!', 'success');
+                
+                // KHÔNG RELOAD TRANG: Cập nhật trực tiếp UI thẻ nhân viên
+                const card = $(`#card-${id}`);
+                const btn = card.find(`button[onclick="toggleStatus(${id}, '${status}')"]`);
+                const ribbon = card.find('.status-ribbon');
+
+                if (status === 'locked') {
+                    // Cập nhật giao diện thành Bị Khóa
+                    ribbon.removeClass('status-active').addClass('status-locked').text('Bị khóa');
+                    btn.removeClass('btn-lock').addClass('btn-unlock')
+                       .attr('onclick', `toggleStatus(${id}, 'active')`)
+                       .html('<i class="fas fa-unlock"></i> Mở khóa');
+                } else {
+                    // Cập nhật giao diện thành Đang Hoạt Động
+                    ribbon.removeClass('status-locked').addClass('status-active').text('Đang hoạt động');
+                    btn.removeClass('btn-unlock').addClass('btn-lock')
+                       .attr('onclick', `toggleStatus(${id}, 'locked')`)
+                       .html('<i class="fas fa-lock"></i> Khóa');
+                }
+            } else {
+                showToast('Cập nhật thất bại!', 'danger');
             }
         }, 'json');
     }
 
-    // Resend Email Logic 
     function resendEmail(id) {
         if(!confirm('Gửi lại link kích hoạt mới? Link cũ sẽ vô hiệu hóa.')) return;
 
@@ -576,6 +617,8 @@
                 $('#generatedLink').text(res.debug_link);
                 $('#modalTitle').text('Link kích hoạt mới');
                 staffModal.show();
+                
+                showToast('Đã tạo link kích hoạt mới!', 'success');
             }
         }, 'json');
     }
