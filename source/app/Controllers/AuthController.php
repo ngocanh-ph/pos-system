@@ -43,8 +43,8 @@ class AuthController extends Controller {
     }
     // Xử lý khi người dùng bấm nút "Đăng nhập" trên Form
    public function handleLogin() {
-        $username = $_POST['username'] ?? '';
-        $password = $_POST['password'] ?? ''; // Nhân viên mới sẽ nhập password là 52400002
+        $username = trim($_POST['username'] ?? '');
+$password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập password là 52400002
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
@@ -81,8 +81,10 @@ class AuthController extends Controller {
             }
 
             // Đăng nhập bình thường (Nhân viên cũ / Admin)
+            session_regenerate_id(true);
             $_SESSION['user'] = $user;
             $this->redirect('/dashboard');
+            return;
 
         } else {
             $this->renderAuthView('auth/login', ['error' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
