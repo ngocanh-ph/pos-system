@@ -287,59 +287,16 @@
         background-color: #16a34a; 
     } 
     
-    /* History Modal Styles */
+    /* History Modal Styles Mới */
     .modal-content { 
         border-radius: 1.5rem; 
         border: none; 
         overflow: hidden; 
         box-shadow: 0 25px 50px -12px #00000040; 
     }
-    .modal-header { 
-        background: var(--pos-navy); 
-        color: white; 
-        border-bottom: none; 
-        padding: 1rem 1.5rem; 
-    }
-    .modal-title { 
-        font-weight: 700; 
-    }
     .btn-close-white { 
-        filter: invert(1) grayscale(100%) brightness(200%); }
-    .history-layout { 
-        display: flex; 
-        height: 50vh; 
+        filter: invert(1) grayscale(100%) brightness(200%); 
     }
-    .history-list { 
-        width: 40%; 
-        border-right: 1px solid #e2e8f0; 
-        overflow-y: auto; 
-        background: #f8fafc; 
-    }
-    .history-detail { 
-        width: 60%; 
-        padding: 1rem; 
-        overflow-y: auto; 
-        background: white; 
-    }
-    .hist-item { 
-        padding: 0.75rem 1rem; 
-        border-bottom: 1px solid #e2e8f0; 
-    }
-    .hist-item:hover, .hist-item.active { 
-        background: white; 
-        border-left: 4px solid var(--pos-header); 
-    }
-    .stat-box { 
-        background: var(--pos-sky); 
-        color: var(--pos-navy); 
-        padding: 0.5rem; 
-        border-radius: 0.75rem; 
-        text-align: center; 
-    }
-    .stat-val { 
-        font-size: 1.25rem; 
-        font-weight: 800; 
-        }
 </style>
 
 <div class="pos-wrapper">
@@ -372,7 +329,7 @@
             <div class="cust-card">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="fw-bold m-0">Khách hàng</h5>
-                    <button class="btn btn-sm btn-light btn-history" id="btn_view_history" style="display:none; color: #0284c7; background: #e0f2fe;"><i class="fas fa-history me-1"></i> Lịch sử</button>
+                    <button class="btn btn-sm btn-light btn-history" id="btn_view_history" style="display:none; color: #0284c7; background: #e0f2fe;"><i class="fas fa-history me-1"></i> Lịch sử mua hàng</button>
                 </div>
                 <div class="position-relative mb-2">
                     <i class="fas fa-phone-alt position-absolute" style="left:12px; top:12px; color:#94a3b8"></i>
@@ -422,40 +379,54 @@
 <div class="modal fade" id="historyModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <div>
-                    <h5 class="modal-title mb-1" id="hist_cust_name">Lịch sử mua hàng</h5>
-                    <small class="opacity-75" id="hist_cust_phone"></small>
-                </div>
+            <div class="modal-header" style="background: var(--pos-navy); color: white;">
+                <h5 class="modal-title mb-0">Lịch sử mua hàng - <span id="hist_cust_name" class="fw-bold text-info"></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-0">
-                <div class="history-layout">
-                    <div class="history-list">
-                        <div class="p-3 bg-white border-bottom sticky-top">
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <div class="stat-box mb-0 py-2">
-                                        <div class="stat-val" id="stat_total_spent">0</div>
-                                        <div class="stat-label">Tổng chi tiêu</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="stat-box mb-0 py-2 bg-light text-dark">
-                                        <div class="stat-val" id="stat_order_count">0</div>
-                                        <div class="stat-label">Số đơn hàng</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="history_list_container"></div>
-                    </div>
-                    <div class="history-detail" id="history_detail_container">
-                        <div class="text-center text-muted mt-5">
-                            <i class="fas fa-hand-pointer fa-2x mb-3"></i>
-                            <p>Chọn một đơn hàng để xem chi tiết</p>
-                        </div>
-                    </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Mã HĐ</th>
+                                <th>Ngày mua</th>
+                                <th class="text-end">Tổng tiền</th>
+                                <th class="text-end">Tiền khách đưa</th>
+                                <th class="text-end">Tiền thừa</th>
+                                <th class="text-center">Số SP</th>
+                                <th class="text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history_table_body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="orderDetailModal" tabindex="-1" style="z-index: 1060;">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title mb-0">Chi tiết đơn hàng <span id="detail_order_id" class="fw-bold text-warning"></span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th class="text-end">Giá bán</th>
+                                <th class="text-center">Số lượng</th>
+                                <th class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail_table_body">
+                            </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -493,7 +464,7 @@
                         <button class="btn-qty" onclick="updateQty(${index}, 1)">+</button>
                     </div>
                     <div class="text-end fw-bold">${Number(lineTotal).toLocaleString('vi-VN')}</div>
-                    <div class="text-end"><i class="fas fa-times text-danger" onclick="removeProduct(${index})"></i></div>
+                    <div class="text-end"><i class="fas fa-times text-danger" style="cursor:pointer;" onclick="removeProduct(${index})"></i></div>
                 </div>`);
             });
         }
@@ -514,7 +485,7 @@
 
     function removeProduct(index) { cart.splice(index, 1); renderCart(); }
 
-    // tìm sản phẩm
+    // TÌM SẢN PHẨM
     let searchTimeout = null;
     $('#product_search').on('input', function() {
         let query = $(this).val();
@@ -530,7 +501,7 @@
                     let html = '';
                     data.forEach(p => {
                         html += `
-                        <div class="search-item" onclick='handleSelect(${JSON.stringify(p)})'>
+                        <div class="search-item" style="cursor:pointer;" onclick='handleSelect(${JSON.stringify(p)})'>
                             <div class="search-item-info">
                                 <span class="search-item-name">${p.name}</span>
                                 <span class="search-item-barcode">${p.barcode} - ${Number(p.sale_price).toLocaleString('vi-VN')}đ</span>
@@ -547,7 +518,7 @@
         addToCart(product); $('#product_search').val('').focus(); $('#search_results').hide();
     };
 
-    // khách hàng
+    // KHÁCH HÀNG
     let customerTimeout = null;
     $('#cust_phone').on('input', function() {
         const phone = $(this).val().trim();
@@ -580,56 +551,133 @@
         }
     });
 
-    // nút xem lịch sử
+    // MỞ MODAL BẢNG LỊCH SỬ MUA HÀNG
     $('#btn_view_history').click(function() {
         if(!currentCustomerId) return;
-        $.get(BASE_URL + '/customer/get-details', { id: currentCustomerId }, function(res) {
+        
+        // Gọi API lấy lịch sử mua hàng
+       $.get(BASE_URL + '/customers/details', { id: currentCustomerId }, function(res) {
             if(res.success) {
-                $('#hist_cust_name').text(res.customer.name);
-                $('#hist_cust_phone').text(res.customer.phone);
-                $('#stat_total_spent').text(Number(res.stats.total_spent).toLocaleString('vi-VN'));
-                $('#stat_order_count').text(res.stats.total_orders);
-
-                const listContainer = $('#history_list_container'); listContainer.empty();
+                $('#hist_cust_name').text(res.customer.name + ' - ' + res.customer.phone);
+                
+                const tbody = $('#history_table_body'); 
+                tbody.empty();
+                
                 if(res.history.length === 0) {
-                    listContainer.html('<p class="text-center p-3 text-muted">Chưa có lịch sử mua hàng</p>');
+                    tbody.html('<tr><td colspan="7" class="text-center text-muted py-4">Khách hàng chưa có lịch sử mua hàng.</td></tr>');
                 } else {
                     res.history.forEach(order => {
-                        listContainer.append(`
-                        <div class="hist-item" onclick="loadOrderDetail(${order.id}, this)">
-                            <div class="d-flex justify-content-between mb-1"><span class="hist-id">#${order.id}</span><span class="hist-date">${order.created_at}</span></div>
-                            <div class="d-flex justify-content-between align-items-center"><span class="hist-total">${Number(order.total_amount).toLocaleString('vi-VN')}</span><span class="badge bg-light text-dark border">${order.items_count} SP</span></div>
-                        </div>`);
+                        tbody.append(`
+                        <tr>
+                            <td class="fw-bold">#${order.id}</td>
+                            <td>${order.created_at}</td>
+                            <td class="text-danger fw-bold text-end">${Number(order.total_amount).toLocaleString('vi-VN')} đ</td>
+                            <td class="text-end">${Number(order.amount_paid).toLocaleString('vi-VN')} đ</td>
+                            <td class="text-end">${Number(order.change_amount).toLocaleString('vi-VN')} đ</td>
+                            <td class="text-center"><span class="badge bg-secondary">${order.items_count}</span></td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-primary btn-view-detail" data-id="${order.id}">
+                                    Xem chi tiết
+                                </button>
+                            </td>
+                        </tr>`);
                     });
                 }
-                $('#history_detail_container').html('<div class="text-center text-muted mt-5"><i class="fas fa-hand-pointer fa-2x mb-3"></i><p>Chọn một đơn hàng để xem chi tiết</p></div>');
-                new bootstrap.Modal(document.getElementById('historyModal')).show();
+                $('#historyModal').modal('show');
+            } else {
+                alert("Lỗi tải dữ liệu lịch sử!");
             }
-        }, 'json');
+        }, 'json').fail(function() {
+            // Phòng ngừa trường hợp router của bạn dùng dấu gạch ngang (get-details)
+            $.get(BASE_URL + '/customers/order-details', { order_id: orderId }, function(res) {
+                if(res.success) {
+                    $('#hist_cust_name').text(res.customer.name + ' - ' + res.customer.phone);
+                    const tbody = $('#history_table_body'); tbody.empty();
+                    
+                    if(res.history.length === 0) {
+                        tbody.html('<tr><td colspan="7" class="text-center text-muted py-4">Khách hàng chưa có lịch sử mua hàng.</td></tr>');
+                    } else {
+                        res.history.forEach(order => {
+                            tbody.append(`
+                            <tr>
+                                <td class="fw-bold">#${order.id}</td>
+                                <td>${order.created_at}</td>
+                                <td class="text-danger fw-bold text-end">${Number(order.total_amount).toLocaleString('vi-VN')} đ</td>
+                                <td class="text-end">${Number(order.amount_paid).toLocaleString('vi-VN')} đ</td>
+                                <td class="text-end">${Number(order.change_amount).toLocaleString('vi-VN')} đ</td>
+                                <td class="text-center"><span class="badge bg-secondary">${order.items_count}</span></td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary btn-view-detail" data-id="${order.id}">
+                                        Xem chi tiết
+                                    </button>
+                                </td>
+                            </tr>`);
+                        });
+                    }
+                    $('#historyModal').modal('show');
+                }
+            }, 'json');
+        });
     });
 
-    window.loadOrderDetail = function(orderId, el) {
-        $('.hist-item').removeClass('active'); $(el).addClass('active');
-        $('#history_detail_container').html('<div class="text-center mt-5"><div class="spinner-border text-primary"></div></div>');
-        $.get(BASE_URL + '/customer/get-order-details', { order_id: orderId }, function(res) {
+    // MỞ MODAL BẢNG CHI TIẾT ĐƠN HÀNG
+    $(document).on('click', '.btn-view-detail', function() {
+        const orderId = $(this).data('id');
+        
+        // Gọi API lấy chi tiết
+        $.get(BASE_URL + '/customers/order-details', { order_id: orderId }, function(res) {
             if(res.success) {
-                let itemsHtml = '';
+                $('#detail_order_id').text('#' + res.order.id);
+                const tbody = $('#detail_table_body');
+                tbody.empty();
+                
                 res.items.forEach(item => {
-                    itemsHtml += `<tr><td><div class="fw-bold">${item.product_name}</div><small class="text-muted">${item.barcode}</small></td><td class="text-center">${item.quantity}</td><td class="text-end">${Number(item.unit_price).toLocaleString('vi-VN')}</td><td class="text-end fw-bold">${Number(item.total_price).toLocaleString('vi-VN')}</td></tr>`;
+                    tbody.append(`
+                    <tr>
+                        <td class="fw-bold">${item.product_name}</td>
+                        <td class="text-end">${Number(item.unit_price).toLocaleString('vi-VN')} đ</td>
+                        <td class="text-center">${item.quantity}</td>
+                        <td class="fw-bold text-danger text-end">${Number(item.total_price).toLocaleString('vi-VN')} đ</td>
+                    </tr>`);
                 });
-                $('#history_detail_container').html(`
-                    <div class="d-flex justify-content-between align-items-start mb-4">
-                        <div><h4 class="fw-bold text-primary mb-0">Hóa đơn #${res.order.id}</h4><div class="text-muted small">${res.order.created_at}</div></div>
-                        <div class="text-end"><div class="small text-muted text-uppercase">Nhân viên</div><div class="fw-bold">${res.order.staff_name || 'N/A'}</div></div>
-                    </div>
-                    <table class="table table-sm table-borderless mb-4"><thead class="text-muted small text-uppercase border-bottom"><tr><th>Sản phẩm</th><th class="text-center">SL</th><th class="text-end">Giá</th><th class="text-end">Tổng</th></tr></thead><tbody>${itemsHtml}</tbody></table>
-                    <div class="border-top pt-3"><div class="d-flex justify-content-between mb-1"><span class="text-muted">Tổng tiền hàng:</span><span class="fw-bold fs-5">${Number(res.order.total_amount).toLocaleString('vi-VN')}</span></div></div>
-                `);
+                
+                // 1. Ẩn lịch sử mua hàng đi cho đỡ vướng
+                $('#historyModal').modal('hide');
+                
+                // 2. Hiện chi tiết đơn hàng lên
+                $('#orderDetailModal').modal('show');
+                
+            } else {
+                alert("Không thể tải chi tiết đơn hàng!");
             }
-        }, 'json');
-    };
+        }, 'json').fail(function() {
+            // Phòng ngừa trường hợp router của bạn dùng dấu gạch ngang (get-order-details)
+            $.get(BASE_URL + '/customers/get-order-details', { order_id: orderId }, function(res) {
+                if(res.success) {
+                    $('#detail_order_id').text('#' + res.order.id);
+                    const tbody = $('#detail_table_body'); tbody.empty();
+                    
+                    res.items.forEach(item => {
+                        tbody.append(`
+                        <tr>
+                            <td class="fw-bold">${item.product_name}</td>
+                            <td class="text-end">${Number(item.unit_price).toLocaleString('vi-VN')} đ</td>
+                            <td class="text-center">${item.quantity}</td>
+                            <td class="fw-bold text-danger text-end">${Number(item.total_price).toLocaleString('vi-VN')} đ</td>
+                        </tr>`);
+                    });
+                    
+                    // 1. Ẩn lịch sử mua hàng đi cho đỡ vướng
+                    $('#historyModal').modal('hide');
+                    
+                    // 2. Hiện chi tiết đơn hàng lên
+                    $('#orderDetailModal').modal('show');
+                }
+            }, 'json');
+        });
+    });
 
-    // Thanh toán
+    // THANH TOÁN
     function calculateChange() {
         const total = parseInt($('#display_total').text().replace(/\./g, '')) || 0;
         const given = parseInt($('#cash_given').val()) || 0;
