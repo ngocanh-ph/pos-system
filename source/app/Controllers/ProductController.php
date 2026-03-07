@@ -57,6 +57,7 @@ class ProductController extends Controller {
                 throw new Exception('Lỗi lưu dữ liệu.');
             }
         } catch (Exception $e) {
+
             $msg = $e->getMessage();
             if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
                 $msg = 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';

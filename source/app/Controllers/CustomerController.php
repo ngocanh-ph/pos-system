@@ -22,8 +22,15 @@ class CustomerController extends Controller {
     }
 
     public function getDetails() {
-        $id = $_GET['id'] ?? 0;
+        $id = (int)($_GET['id'] ?? 0);
         
+        if ($id <= 0) {
+        $this->json([
+            'success' => false,
+            'message' => 'ID không hợp lệ'
+        ]);
+        return;
+    }
         $customerModel = new Customer();
         $customer = $customerModel->find($id);
 

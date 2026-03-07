@@ -594,7 +594,7 @@
                             }
                         });
 
-                    } else { 
+                    } else { // Hiện Toast báo lỗi
                         $('#actionToast').removeClass('bg-success').addClass('bg-danger');
                         $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể lưu sản phẩm!'));
                         toast.show();
