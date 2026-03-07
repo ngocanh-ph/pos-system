@@ -291,7 +291,6 @@
                                 <div class="empty-state-content">
                                     <i class="fas fa-folder-open" style="font-size: 3.5rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                                     <div style="font-weight: 600; font-size: 1.1rem; color: var(--pm-navy);">Chưa có danh mục nào.</div>
-                                    <div style="font-size: 0.9rem; margin-top: 0.5rem;">Hãy thêm danh mục mới để bắt đầu phân loại sản phẩm.</div>
                                 </div>
                             </td>
                         </tr>
@@ -426,7 +425,7 @@
     }
 
     window.deleteCategory = function(id) {
-        // Xóa trực tiếp không hỏi confirm
+
         $.post(BASE_URL + '/categories/delete', {id: id}, function(res) {
             const toastEl = document.getElementById('actionToast');
             const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); 
@@ -435,8 +434,7 @@
                 $('#actionToast').removeClass('bg-danger').addClass('bg-success');
                 $('#toastMessage').text('Xóa danh mục thành công!');
                 toast.show();
-                
-                // Mờ dần dòng vừa bị xóa
+            
                 $('tr.category-row button[onclick="deleteCategory(' + id + ')"]').closest('tr').fadeOut(300, function() {
                     $(this).remove(); 
                 });

@@ -46,14 +46,14 @@
             transition: width var(--transition-speed) ease;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
             
-            /* CẤU HÌNH ẨN SCROLLBAR NHƯNG VẪN SCROLL ĐƯỢC */
+            
             overflow-y: auto;
             overflow-x: hidden;
             scrollbar-width: none;  
             -ms-overflow-style: none;  
         }
         
-        /* Ẩn scrollbar cho Chrome, Safari, Opera */
+        /* Ẩn scrollbar */
         .sidebar::-webkit-scrollbar {
             display: none;
         }
@@ -106,7 +106,7 @@
             color: white;
         }
 
-        /* --- Navigation Links --- */
+        /* Navigation Links */
         .nav-link {
             color: #94A3B8;
             font-weight: 500;
@@ -141,7 +141,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
-        /* --- Sidebar Footer --- */
+        /* Sidebar Footer */
         .sidebar-footer {
             margin-top: auto;
             background: rgba(255,255,255,0.05);
@@ -184,7 +184,7 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* --- Main Panel --- */
+        /* Main Panel */
         .main-panel {
             margin-left: var(--sidebar-width);
             padding: 1.5rem 2rem; 
@@ -192,7 +192,7 @@
             transition: margin-left var(--transition-speed), width var(--transition-speed);
         }
 
-        /* --- TRẠNG THÁI COLLAPSED --- */
+        /* TRẠNG THÁI COLLAPSED */
         body.sidebar-collapsed .sidebar {
             width: var(--sidebar-width-collapsed);
         }
@@ -250,7 +250,7 @@
             margin: 0 auto 10px auto;
         }
 
-        /* --- Top Bar & Others --- */
+        /*Top Bar & Others */
         .top-bar {
             display: flex;
             justify-content: space-between;

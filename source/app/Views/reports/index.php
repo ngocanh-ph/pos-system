@@ -319,23 +319,20 @@
         <div class="kpi-card">
             <div class="kpi-label">DOANH THU</div>
             <div class="kpi-value font-black text-indigo" id="kpi_revenue">0</div>
-            <i class="fas fa-wallet kpi-icon-bg"></i>
+        
         </div>
         <div class="kpi-card">
             <div class="kpi-label">ĐƠN HÀNG</div>
             <div class="kpi-value font-black text-navy" style="color: #10B981" id="kpi_orders">0</div>
-            <i class="fas fa-shopping-bag kpi-icon-bg"></i>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">SỐ LƯỢNG SẢN PHẨM</div>
             <div class="kpi-value font-black text-navy" style="color: #F59E0B" id="kpi_products">0</div>
-            <i class="fas fa-box-open kpi-icon-bg"></i>
         </div>
         <?php if($_SESSION['user']->role === 'admin'): ?>
         <div class="kpi-card" style="background: var(--r-navy); color: white;">
             <div class="kpi-label" style="color: rgba(255,255,255,0.6)">LỢI NHUẬN</div>
             <div class="kpi-value font-black" style="color: var(--r-sky)" id="kpi_profit">0</div>
-            <i class="fas fa-chart-line kpi-icon-bg" style="color: white"></i>
         </div>
         <?php endif; ?>
     </div>
