@@ -66,7 +66,7 @@ class Product extends Model {
         $stmt = $this->db->prepare("SELECT COUNT(*) as count FROM order_items WHERE product_id = :id");
         $stmt->execute(['id' => $id]);
         $row = $stmt->fetch();
-        return $row->count == 0;
+        return (int)$row->count === 0;
     }
 
     public function delete($id) {
