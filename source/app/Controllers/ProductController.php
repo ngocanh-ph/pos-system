@@ -32,8 +32,21 @@ class ProductController extends Controller {
         $this->verifyAdminJson();
         
         try {
+            if (
+                empty($_POST['barcode']) || 
+                empty($_POST['name']) || 
+                empty($_POST['category_id']) ||
+                $_POST['import_price'] === '' ||
+                $_POST['sale_price'] === '' 
+            ) {
+                throw new Exception('Vui lòng điền đầy đủ thông tin.');
+            }
+
             if ($_POST['import_price'] < 0 || $_POST['sale_price'] < 0) {
                 throw new Exception('Giá không được âm.');
+            }
+            if ($_POST['sale_price'] < $_POST['import_price']) {
+                throw new Exception('Giá bán phải lớn hơn hoặc bằng giá nhập.');
             }
 
             $image = 'default_product.png';
@@ -74,8 +87,21 @@ class ProductController extends Controller {
         $id = $_POST['id'];
         
         try {
+            if (
+                empty($_POST['barcode']) || 
+                empty($_POST['name']) || 
+                empty($_POST['category_id']) ||
+                $_POST['import_price'] === '' ||
+                $_POST['sale_price'] === '' 
+            ) {
+                throw new Exception('Vui lòng điền đầy đủ thông tin.');
+            }
+
             if ($_POST['import_price'] < 0 || $_POST['sale_price'] < 0) {
                 throw new Exception('Giá không được âm.');
+            }
+            if ($_POST['sale_price'] < $_POST['import_price']) {
+                throw new Exception('Giá bán phải lớn hơn hoặc bằng giá nhập.');
             }
             $data = [
                 'barcode' => $_POST['barcode'],
