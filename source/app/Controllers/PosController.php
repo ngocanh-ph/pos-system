@@ -27,6 +27,7 @@ class PosController extends Controller {
     public function checkout() {
         $data = json_decode(file_get_contents('php://input'), true);
         if (empty($data['cart'])) return $this->json(['success' => false, 'message' => 'Giỏ hàng trống.']);
+        if (empty($data['customer']['phone'])) return $this->json(['success' => false, 'message' => 'Vui lòng nhập số điện thoại khách hàng.']);
         $productModel = new Product();
         $calculatedTotal = 0;
         $verifiedCart = [];
