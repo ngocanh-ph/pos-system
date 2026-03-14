@@ -71,12 +71,24 @@ class CategoryController extends Controller {
 
     public function delete() {
         $this->verifyAdminJson();
-        $id = $_POST['id'];
-        
-        $model = new Category();
-        $model->delete($id);
-        
-        $this->json(['success' => true]);
+        $id = $_POST['id'];       
+        try {
+            $categoryModel = new Category();
+            if ($categoryModel->delete($id)) {
+                $this->json(['success' => true]);
+            } else {
+                throw new Exception('Lỗi không xác định khi xóa danh mục.');
+            }
+        } catch (Exception $e) {
+            $msg = $e->getMessage();
+            if ($msg === 'HAS_PRODUCTS') {
+                $msg = 'Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này.';
+            } 
+            elseif (strpos($msg, '1451') !== false || strpos($msg, 'foreign key constraint') !== false) {
+                $msg = 'Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này';
+            }
+            $this->json(['success' => false, 'message' => $msg]);
+        }
     }
 
     private function verifyAdminJson() {

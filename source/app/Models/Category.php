@@ -34,6 +34,13 @@ class Category extends Model {
     }
 
     public function delete($id) {
+        $checkSql = "SELECT COUNT(*) FROM products WHERE category_id = :id";
+        $checkStmt = $this->db->prepare($checkSql);
+        $checkStmt->execute(['id' => $id]);
+        $count = $checkStmt->fetchColumn();
+        if ($count > 0) {
+            throw new Exception("HAS_PRODUCTS");
+        }
         $sql = "DELETE FROM {$this->table} WHERE id = :id";
         return $this->db->prepare($sql)->execute(['id' => $id]);
     }

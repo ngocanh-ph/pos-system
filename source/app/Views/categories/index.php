@@ -425,22 +425,24 @@
     }
 
     window.deleteCategory = function(id) {
-
         $.post(BASE_URL + '/categories/delete', {id: id}, function(res) {
             const toastEl = document.getElementById('actionToast');
-            const toast = new bootstrap.Toast(toastEl, { delay: 2500 }); 
-
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 }); 
             if(res.success) {
                 $('#actionToast').removeClass('bg-danger').addClass('bg-success');
                 $('#toastMessage').text('Xóa danh mục thành công!');
                 toast.show();
-            
                 $('tr.category-row button[onclick="deleteCategory(' + id + ')"]').closest('tr').fadeOut(300, function() {
                     $(this).remove(); 
                 });
             } else {
                 $('#actionToast').removeClass('bg-success').addClass('bg-danger');
-                $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể xóa danh mục này!'));
+                let errorMsg = res.message || 'Không thể xóa danh mục này!';
+                if (errorMsg.includes('1451') || errorMsg.includes('foreign key constraint')) {
+                    errorMsg = 'Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này.';
+                }
+        
+                $('#toastMessage').text(errorMsg);
                 toast.show();
             }
         }, 'json').fail(function() {
