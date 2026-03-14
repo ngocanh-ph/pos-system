@@ -204,6 +204,7 @@
                 
                 <button type="button" class="btn-close position-absolute" style="top: 15px; right: 15px;" data-bs-dismiss="modal" aria-label="Close"></button>
                 
+                <div class="dashed-divider mt-4 mb-3"></div>
                 <div class="text-center my-2">
                     <h5 class="fw-bold text-navy mb-0" style="letter-spacing: 0.5px;">Chi tiết hóa đơn <span id="modalOrderId" class="text-indigo"></span></h5>
                 </div>
@@ -251,6 +252,10 @@
                         <span class="fw-bold text-danger" id="modalChangeAmount">0</span>
                     </div>
                 </div>
+
+                <div class="dashed-divider mt-4 mb-3"></div>
+                <div class="text-center text-muted fw-semibold" style="font-size: 0.85rem;">Cảm ơn quý khách!</div>
+                
             </div>
         </div>
     </div>
