@@ -72,9 +72,9 @@ $router->post('/employees/resend-email', ['EmployeeController', 'resendEmail']);
 $router->post('/employees/toggle-status', ['EmployeeController', 'toggleStatus']);
 
 // Reports
-// Reports
 $router->get('/reports', ['ReportController', 'index']);
 $router->get('/report/getReportData', ['ReportController', 'getReportData']); 
+$router->get('/report/getOrderDetail', ['ReportController', 'getOrderDetail']);
 
 // Customers
 $router->get('/customers', ['CustomerController', 'index']);

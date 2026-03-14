@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/Order.php';
 require_once __DIR__ . '/../Models/User.php';
+
 class ReportController extends Controller {
     public function index() {
         if (!isset($_SESSION['user'])) {
@@ -18,21 +19,20 @@ class ReportController extends Controller {
             'staffs' => $staffs
         ]);
     }
+
     public function getReportData() {
         if (!isset($_SESSION['user'])) {
             $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
             return;
         }
+
         // XỬ LÝ LOGIC THỜI GIAN 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        
         $range = $_GET['range'] ?? 'today';
         $staffId = $_GET['staff_id'] ?? null;
         if ($staffId === 'undefined' || $staffId === '') $staffId = null;
-
-        // Nhân viên chỉ được xem của chính mình
         if ($_SESSION['user']->role !== 'admin') {
-            $staffId = $_SESSION['user']->id;
+            $staffId = null;
         }
 
         $startDate = date('Y-m-d 00:00:00');
@@ -66,7 +66,6 @@ class ReportController extends Controller {
                 break;
         }
 
-        // GỌI MODEL ĐỂ LẤY DỮ LIỆU 
         $orderModel = new Order();
 
         try {
@@ -74,14 +73,14 @@ class ReportController extends Controller {
             $chartData = $orderModel->getChartData($startDate, $endDate, $chartMode, $staffId);
             $catData = $orderModel->getCategoryStats($startDate, $endDate, $staffId);
             $orderList = $orderModel->getOrdersByRange($startDate, $endDate, $staffId);
-            // XỬ LÝ BẢO MẬT HIỂN THỊ (Logic View)
-            // Nếu không phải Admin, xóa dữ liệu lợi nhuận trước khi trả về client
+            
             if ($_SESSION['user']->role !== 'admin') {
                 $kpiStats['profit'] = null;
                 foreach ($chartData as &$row) {
                     $row['profit'] = 0;
                 }
             }
+            
             $this->json([
                 'success' => true,
                 'chart_mode' => $chartMode,
@@ -95,4 +94,40 @@ class ReportController extends Controller {
             $this->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+    // API: Lấy chi tiết một đơn hàng cụ thể (Chuẩn MVC)
+    public function getOrderDetail() {
+        if (!isset($_SESSION['user'])) {
+            $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            return;
+        }
+
+        $orderId = $_GET['id'] ?? 0;
+        if (!$orderId) {
+            $this->json(['success' => false, 'message' => 'ID đơn hàng không hợp lệ!']);
+            return;
+        }
+
+        try {
+            $orderModel = new Order();
+            $order = $orderModel->getByIdWithDetails($orderId);
+            if (!$order) {
+                $this->json(['success' => false, 'message' => 'Không tìm thấy hóa đơn!']);
+                return;
+            }
+
+            $items = $orderModel->getItemsByOrderId($orderId);
+
+            $this->json([
+                'success' => true,
+                'data' => [
+                    'order' => $order,
+                    'items' => $items
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            $this->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
 }
