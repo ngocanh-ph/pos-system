@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/User.php';
+
 class ProfileController extends Controller {
 
     public function index() {
@@ -12,6 +13,7 @@ class ProfileController extends Controller {
             'title' => 'Hồ sơ cá nhân'
         ]);
     }
+
     public function updateInfo() {
         if (!isset($_SESSION['user'])) {
             $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
@@ -22,6 +24,7 @@ class ProfileController extends Controller {
         $fullname = $_POST['fullname'] ?? '';
         $phone = $_POST['phone'] ?? '';
         $avatarPath = $_SESSION['user']->avatar; 
+        
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
             try {
                 $avatarPath = $this->processAvatar($_FILES['avatar']);
@@ -30,14 +33,17 @@ class ProfileController extends Controller {
                 return;
             }
         }
+        
         $userModel = new User();
         $userModel->updateProfile($userId, $fullname, $avatarPath, $phone);
+        
         $_SESSION['user']->fullname = $fullname;
         $_SESSION['user']->phone = $phone;
         $_SESSION['user']->avatar = $avatarPath;
 
         $this->json(['success' => true, 'message' => 'Cập nhật hồ sơ thành công!']);
     }
+
     // API: Đổi mật khẩu 
     public function changePassword() {
         if (!isset($_SESSION['user'])) {
@@ -48,10 +54,17 @@ class ProfileController extends Controller {
         $currentPass = $_POST['current_password'] ?? '';
         $newPass = $_POST['new_password'] ?? '';
 
+        // Kiểm tra độ dài mật khẩu mới
+        if (strlen($newPass) < 6) {
+             $this->json(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+             return;
+        }
+
         $userModel = new User();
         $user = $userModel->find($userId);
 
-        if (!password_verify($currentPass, $user->password)) {
+        // ĐÃ SỬA TẠI ĐÂY: Cho phép nhập đúng chữ 'admin' nếu trong database đang lưu chữ 'admin'
+        if (!password_verify($currentPass, $user->password) && $currentPass !== $user->password) {
             $this->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
             return;
         }
