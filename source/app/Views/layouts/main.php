@@ -323,7 +323,7 @@
 
             <div class="mt-auto w-100">
                 <div class="sidebar-footer">
-                    <img src="<?= APP_URL ?>/uploads/default_avatar.png" class="user-avatar" alt="Avatar">
+                    <img src="<?= APP_URL ?>/uploads/logoMAV.png" class="user-avatar" alt="Avatar">
                     <div class="user-info">
                         <h6>Hệ thống Quản trị</h6>
                         <span><?= htmlspecialchars($_SESSION['user']->fullname) ?></span>

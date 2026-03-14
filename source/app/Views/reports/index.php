@@ -302,6 +302,7 @@
                 <option value="7days">7 ngày qua</option>
                 <option value="month">Tháng này</option>
                 <option value="custom">Tùy chọn...</option>
+                <option value="custom_active" hidden>Tùy chọn...</option>
             </select>
 
             <?php if(!empty($staffs)): ?>
@@ -403,7 +404,8 @@
             if (val === 'custom') {
                 $('#dateRangeModal').css('display', 'flex');
                 fp.clear();
-            } else {
+            } else if (val !== 'custom_active') {
+                // Chỉ load nếu không phải option ẩn custom_active
                 previousRangeValue = val;
                 loadReportData();
             }
@@ -436,6 +438,10 @@
             selectedRange.start = formatDate(selectedDates[0]);
             selectedRange.end = formatDate(selectedDates[1]);
 
+            // Set giá trị dropdown về option ẩn để bẫy sự kiện cho lần click kế tiếp
+            $('#timeRange').val('custom_active');
+            previousRangeValue = 'custom_active';
+
             $('#dateRangeModal').fadeOut(200);
             loadReportData();
         });
@@ -448,7 +454,13 @@
 
     //FETCH DATA
     function loadReportData() {
-        const range = $('#timeRange').val();
+        let range = $('#timeRange').val();
+        
+        // Nếu giá trị hiện tại là custom_active, ta đổi sang custom để gửi Backend
+        if (range === 'custom_active') {
+            range = 'custom';
+        }
+
         const staffId = $('#staffFilter').val() || '';
         let params = { range: range, staff_id: staffId };
 
