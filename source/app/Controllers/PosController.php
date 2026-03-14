@@ -10,6 +10,10 @@ class PosController extends Controller {
             $this->redirect('/login');
             return;
         }
+        if ($_SESSION['user']->role === 'admin') {
+            $this->redirect('/dashboard'); 
+            return;
+        }
         $this->view('posale/index',[
             'title'=> 'Bán hàng'
         ]);

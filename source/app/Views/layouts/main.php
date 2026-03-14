@@ -296,9 +296,11 @@
                     <i class="fas fa-th-large"></i> <span>Tổng quan</span>
                 </a>
                 
+                <?php if($_SESSION['user']->role === 'staff'): ?>
                 <a href="<?= APP_URL ?>/posale" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/pos') !== false) ? 'active' : '' ?>" title="Bán hàng">
                     <i class="fas fa-shopping-basket"></i> <span>Bán hàng</span>
                 </a>
+                <?php endif; ?>
                 <a href="<?= APP_URL ?>/products" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/products') !== false) ? 'active' : '' ?>" title="Sản phẩm">
                     <i class="fas fa-box"></i> <span>Sản phẩm</span>
                 </a>

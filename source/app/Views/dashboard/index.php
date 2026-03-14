@@ -10,7 +10,6 @@
         --d-radius-3xl: 2rem;      
         --d-radius-xl: 1rem;       
         --d-radius-lg: 0.75rem;    
-        
         --d-shadow-card: 0 10px 40px -10px #b0dafd80;
         --d-shadow-hover: 0 20px 50px -12px #04437740;
     }
@@ -273,9 +272,12 @@
                 Hệ thống MAVPOS đã sẵn sàng, chúc bạn một ngày kinh doanh hiệu quả.
             </p>
         </div>
+        
+        <?php if($_SESSION['user']->role === 'staff'): ?>
         <a href="<?= APP_URL ?>/pos" class="btn-hero-action">
             <i class="fas fa-shopping-cart"></i> BÁN HÀNG
         </a>
+        <?php endif; ?>
     </div>
 
     <div class="kpi-grid animate-in" style="animation-delay: 0.1s;">
