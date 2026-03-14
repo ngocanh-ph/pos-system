@@ -230,20 +230,6 @@
         font-size: 0.9rem; 
     }
 
-    /* Animations */
-    @keyframes slideUp { 
-        from { 
-            opacity: 0; 
-            transform: translateY(20px); 
-        } to { 
-            opacity: 1; 
-            transform: translateY(0); 
-        } 
-    }
-    .animate-in { 
-        animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
-    }
-
     /* Scrollbar */
     .tx-list::-webkit-scrollbar { 
         width: 4px; 
@@ -262,7 +248,7 @@
 </style>
 <div class="dash-wrapper">
     
-    <div class="hero-card animate-in">
+    <div class="hero-card">
         <i class="fas fa-chart-line hero-watermark"></i>
         <div class="hero-content">
             <h1 class="font-black text-navy" style="font-size: 2rem; margin-bottom: 0.5rem;">
@@ -274,13 +260,13 @@
         </div>
         
         <?php if($_SESSION['user']->role === 'staff'): ?>
-        <a href="<?= APP_URL ?>/pos" class="btn-hero-action">
+        <a href="<?= APP_URL ?>/posale" class="btn-hero-action">
             <i class="fas fa-shopping-cart"></i> BÁN HÀNG
         </a>
         <?php endif; ?>
     </div>
 
-    <div class="kpi-grid animate-in" style="animation-delay: 0.1s;">
+    <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-header">
                 <div class="icon-square bg-navy"><i class="fas fa-dollar-sign"></i></div>
@@ -312,8 +298,7 @@
         </div>
     </div>
 
-    <div class="main-split animate-in" style="animation-delay: 0.2s;">
-        
+    <div class="main-split">
         <div class="chart-card">
             <div class="card-header-flex">
                 <div>

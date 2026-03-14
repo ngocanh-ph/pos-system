@@ -322,20 +322,9 @@
         border-color: var(--pm-blue); 
         background: white; 
     }
-    .fade-in { 
-        animation: fadeIn 0.3s ease-out; 
-    }
-    @keyframes fadeIn { from { 
-        opacity: 0; 
-        transform: translateY(5px); 
-        } to {
-        opacity: 1; 
-        transform: translateY(0); 
-        } 
-    }
 </style>
 
-<div class="product-wrapper fade-in">
+<div class="product-wrapper">
     <div class="pm-header">
         <div>
             <div class="pm-title">Quản lý sản phẩm</div>

@@ -64,10 +64,11 @@ class User extends Model {
     }
 
     // Cập nhật hồ sơ cá nhân
-    public function updateProfile($id, $fullname, $avatar) {
-        return $this->query("UPDATE {$this->table} SET fullname = :name, avatar = :avatar WHERE id = :id", [
+    public function updateProfile($id, $fullname, $avatar, $phone) {
+        return $this->query("UPDATE {$this->table} SET fullname = :name, avatar = :avatar, phone = :phone WHERE id = :id", [
             'name' => $fullname,
             'avatar' => $avatar,
+            'phone' => $phone,
             'id' => $id
         ]);
     }

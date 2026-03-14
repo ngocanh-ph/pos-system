@@ -24,6 +24,15 @@
             --transition-speed: 0.3s;
         }
 
+        /* KHÓA HOÀN TOÀN ANIMATION KHI LOAD TRANG */
+        .preload * {
+            -webkit-transition: none !important;
+            -moz-transition: none !important;
+            -ms-transition: none !important;
+            -o-transition: none !important;
+            transition: none !important;
+        }
+
         body {
             background-color: var(--bg-body);
             font-family: 'Inter', sans-serif;
@@ -45,8 +54,6 @@
             z-index: 1000;
             transition: width var(--transition-speed) ease;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-            
-            
             overflow-y: auto;
             overflow-x: hidden;
             scrollbar-width: none;  
@@ -250,7 +257,7 @@
             margin: 0 auto 10px auto;
         }
 
-        /*Top Bar & Others */
+        /* Top Bar & Others */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -271,11 +278,18 @@
         }
     </style>
 </head>
-<body>
+<body class="preload">
     <script>
+        // Xử lý logic thu gọn sidebar ngay từ đầu để tránh giật khung hình
         if (sessionStorage.getItem('sidebar-collapsed') === 'true') {
             document.body.classList.add('sidebar-collapsed');
         }
+        // Gỡ bỏ khóa animation ngay sau khi load xong DOM ban đầu
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                document.body.classList.remove('preload');
+            }, 50);
+        });
     </script>
 
     <?php if(isset($_SESSION['user'])): ?>
@@ -301,6 +315,7 @@
                     <i class="fas fa-shopping-basket"></i> <span>Bán hàng</span>
                 </a>
                 <?php endif; ?>
+                
                 <a href="<?= APP_URL ?>/products" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/products') !== false) ? 'active' : '' ?>" title="Sản phẩm">
                     <i class="fas fa-box"></i> <span>Sản phẩm</span>
                 </a>
@@ -313,6 +328,7 @@
                     <i class="fas fa-users"></i> <span>Nhân viên</span>
                 </a>
                 <?php endif; ?>
+                
                 <a href="<?= APP_URL ?>/reports" class="nav-link <?= (strpos($_SERVER['REQUEST_URI'], '/reports') !== false) ? 'active' : '' ?>" title="Báo cáo">
                     <i class="fas fa-chart-bar"></i> <span>Báo cáo</span>
                 </a>
@@ -326,7 +342,7 @@
                     <img src="<?= APP_URL ?>/uploads/logoMAV.png" class="user-avatar" alt="Avatar">
                     <div class="user-info">
                         <h6>Hệ thống Quản trị</h6>
-                        <span><?= htmlspecialchars($_SESSION['user']->fullname) ?></span>
+                        <span><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></span>
                     </div>
                 </div>
                 <a href="<?= APP_URL ?>/logout" class="btn-logout" title="Đăng xuất">
@@ -354,7 +370,6 @@
         <?php require $viewFile; ?>
     <?php endif; ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#sidebarToggle').click(function() {

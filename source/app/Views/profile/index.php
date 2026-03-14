@@ -198,6 +198,7 @@
         align-items: center; 
         justify-content: center;
         color: var(--p-icon-gray);
+        cursor: pointer;
     }
     .eye-toggle:hover { color: var(--p-navy); }
 
@@ -230,35 +231,9 @@
         background-color: var(--p-navy); 
         color: white;
     }
-
-    /* Toast */
-    .toast-custom {
-        position: fixed; 
-        top: -80px; 
-        left: 50%; 
-        transform: translateX(-50%);
-        background: #011628e6; 
-        color: white;
-        padding: 12px 24px; 
-        border-radius: 50px;
-        font-weight: 600; 
-        font-size: 0.9rem;
-        display: flex; 
-        align-items: center; 
-        gap: 10px;
-        z-index: 9999; 
-        transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .toast-custom.show { 
-        top: 30px; 
-        }
 </style>
 
 <div class="profile-wrapper">
-    <div id="toast" class="toast-custom">
-        <i class="fas fa-check-circle text-success"></i> <span id="toastMsg">Thành công</span>
-    </div>
-
     <div class="hero-card">
         <div class="avatar-area">
             <img id="avatarPreview" src="<?= APP_URL ?>/uploads/<?= $_SESSION['user']->avatar ?? 'default_avatar.png' ?>" class="avatar-img">
@@ -301,7 +276,7 @@
                     <div class="mb-4">
                         <label class="label-caps">ĐIỆN THOẠI</label>
                         <div class="input-wrapper">
-                            <input type="text" class="form-input" name="phone" value="<?= htmlspecialchars($_SESSION['user']->phone ?? '0123456789') ?>">
+                            <input type="text" class="form-input" name="phone" value="<?= htmlspecialchars($_SESSION['user']->phone ?? '') ?>">
                             <div class="field-icon"><i class="fas fa-phone-alt" style="font-size: 0.9rem"></i></div>
                         </div>
                     </div>
@@ -321,6 +296,15 @@
 
                 <form id="securityForm">
                     <div class="mb-4">
+                        <label class="label-caps">MẬT KHẨU HIỆN TẠI</label>
+                        <div class="input-wrapper">
+                            <input type="password" class="form-input" id="currentPass" name="current_password" placeholder="••••••••" required>
+                            <div class="field-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="eye-toggle" onclick="togglePass('currentPass')"><i class="far fa-eye"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
                         <label class="label-caps">MẬT KHẨU MỚI</label>
                         <div class="input-wrapper">
                             <input type="password" class="form-input" id="newPass" name="new_password" placeholder="••••••••" required>
@@ -328,17 +312,7 @@
                             <div class="eye-toggle" onclick="togglePass('newPass')"><i class="far fa-eye"></i></div>
                         </div>
                     </div>
-
-                    <div class="mb-4">
-                        <label class="label-caps">XÁC NHẬN</label>
-                        <div class="input-wrapper">
-                            <input type="password" class="form-input" id="confirmPass" name="confirm_password" placeholder="••••••••" required>
-                            <div class="field-icon"><i class="fas fa-shield-alt"></i></div>
-                        </div>
-                    </div>
                     
-                    <input type="hidden" name="current_password" value="demo_bypass"> 
-
                     <button type="submit" class="btn-action btn-navy mt-3">
                         ĐỔI MẬT KHẨU
                     </button>
@@ -349,7 +323,20 @@
     </div>
 </div>
 
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    <div id="profileActionToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="profileToastMessage" style="font-weight: 500; font-size: 0.95rem;">
+                Thành công!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <script>
+    const BASE_URL = "<?= APP_URL ?>";
+    
     $('#avatarUpload').change(function() {
         const file = this.files[0];
         if (file) {
@@ -364,14 +351,28 @@
         input.type = input.type === 'password' ? 'text' : 'password';
     }
 
+    // HÀM SHOW TOAST MỚI (Sử dụng Bootstrap Toast giống trang Sản phẩm)
     function showToast(msg, isError = false) {
-        const toast = $('#toast');
-        $('#toastMsg').text(msg);
-        toast.find('i').attr('class', isError ? 'fas fa-times-circle text-danger' : 'fas fa-check-circle text-success');
-        toast.addClass('show');
-        setTimeout(() => toast.removeClass('show'), 3000);
+        const toastEl = document.getElementById('profileActionToast');
+        if (toastEl) {
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            
+            // Xử lý đổi màu (xanh cho thành công, đỏ cho lỗi)
+            if (isError) {
+                $('#profileActionToast').removeClass('bg-success').addClass('bg-danger');
+            } else {
+                $('#profileActionToast').removeClass('bg-danger').addClass('bg-success');
+            }
+            
+            // Gắn chữ và hiển thị
+            $('#profileToastMessage').text(msg);
+            toast.show();
+        } else {
+            alert((isError ? "LỖI: " : "THÀNH CÔNG: ") + msg);
+        }
     }
 
+    // XỬ LÝ FORM LƯU HỒ SƠ
     $('#infoForm').submit(function(e) {
         e.preventDefault();
         const btn = $(this).find('button');
@@ -380,17 +381,20 @@
         btn.prop('disabled', true).text('Đang lưu...');
         
         $.ajax({
-            url: '/profile/update-info',
+            url: BASE_URL + '/profile/update-info',
             type: 'POST',
             data: formData,
             contentType: false, processData: false,
             success: function(res) {
                 if(res.success) { 
-                    showToast(res.message); 
+                    showToast("Cập nhật hồ sơ thành công!"); 
                     $('.hero-info h1').text($('input[name="fullname"]').val()); 
                 } else { 
                     showToast(res.message, true); 
                 }
+            },
+            error: function() {
+                showToast("Có lỗi xảy ra khi kết nối máy chủ", true);
             },
             complete: function() { 
                 btn.prop('disabled', false).text('LƯU HỒ SƠ'); 
@@ -398,28 +402,27 @@
         });
     });
 
+    // XỬ LÝ FORM ĐỔI MẬT KHẨU
     $('#securityForm').submit(function(e) {
         e.preventDefault();
-        const p1 = $('#newPass').val();
-        const p2 = $('#confirmPass').val();
-        if(p1 !== p2) { showToast('Mật khẩu xác nhận không khớp', true); return; }
-
+        
         const btn = $(this).find('button');
-        const currentPass = prompt("Vui lòng nhập mật khẩu hiện tại để xác nhận:");
-        if(!currentPass) return;
-
-        const data = $(this).serialize() + "&current_password=" + encodeURIComponent(currentPass);
+        const data = $(this).serialize();
         
-        btn.prop('disabled', true).text('Xử lý...');
+        btn.prop('disabled', true).text('Đang xử lý...');
         
-        $.post('/profile/change-password', data, function(res) {
-            if(res.success) { 
-                showToast(res.message); 
+        $.post(BASE_URL + '/profile/change-password', data, function(res) {
+            if(res.success) {
+                showToast("Cập nhật mật khẩu thành công!"); 
                 $('#securityForm')[0].reset(); 
             } else { 
                 showToast(res.message, true); 
             }
-        }, 'json').always(function() { 
+        }, 'json')
+        .fail(function() {
+            showToast("Có lỗi xảy ra khi kết nối máy chủ", true);
+        })
+        .always(function() { 
             btn.prop('disabled', false).text('ĐỔI MẬT KHẨU'); 
         });
     });

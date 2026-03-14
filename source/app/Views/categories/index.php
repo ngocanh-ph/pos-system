@@ -211,20 +211,9 @@
         box-shadow: 0 0 0 3px #0443771a;
     }
     
-    .fade-in { 
-        animation: fadeIn 0.4s ease-out; 
-    }
-    @keyframes fadeIn { from { 
-        opacity: 0; 
-        transform: translateY(10px); 
-        } to { 
-            opacity: 1; 
-            transform: translateY(0); 
-            } 
-        }
 </style>
 
-<div class="category-wrapper fade-in">
+<div class="category-wrapper">
     <div class="pm-header">
         <div>
             <div class="pm-title">Quản lý danh mục</div>
