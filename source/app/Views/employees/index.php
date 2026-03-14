@@ -490,7 +490,7 @@
 
 <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius: var(--radius-card); border: none; box-shadow: var(--shadow-card);">
+        <div class="modal-content" style="border-radius: var(--radius-card); border: none; box-shadow: var(--shadow-card); overflow: hidden;">
             <div class="modal-header" style="background-color: var(--emp-bg); border-bottom: none; padding: 1.5rem 1.5rem 0.5rem;">
                 <h5 class="modal-title" style="color: var(--emp-navy); font-weight: 700;">
                     LỊCH SỬ BÁN HÀNG

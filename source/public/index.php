@@ -11,14 +11,6 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $base = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 $path = substr($path, strlen($base));
 
-if ($path === '/' || $path === '') {
-    if (!isset($_SESSION['user'])) {
-        header("Location: " . APP_URL . "/login");
-    } else {
-        header("Location: " . APP_URL . "/dashboard");
-    }
-    exit;
-}
 
 // Autoload Core
 require_once __DIR__ . '/../app/Core/Router.php';
@@ -37,7 +29,6 @@ spl_autoload_register(function ($class) {
 // Init Router
 $router = new Router();
 
-// Define Routes
 // Auth
 $router->get('/', ['AuthController', 'login']); 
 $router->get('/login', ['AuthController', 'login']);

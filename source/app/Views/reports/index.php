@@ -28,55 +28,264 @@
         color: var(--r-navy); 
         padding: 1.5rem; 
         min-height: 100vh; 
+        width: 100%;
+        overflow-x: hidden;
     }
-    .font-black { font-weight: 900; letter-spacing: -0.02em; }
-    .text-navy { color: var(--r-navy); }
-    .text-indigo { color: var(--r-indigo); }
-
-    .report-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
-    .report-title { font-size: 1.8rem; line-height: 1.2; margin-bottom: 0.25rem; }
-    .report-subtitle { font-size: 0.85rem; font-weight: 500; color: #64748b; }
-    
-    .multi-filter-bar { display: flex; gap: 0.75rem; background: var(--r-white); padding: 0.35rem; border-radius: 1.5rem; box-shadow: var(--shadow-elevation); align-items: center; }
-    .filter-select { border: none; background: #F8FAFC; padding: 0.5rem 1rem; border-radius: var(--r-radius-sm); font-weight: 600; color: var(--r-navy); font-size: 0.875rem; outline: none; }
-    .filter-select:hover { background: #e2e8f0; }
+    .font-black { 
+        font-weight: 900; 
+        letter-spacing: -0.02em; 
+    }
+    .text-navy { 
+        color: var(--r-navy); 
+    }
+    .text-indigo { 
+        color: var(--r-indigo); 
+    }
+    .report-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-end; 
+        margin-bottom: 1.5rem; 
+        flex-wrap: wrap; 
+        gap: 1rem; 
+    }
+    .report-title { 
+        font-size: 1.8rem; 
+        line-height: 1.2; 
+        margin-bottom: 0.25rem; 
+    }
+    .report-subtitle { 
+        font-size: 0.85rem; 
+        font-weight: 500; 
+        color: #64748b; 
+    }
+    .multi-filter-bar { 
+        display: flex; 
+        gap: 0.75rem; 
+        background: var(--r-white); 
+        padding: 0.35rem; 
+        border-radius: 1.5rem; 
+        box-shadow: var(--shadow-elevation); 
+        align-items: center; 
+    }
+    .filter-select { 
+        border: none; 
+        background: #F8FAFC; 
+        padding: 0.5rem 1rem; 
+        border-radius: var(--r-radius-sm); 
+        font-weight: 600; 
+        color: var(--r-navy); 
+        font-size: 0.875rem; 
+        outline: none; 
+    }
+    .filter-select:hover { 
+        background: #e2e8f0; 
+    }
 
     /* KPI CARDS */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
-    .kpi-card { background: var(--r-white); border-radius: var(--r-radius); padding: 1.25rem; position: relative; overflow: hidden; box-shadow: var(--shadow-elevation); transition: transform 0.2s; }
-    .kpi-card:hover { transform: translateY(-3px); }
-    .kpi-label { font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: #64748b; display: block; margin-bottom: 0.5rem; }
-    .kpi-value { font-size: 1.875rem; font-weight: 800; line-height: 1; margin-top: 0.5rem; }
-    .kpi-icon-bg { position: absolute; bottom: -5px; right: -5px; font-size: 4rem; opacity: 0.05; transform: rotate(-15deg); }
+    .kpi-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        gap: 1.5rem; 
+        margin-bottom: 1.5rem; 
+    }
+    .kpi-card { 
+        background: var(--r-white); 
+        border-radius: var(--r-radius); 
+        padding: 1.25rem; 
+        position: relative; 
+        overflow: hidden; 
+        box-shadow: var(--shadow-elevation); 
+        transition: transform 0.2s; 
+    }
+    .kpi-card:hover { 
+        transform: translateY(-3px); 
+    }
+    .kpi-label {
+        font-size: 0.65rem; 
+        font-weight: 900; 
+        text-transform: uppercase; 
+        color: #64748b;
+        display: block; 
+        margin-bottom: 0.5rem; 
+    }
+    .kpi-value { 
+        font-size: 1.875rem; 
+        font-weight: 800; 
+        line-height: 1; 
+        margin-top: 0.5rem; 
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .kpi-icon-bg { 
+        position: absolute; 
+        bottom: -5px; 
+        right: -5px; 
+        font-size: 4rem; 
+        opacity: 0.05; 
+        transform: rotate(-15deg); 
+    }
     
     /* CHART SECTION */
-    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    .chart-box { background: var(--r-white); border-radius: var(--r-radius); padding: 1.5rem; box-shadow: var(--shadow-elevation); height: auto; min-height: 450px; display: flex; flex-direction: column; }
-    .chart-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-    .chart-title { font-weight: 700; color: var(--r-navy); font-size: 1rem; }
-    .chart-container { position: relative; flex-grow: 1; width: 100%; min-height: 350px; }
+    .charts-row { 
+        display: grid; 
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); 
+        gap: 1.5rem; 
+        margin-bottom: 1.5rem; 
+    }
+    .chart-box { 
+        background: var(--r-white); 
+        border-radius: var(--r-radius); 
+        padding: 1.5rem; 
+        box-shadow: var(--shadow-elevation); 
+        height: auto; 
+        min-height: 400px; 
+        display: flex; 
+        flex-direction: column; 
+    }
+    .chart-header { 
+        display: flex; 
+        justify-content: space-between; 
+        margin-bottom: 1rem; 
+    }
+    .chart-title { 
+        font-weight: 700; 
+        color: var(--r-navy); 
+        font-size: 1rem; 
+    }
+    .chart-container { 
+        position: relative; 
+        flex-grow: 1; 
+        width: 100%; 
+        min-height: 350px; 
+    }
 
     /* TABLE */
-    .audit-box { background: var(--r-white); border-radius: var(--r-radius); overflow: hidden; box-shadow: var(--shadow-elevation); }
-    .audit-table { width: 100%; border-collapse: collapse; }
-    .audit-table th { background: #F1F5F9; padding: 0.75rem 1.5rem; font-size: 0.65rem; font-weight: 900; text-transform: uppercase; color: #64748b; text-align: left; }
-    .audit-table td { padding: 0.75rem 1.5rem; border-bottom: 1px solid #f1f5f9; font-weight: 500; color: var(--r-navy); font-size: 0.85rem; }
-    .btn-audit-detail { background: #e0f2fe; color: var(--r-indigo); border: none; padding: 0.35rem 0.85rem; border-radius: 0.75rem; font-weight: 700; font-size: 0.7rem; }
+    .audit-box { 
+        background: var(--r-white); 
+        border-radius: var(--r-radius); 
+        overflow: hidden; 
+        box-shadow: var(--shadow-elevation); 
+        width: 100%; 
+        overflow-x: auto; 
+    }
+    .audit-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        white-space: nowrap; 
+    }
+    .audit-table th { 
+        background: #F1F5F9; 
+        padding: 0.75rem 1.5rem; 
+        font-size: 0.65rem; 
+        font-weight: 900; 
+        text-transform: uppercase; 
+        color: #64748b; 
+        text-align: left; 
+    }
+    .audit-table td { 
+        padding: 0.75rem 1.5rem; 
+        border-bottom: 1px solid #f1f5f9; 
+        font-weight: 500; 
+        color: var(--r-navy); 
+        font-size: 0.85rem; 
+    }
+    .btn-audit-detail { 
+        background: #e0f2fe; 
+        color: var(--r-indigo); 
+        border: none; 
+        padding: 0.35rem 0.85rem; 
+        border-radius: 0.75rem; 
+        font-weight: 700; 
+        font-size: 0.7rem; 
+    }
 
     /* DATE MODAL */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #01162899; backdrop-filter: blur(4px); z-index: 9999; display: none; align-items: center; justify-content: center; }
-    .date-picker-modal { background: white; border-radius: 1.5rem; width: auto; max-width: 95%; box-shadow: 0 25px 50px -12px #00000040; overflow: hidden; animation: modalFadeIn 0.3s ease; display: flex; flex-direction: column; align-items: center; }
-    .modal-body-dp { padding: 1.5rem; display: flex; justify-content: center; }
-    .flatpickr-calendar { box-shadow: none !important; margin: 0 !important; }
-    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { background: var(--r-indigo) !important; border-color: var(--r-indigo) !important; }
-    .flatpickr-day.inRange { background: #e0f2fe !important; border-color: #e0f2fe !important; color: var(--r-navy) !important; box-shadow: -5px 0 0 #e0f2fe, 5px 0 0 #e0f2fe !important; }
-    .modal-footer-dp { width: 100%; padding: 1rem 1.5rem; display: flex; justify-content: center; gap: 1rem; background: #F8FAFC; border-top: 1px solid #f1f5f9; }
-    .btn-cancel { padding: 0.6rem 1.5rem; border-radius: 0.75rem; border: 1px solid #cbd5e1; background: white; font-weight: 600; color: #64748b; }
-    .btn-apply { padding: 0.6rem 2rem; border-radius: 0.75rem; border: none; background: var(--r-indigo); font-weight: 600; color: white; transition: 0.2s; }
-    .btn-apply:hover { background: var(--r-navy); transform: translateY(-1px); }
-    @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .modal-overlay { 
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: #01162899; 
+        backdrop-filter: blur(4px); 
+        z-index: 9999; 
+        display: none; 
+        align-items: center; 
+        justify-content: center; 
+    }
+    .date-picker-modal { 
+        background: white; 
+        border-radius: 1.5rem; 
+        width: auto; 
+        max-width: 95%; 
+        box-shadow: 0 25px 50px -12px #00000040; 
+        overflow: hidden; 
+        animation: 
+        modalFadeIn 0.3s ease; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+    }
+    .modal-body-dp { 
+        padding: 1.5rem; 
+        display: flex; 
+        justify-content: center; 
+    }
+    .flatpickr-calendar { 
+        box-shadow: none !important; 
+        margin: 0 !important; 
+    }
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange { 
+        background: var(--r-indigo) !important; 
+        border-color: var(--r-indigo) !important; 
+    }
+    .flatpickr-day.inRange { 
+        background: #e0f2fe !important; 
+        border-color: #e0f2fe !important; 
+        color: var(--r-navy) !important; 
+        box-shadow: -5px 0 0 #e0f2fe, 5px 0 0 #e0f2fe !important; 
+    }
+    .modal-footer-dp { 
+        width: 100%; 
+        padding: 1rem 1.5rem; 
+        display: flex; 
+        justify-content: center; 
+        gap: 1rem; 
+        background: #F8FAFC; 
+        border-top: 1px solid #f1f5f9; 
+    }
+    .btn-cancel {
+        padding: 0.6rem 1.5rem; 
+        border-radius: 0.75rem; 
+        border: 1px solid #cbd5e1; 
+        background: white; 
+        font-weight: 600; 
+        color: #64748b; 
+    }
+    .btn-apply { 
+        padding: 0.6rem 2rem; 
+        border-radius: 0.75rem; 
+        border: none; 
+        background: var(--r-indigo); 
+        font-weight: 600; 
+        color: white; 
+        transition: 0.2s; 
+    }
+    .btn-apply:hover { 
+        background: var(--r-navy); 
+        transform: translateY(-1px); 
+    }
+    @keyframes modalFadeIn { from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+    } to { 
+        opacity: 1; 
+        transform: scale(1); 
+    } }
     
-    /* RECEIPT MODAL (THIẾT KẾ MỚI) */
+    /* RECEIPT MODAL*/
     .receipt-modal {
         border-radius: 20px;
         border: none;
@@ -100,7 +309,7 @@
     }
     .receipt-table tr:last-child td { border-bottom: none; }
     
-    @media (max-width: 992px) { .charts-row { grid-template-columns: 1fr; } }
+    @media (max-width: 992px) { .charts-row { grid-template-columns: minmax(0, 1fr); } }
 </style>
 
 <div class="report-wrapper">
@@ -157,7 +366,7 @@
             <div class="chart-header">
                 <div class="chart-title">Biểu đồ Doanh thu & Lợi nhuận</div>
             </div>
-            <div class="chart-container">
+            <div class="chart-container" style="position: relative; width: 100%; flex-grow: 1; min-height: 0;">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
@@ -166,7 +375,7 @@
             <div class="chart-header">
                 <div class="chart-title">Cơ cấu Danh mục</div>
             </div>
-            <div class="chart-container" style="display: flex; align-items: center; justify-content: center;">
+            <div class="chart-container" style="display: flex; align-items: center; justify-content: center; position: relative; width: 100%; flex-grow: 1; min-height: 0;">
                  <canvas id="categoryChart"></canvas>
             </div>
         </div>
@@ -447,8 +656,50 @@
 
         categoryChartInstance = new Chart(ctx, {
             type: 'doughnut',
-            data: { labels: labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#ffffff', hoverOffset: 4 }] },
-            options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { usePointStyle: true, pointStyle: 'circle', padding: 15, font: { size: 11 } } } } }
+            data: { 
+                labels: labels, 
+                datasets: [{ 
+                    data: values, 
+                    backgroundColor: colors, 
+                    borderWidth: 2, 
+                    borderColor: '#ffffff', 
+                    hoverOffset: 6 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                cutout: '75%', 
+                layout: {
+                    padding: { top: 10, bottom: 20 }
+                },
+                plugins: { 
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { 
+                            usePointStyle: true, 
+                            pointStyle: 'circle', 
+                            padding: 20, 
+                            font: { size: 12, family: 'Inter', weight: '500' } 
+                        } 
+                    },
+                    tooltip: {
+                        backgroundColor: '#011628f2',
+                        titleFont: { family: 'Inter', size: 13 },
+                        bodyFont: { family: 'Inter', size: 12 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) { label += ': '; }
+                                label += context.raw + ' sản phẩm';
+                                return label;
+                            }
+                        }
+                    }
+                } 
+            }
         });
     }
 

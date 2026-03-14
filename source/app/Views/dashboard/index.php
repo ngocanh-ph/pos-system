@@ -20,6 +20,9 @@
         color: var(--d-navy);
         padding: 0;
         min-height: 85vh;
+        /* Đảm bảo wrapper không bị tràn */
+        width: 100%;
+        overflow-x: hidden;
     }
 
     .font-black { 
@@ -93,7 +96,8 @@
 
     .kpi-grid {
         display: grid; 
-        grid-template-columns: repeat(3, 1fr);
+        /* FIX: Dùng minmax(0, 1fr) thay vì 1fr để thẻ tự ép nhỏ lại khi sidebar mở ra */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1.5rem; margin-bottom: 1.5rem;
     }
 
@@ -108,13 +112,15 @@
     }
     .kpi-card:hover { 
         transform: translateY(-4px); 
-        box-shadow: var(--d-shadow-hover); }
+        box-shadow: var(--d-shadow-hover); 
+    }
 
     .kpi-header { 
         display: flex; 
         justify-content: space-between; 
         align-items: flex-start; 
-        margin-bottom: 1rem; }
+        margin-bottom: 1rem; 
+    }
     
     .icon-square {
         width: 48px; 
@@ -127,25 +133,24 @@
         color: white;
         box-shadow: 0 8px 16px -4px #00000033;
     }
-    .bg-navy { 
-        background: var(--d-navy); 
-    }
-    .bg-indigo { 
-        background: var(--d-indigo); 
-    }
-    .bg-emerald { 
-        background: var(--d-emerald); 
-    }
+    .bg-navy { background: var(--d-navy); }
+    .bg-indigo { background: var(--d-indigo); }
+    .bg-emerald { background: var(--d-emerald); }
     
     .kpi-value { 
         font-size: 2rem; 
         line-height: 1; 
         margin-top: 0.5rem; 
+        /* Cắt chữ nếu dài quá để tránh tràn */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .main-split {
         display: grid; 
-        grid-template-columns: 2fr 1fr;
+        /* FIX: Áp dụng tương tự cho chia cột 2/1 */
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: 1.5rem;
     }
 
@@ -156,6 +161,8 @@
         box-shadow: var(--d-shadow-card);
         border: 1px solid #b0dafd4d;
         height: 380px;
+        display: flex;
+        flex-direction: column;
     }
     
     .feed-card {
@@ -177,7 +184,8 @@
     .tx-list { 
         flex-grow: 1; 
         overflow-y: auto; 
-        padding-right: 4px; }
+        padding-right: 4px; 
+    }
     
     .tx-item {
         display: flex; 
@@ -231,21 +239,17 @@
     }
 
     /* Scrollbar */
-    .tx-list::-webkit-scrollbar { 
-        width: 4px; 
-    }
-    .tx-list::-webkit-scrollbar-thumb { 
-        background: #CBD5E1; 
-        border-radius: 4px; 
-    }
+    .tx-list::-webkit-scrollbar { width: 4px; }
+    .tx-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
 
     /* Responsive */
     @media (max-width: 1024px) {
-        .kpi-grid { grid-template-columns: 1fr; }
-        .main-split { grid-template-columns: 1fr; }
+        .kpi-grid { grid-template-columns: minmax(0, 1fr); }
+        .main-split { grid-template-columns: minmax(0, 1fr); }
         .hero-watermark { font-size: 100px; }
     }
 </style>
+
 <div class="dash-wrapper">
     
     <div class="hero-card">
@@ -305,8 +309,8 @@
                     <span class="meta-label">Phân tích</span>
                     <h5 class="font-black text-navy m-0">Hiệu suất bán hàng</h5>
                 </div>
-                </div>
-            <div style="height: 280px; width: 100%;">
+            </div>
+            <div style="position: relative; width: 100%; flex-grow: 1; min-height: 0;">
                 <canvas id="revenueChart"></canvas>
             </div>
         </div>
@@ -349,14 +353,12 @@
                 </a>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const ctx = document.getElementById('revenueChart').getContext('2d');
-    
     
     let gradient = ctx.createLinearGradient(0, 0, 0, 300);
     gradient.addColorStop(0, '#04437733');   
@@ -386,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Bắt buộc false để chart co giãn chuẩn theo div
             plugins: {
                 legend: { display: false },
                 tooltip: {

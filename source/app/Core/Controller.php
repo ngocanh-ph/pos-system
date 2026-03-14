@@ -8,11 +8,8 @@ use PHPMailer\PHPMailer\Exception;
 class Controller {
 
     public function view($view, $data = []) {
-        // Middleware: Force password change check
         $this->checkForcePasswordChange();
-        // Giải nén dữ liệu để view có thể dùng biến $data
         extract($data);
-        // Xác định đường dẫn file nội dung (ví dụ: dashboard/index.php)
         $viewFile = __DIR__ . '/../Views/' . $view . '.php';
 
         if (file_exists($viewFile)) {
@@ -21,11 +18,14 @@ class Controller {
             die("View does not exist: " . $view);
         }
     }
-    public function redirect($url) {
-        header("Location: " . APP_URL . $url);
-        exit;
+  public function redirect($url) {
+    if (strpos($url, 'http') === 0) {
+        header("Location: " . $url);
+    } else {
+        header("Location: " . rtrim(APP_URL, '/') . '/' . ltrim($url, '/'));
     }
-
+    exit;
+}
     public function json($data, $status = 200) {
         header('Content-Type: application/json');
         http_response_code($status);

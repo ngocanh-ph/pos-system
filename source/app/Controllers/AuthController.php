@@ -134,18 +134,11 @@ $password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập pas
         exit; 
     }
     public function logout() {
-        // Khởi động session nếu chưa có 
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Xóa tất cả dữ liệu trong session
-        $_SESSION = [];
-
-        // Hủy session trên server
-        session_destroy();
-        // Chuyển hướng về trang đăng nhập
-        header('Location: /login'); 
-        exit;
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
+    $_SESSION = [];
+    session_destroy();
+    $this->redirect('/login');
+}
 }

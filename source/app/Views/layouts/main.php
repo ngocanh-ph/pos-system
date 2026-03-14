@@ -345,7 +345,7 @@
                         <span><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></span>
                     </div>
                 </div>
-                <a href="<?= APP_URL ?>/logout" class="btn-logout" title="Đăng xuất">
+                <a href="<?= APP_URL ?>/login" class="btn-logout" title="Đăng xuất">
                     <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
                 </a>
             </div>
