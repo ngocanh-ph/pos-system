@@ -252,10 +252,6 @@
         box-shadow: 0 25px 50px -12px #01162833;
         padding: 0.5rem; 
     }
-    .modal-backdrop.show { 
-        backdrop-filter: blur(4px); 
-        background-color: #01162880; }
-    
     .modal-header { 
         border-bottom: none; 
         padding: 1.5rem 1.5rem 0.5rem; 

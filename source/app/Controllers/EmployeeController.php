@@ -183,4 +183,26 @@ class EmployeeController extends Controller {
         
         $this->json(['success' => true]);
     }
+
+    // THÊM HÀM HISTORY Ở ĐÂY ĐỂ XỬ LÝ LỖI KHÔNG KẾT NỐI ĐƯỢC MÁY CHỦ
+    public function history() {
+        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
+            $this->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            return; 
+        }
+
+        $employeeId = $_GET['id'] ?? null;
+        if (!$employeeId) {
+            $this->json(['success' => false, 'message' => 'Thiếu ID nhân viên']);
+            return;
+        }
+
+        require_once __DIR__ . '/../Models/Order.php';
+        $orderModel = new Order();
+        
+        // Lấy danh sách order của nhân viên
+        $orders = $orderModel->getOrdersByEmployee($employeeId);
+
+        $this->json(['success' => true, 'data' => $orders]);
+    }
 }

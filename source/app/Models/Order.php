@@ -3,6 +3,7 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Order extends Model {
     protected $table = 'orders';
+
     public function getByIdWithDetails($id) {
         $sql = "SELECT o.*, c.name as customer_name, c.phone, c.address, u.fullname as staff_name 
                 FROM orders o 
@@ -11,6 +12,7 @@ class Order extends Model {
                 WHERE o.id = :id";
         return $this->query($sql, ['id' => $id])->fetch();
     }
+
     public function getItemsByOrderId($id) {
         $sql = "SELECT oi.*, p.name as product_name 
                 FROM order_items oi 
@@ -18,12 +20,14 @@ class Order extends Model {
                 WHERE oi.order_id = :id";
         return $this->query($sql, ['id' => $id])->fetchAll();
     }
+
     public function createOrder($data) {
         $sql = "INSERT INTO {$this->table} (customer_id, user_id, total_amount, amount_paid, change_amount) 
                 VALUES (:customer_id, :user_id, :total_amount, :amount_paid, :change_amount)";
         $this->db->prepare($sql)->execute($data);
         return $this->db->lastInsertId();
     }
+
     public function addOrderItem($data) {
         $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) 
                 VALUES (:order_id, :product_id, :quantity, :unit_price, :total_price)";
@@ -43,7 +47,6 @@ class Order extends Model {
                      FROM orders o $whereSql";
         $basic = $this->query($sqlBasic, $params)->fetch();
 
-  
         $sqlProd = "SELECT COALESCE(SUM(oi.quantity), 0) as total_products, 
                            COALESCE(SUM(oi.quantity * p.import_price), 0) as total_cost
                     FROM orders o 
@@ -59,7 +62,6 @@ class Order extends Model {
             'profit'  => (float)$basic->revenue - (float)$prod->total_cost
         ];
     }
-
 
     public function getChartData($startDate, $endDate, $mode = 'day', $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
@@ -87,7 +89,6 @@ class Order extends Model {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function getCategoryStats($startDate, $endDate, $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -108,7 +109,6 @@ class Order extends Model {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-   
     public function getOrdersByRange($startDate, $endDate, $staffId = null) {
         $params = ['start' => $startDate, 'end' => $endDate];
         $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
@@ -134,5 +134,20 @@ class Order extends Model {
                 ORDER BY o.created_at DESC 
                 LIMIT " . (int)$limit;
         return $this->db->query($sql)->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function getOrdersByEmployee($employeeId) {
+        $sql = "SELECT o.id, 
+                       DATE_FORMAT(o.created_at, '%d/%m') as created_at, 
+                       o.total_amount, 
+                       c.name as customer_name 
+                FROM {$this->table} o 
+                LEFT JOIN customers c ON o.customer_id = c.id 
+                WHERE o.user_id = :employee_id 
+                ORDER BY o.created_at DESC";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['employee_id' => $employeeId]);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }

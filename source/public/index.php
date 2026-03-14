@@ -67,6 +67,7 @@ $router->get('/posale/invoice', ['PosController', 'printInvoice']);
 
 // Employees
 $router->get('/employees', ['EmployeeController', 'index']);
+$router->get('/employees/history', ['EmployeeController', 'history']);
 $router->post('/employees/store', ['EmployeeController', 'store']);
 $router->post('/employees/resend-email', ['EmployeeController', 'resendEmail']);
 $router->post('/employees/toggle-status', ['EmployeeController', 'toggleStatus']);
