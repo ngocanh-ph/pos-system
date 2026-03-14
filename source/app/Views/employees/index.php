@@ -425,7 +425,7 @@
                         </button>
                     <?php endif; ?>
                     
-                    <button class="btn-action btn-history">
+                    <button class="btn-action btn-history" onclick="viewHistory(<?= $emp->id ?>, '<?= htmlspecialchars($emp->fullname) ?>')">
                         <i class="fas fa-history"></i> Lịch sử
                     </button>
 
@@ -497,7 +497,37 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--radius-card); border: none; box-shadow: var(--shadow-card);">
+            <div class="modal-header" style="background-color: var(--emp-bg); border-bottom: none; padding: 1.5rem 1.5rem 0.5rem;">
+                <h5 class="modal-title" style="color: var(--emp-navy); font-weight: 700;">
+                    LỊCH SỬ BÁN HÀNG
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem;">
+                <p style="font-size: 1.1rem; color: var(--emp-indigo); border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 15px;">
+                    Nhân viên: <strong id="historyEmployeeName"></strong>
+                </p>
+                <div class="table-responsive">
+                    <table class="table align-middle text-center">
+                        <thead style="background-color: var(--emp-navy); color: white;">
+                            <tr>
+                                <th>HĐ</th>
+                                <th>Thời gian</th>
+                                <th>Khách</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     let staffModal;
 
@@ -622,4 +652,47 @@
             }
         }, 'json');
     }
+    let historyModal;
+
+function viewHistory(employeeId, employeeName) {
+    // Set tên nhân viên lên modal
+    $('#historyEmployeeName').text(employeeName);
+    $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-muted">Đang tải dữ liệu...</td></tr>');
+    
+    // Mở modal
+    if (!historyModal) {
+        historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
+    }
+    historyModal.show();
+
+    // Gọi AJAX lấy lịch sử bán hàng
+    $.get('<?= APP_URL ?>/employees/history', { id: employeeId }, function(res) {
+        if (res.success) {
+            let rows = '';
+            if (res.data.length === 0) {
+                rows = '<tr><td colspan="4" class="text-center">Chưa có giao dịch nào.</td></tr>';
+            } else {
+                res.data.forEach(function(order) {
+                    // Format số tiền (vd: 6000000 -> 6M, 2500000 -> 2.5M)
+                    let totalAmount = parseFloat(order.total_amount);
+                    let totalStr = totalAmount >= 1000000 
+                        ? (totalAmount / 1000000).toFixed(1).replace('.0', '') + 'M' 
+                        : new Intl.NumberFormat('vi-VN').format(totalAmount);
+
+                    rows += `<tr>
+                        <td>#${order.id}</td>
+                        <td>${order.created_at}</td>
+                        <td>${order.customer_name || 'Khách lẻ'}</td>
+                        <td class="text-success fw-bold">${totalStr}</td>
+                    </tr>`;
+                });
+            }
+            $('#historyTableBody').html(rows);
+        } else {
+            $('#historyTableBody').html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${res.message}</td></tr>`);
+        }
+    }, 'json').fail(function() {
+        $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-danger">Không thể kết nối đến máy chủ.</td></tr>');
+    });
+}
 </script>
