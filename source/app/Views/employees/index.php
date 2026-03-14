@@ -25,7 +25,7 @@
         min-height: 85vh;
     }
 
-    /*  Header & Action Bar */
+    /* Header & Action Bar */
     .emp-header {
         display: flex; 
         justify-content: space-between; 
@@ -114,6 +114,10 @@
     .status-locked { 
         background: #fff1f2; 
         color: var(--emp-rose); 
+    }
+    .status-pending { 
+        background: #fef3c7; 
+        color: var(--emp-warning); 
     }
 
     /* Profile Section */
@@ -388,11 +392,13 @@
                 $isActive = $emp->status === 'active';
                 $isActivated = $emp->is_first_login == 0; 
             ?>
-            <div class="emp-card" id="card-<?= $emp->id ?>">
-                <?php if($isActive): ?>
-                    <span class="status-ribbon status-active">Đang hoạt động</span>
-                <?php else: ?>
+            <div class="emp-card" id="card-<?= $emp->id ?>" data-activated="<?= $isActivated ? '1' : '0' ?>">
+                <?php if(!$isActive): ?>
                     <span class="status-ribbon status-locked">Bị khóa</span>
+                <?php elseif(!$isActivated): ?>
+                    <span class="status-ribbon status-pending">Chờ kích hoạt</span>
+                <?php else: ?>
+                    <span class="status-ribbon status-active">Đang hoạt động</span>
                 <?php endif; ?>
 
                 <div class="profile-box">
@@ -488,7 +494,8 @@
         </div>
     </div>
 </div>
-<<div class="position-fixed top-0 end-0 p-3" style="z-index: 1055; margin-top: 60px;">
+
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1055; margin-top: 60px;">
     <div id="appToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body fw-bold" id="toastMessage">
@@ -497,6 +504,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: var(--radius-card); border: none; box-shadow: var(--shadow-card);">
@@ -528,6 +536,7 @@
         </div>
     </div>
 </div>
+
 <script>
     let staffModal;
 
@@ -612,16 +621,23 @@
                 const card = $(`#card-${id}`);
                 const btn = card.find(`button[onclick="toggleStatus(${id}, '${status}')"]`);
                 const ribbon = card.find('.status-ribbon');
+                
+                // Lấy trạng thái kích hoạt từ attribute
+                const isActivated = card.data('activated') == '1';
 
                 if (status === 'locked') {
                     // Cập nhật giao diện thành Bị Khóa
-                    ribbon.removeClass('status-active').addClass('status-locked').text('Bị khóa');
+                    ribbon.removeClass('status-active status-pending').addClass('status-locked').text('Bị khóa');
                     btn.removeClass('btn-lock').addClass('btn-unlock')
                        .attr('onclick', `toggleStatus(${id}, 'active')`)
                        .html('<i class="fas fa-unlock"></i> Mở khóa');
                 } else {
-                    // Cập nhật giao diện thành Đang Hoạt Động
-                    ribbon.removeClass('status-locked').addClass('status-active').text('Đang hoạt động');
+                    // Cập nhật giao diện thành Đang Hoạt Động hoặc Chờ Kích Hoạt
+                    if (isActivated) {
+                        ribbon.removeClass('status-locked status-pending').addClass('status-active').text('Đang hoạt động');
+                    } else {
+                        ribbon.removeClass('status-locked status-active').addClass('status-pending').text('Chờ kích hoạt');
+                    }
                     btn.removeClass('btn-unlock').addClass('btn-lock')
                        .attr('onclick', `toggleStatus(${id}, 'locked')`)
                        .html('<i class="fas fa-lock"></i> Khóa');
@@ -652,47 +668,48 @@
             }
         }, 'json');
     }
+    
     let historyModal;
 
-function viewHistory(employeeId, employeeName) {
-    // Set tên nhân viên lên modal
-    $('#historyEmployeeName').text(employeeName);
-    $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-muted">Đang tải dữ liệu...</td></tr>');
-    
-    // Mở modal
-    if (!historyModal) {
-        historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
-    }
-    historyModal.show();
-
-    // Gọi AJAX lấy lịch sử bán hàng
-    $.get('<?= APP_URL ?>/employees/history', { id: employeeId }, function(res) {
-        if (res.success) {
-            let rows = '';
-            if (res.data.length === 0) {
-                rows = '<tr><td colspan="4" class="text-center">Chưa có giao dịch nào.</td></tr>';
-            } else {
-                res.data.forEach(function(order) {
-                    // Format số tiền (vd: 6000000 -> 6M, 2500000 -> 2.5M)
-                    let totalAmount = parseFloat(order.total_amount);
-                    let totalStr = totalAmount >= 1000000 
-                        ? (totalAmount / 1000000).toFixed(1).replace('.0', '') + 'M' 
-                        : new Intl.NumberFormat('vi-VN').format(totalAmount);
-
-                    rows += `<tr>
-                        <td>#${order.id}</td>
-                        <td>${order.created_at}</td>
-                        <td>${order.customer_name || 'Khách lẻ'}</td>
-                        <td class="text-success fw-bold">${totalStr}</td>
-                    </tr>`;
-                });
-            }
-            $('#historyTableBody').html(rows);
-        } else {
-            $('#historyTableBody').html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${res.message}</td></tr>`);
+    function viewHistory(employeeId, employeeName) {
+        // Set tên nhân viên lên modal
+        $('#historyEmployeeName').text(employeeName);
+        $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-muted">Đang tải dữ liệu...</td></tr>');
+        
+        // Mở modal
+        if (!historyModal) {
+            historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
         }
-    }, 'json').fail(function() {
-        $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-danger">Không thể kết nối đến máy chủ.</td></tr>');
-    });
-}
+        historyModal.show();
+
+        // Gọi AJAX lấy lịch sử bán hàng
+        $.get('<?= APP_URL ?>/employees/history', { id: employeeId }, function(res) {
+            if (res.success) {
+                let rows = '';
+                if (res.data.length === 0) {
+                    rows = '<tr><td colspan="4" class="text-center">Chưa có giao dịch nào.</td></tr>';
+                } else {
+                    res.data.forEach(function(order) {
+                        // Format số tiền (vd: 6000000 -> 6M, 2500000 -> 2.5M)
+                        let totalAmount = parseFloat(order.total_amount);
+                        let totalStr = totalAmount >= 1000000 
+                            ? (totalAmount / 1000000).toFixed(1).replace('.0', '') + 'M' 
+                            : new Intl.NumberFormat('vi-VN').format(totalAmount);
+
+                        rows += `<tr>
+                            <td>#${order.id}</td>
+                            <td>${order.created_at}</td>
+                            <td>${order.customer_name || 'Khách lẻ'}</td>
+                            <td class="text-success fw-bold">${totalStr}</td>
+                        </tr>`;
+                    });
+                }
+                $('#historyTableBody').html(rows);
+            } else {
+                $('#historyTableBody').html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${res.message}</td></tr>`);
+            }
+        }, 'json').fail(function() {
+            $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-danger">Không thể kết nối đến máy chủ.</td></tr>');
+        });
+    }
 </script>
