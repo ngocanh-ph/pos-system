@@ -365,7 +365,7 @@
                 <span style="color: #64748B;"><?= mb_strtoupper($title ?? 'TỔNG QUAN', 'UTF-8') ?></span>
                </div>
                 <div class="current-date">
-                    <?= mb_strtoupper(['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][date('w')] . date(', d \t\h\á\n\g m, Y'), 'UTF-8') ?>
+                    <?= mb_strtoupper(['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][date('w')] . date(', d \t\h\á\n\g m \n\ă\m Y'), 'UTF-8') ?>
                 </div>
             </div>
 
