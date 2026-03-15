@@ -6,22 +6,10 @@ require_once __DIR__ . '/../Models/Category.php';
 class CategoryController extends Controller {
 
     public function __construct() {
-        // Chỉ Admin mới được quản lý danh mục
-        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
-            $this->redirect('/dashboard'); 
-        }
+        $this->requireAdmin();
     }
 
     public function index(){
-        if(!isset($_SESSION['user'])){
-            $this->redirect('/login');
-            return;
-        }
-        //Kiểm tra phân quyền
-        if($_SESSION['user']->role!='admin'){
-            $this->redirect('/posale');
-            return;
-        }
         $categoryModel = new Category();
         $categories = $categoryModel->getAllWithCreator();
         $this->view('categories/index', [
@@ -91,10 +79,5 @@ class CategoryController extends Controller {
         }
     }
 
-    private function verifyAdminJson() {
-        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
-             $this->json(['success' => false, 'message' => 'Unauthorized'], 403);
-             exit;
-        }
-    }
+    // verifyAdminJson() kế thừa từ base Controller
 }

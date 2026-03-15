@@ -6,10 +6,7 @@ require_once __DIR__ . '/../Models/Order.php';
 class DashboardController extends Controller {
 
     public function index() {
-        // Kiểm tra đăng nhập
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
+        $this->requireLogin();
         $orderModel = new Order();
         
         // Thiết lập thời gian

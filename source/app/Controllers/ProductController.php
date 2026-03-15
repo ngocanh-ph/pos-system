@@ -5,9 +5,7 @@ require_once __DIR__ . '/../Models/Category.php';
 
 class ProductController extends Controller {
     public function index() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
+        $this->requireLogin();
         
         $productModel = new Product();
         $products = $productModel->findAllWithCategory();
@@ -32,22 +30,7 @@ class ProductController extends Controller {
         $this->verifyAdminJson();
         
         try {
-            if (
-                empty($_POST['barcode']) || 
-                empty($_POST['name']) || 
-                empty($_POST['category_id']) ||
-                $_POST['import_price'] === '' ||
-                $_POST['sale_price'] === '' 
-            ) {
-                throw new Exception('Vui lòng điền đầy đủ thông tin.');
-            }
-
-            if ($_POST['import_price'] < 0 || $_POST['sale_price'] < 0) {
-                throw new Exception('Giá không được âm.');
-            }
-            if ($_POST['sale_price'] < $_POST['import_price']) {
-                throw new Exception('Giá bán phải lớn hơn hoặc bằng giá nhập.');
-            }
+            $this->validateProductData();
 
             $image = 'default_product.png';
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
@@ -70,15 +53,7 @@ class ProductController extends Controller {
                 throw new Exception('Lỗi lưu dữ liệu.');
             }
         } catch (Exception $e) {
-
-            $msg = $e->getMessage();
-            if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
-                $msg = 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';
-            } elseif (strpos($msg, '1062') !== false) {
-                $msg = 'Dữ liệu này đã bị trùng lặp trong hệ thống!';
-            }
-            
-            $this->json(['success' => false, 'message' => $msg]);
+            $this->json(['success' => false, 'message' => $this->translateSqlError($e->getMessage())]);
         }
     }
 
@@ -87,22 +62,7 @@ class ProductController extends Controller {
         $id = $_POST['id'];
         
         try {
-            if (
-                empty($_POST['barcode']) || 
-                empty($_POST['name']) || 
-                empty($_POST['category_id']) ||
-                $_POST['import_price'] === '' ||
-                $_POST['sale_price'] === '' 
-            ) {
-                throw new Exception('Vui lòng điền đầy đủ thông tin.');
-            }
-
-            if ($_POST['import_price'] < 0 || $_POST['sale_price'] < 0) {
-                throw new Exception('Giá không được âm.');
-            }
-            if ($_POST['sale_price'] < $_POST['import_price']) {
-                throw new Exception('Giá bán phải lớn hơn hoặc bằng giá nhập.');
-            }
+            $this->validateProductData();
             $data = [
                 'barcode' => $_POST['barcode'],
                 'name' => $_POST['name'],
@@ -122,15 +82,7 @@ class ProductController extends Controller {
                  throw new Exception('Lỗi cập nhật sản phẩm.');
             }
         } catch (Exception $e) {
-            // Dịch lỗi SQL sang tiếng Việt
-            $msg = $e->getMessage();
-            if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
-                $msg = 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';
-            } elseif (strpos($msg, '1062') !== false) {
-                $msg = 'Dữ liệu này đã bị trùng lặp trong hệ thống!';
-            }
-
-            $this->json(['success' => false, 'message' => $msg]);
+            $this->json(['success' => false, 'message' => $this->translateSqlError($e->getMessage())]);
         }
     }
 
@@ -162,10 +114,32 @@ class ProductController extends Controller {
         return $filename;
     }
 
-    private function verifyAdminJson() {
-        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
-             $this->json(['success' => false, 'message' => 'Bạn không có quyền thực hiện thao tác này.'], 403);
-             exit;
+    // verifyAdminJson() kế thừa từ base Controller
+
+    private function validateProductData() {
+        if (
+            empty($_POST['barcode']) || 
+            empty($_POST['name']) || 
+            empty($_POST['category_id']) ||
+            $_POST['import_price'] === '' ||
+            $_POST['sale_price'] === '' 
+        ) {
+            throw new Exception('Vui lòng điền đầy đủ thông tin.');
         }
+        if ($_POST['import_price'] < 0 || $_POST['sale_price'] < 0) {
+            throw new Exception('Giá không được âm.');
+        }
+        if ($_POST['sale_price'] < $_POST['import_price']) {
+            throw new Exception('Giá bán phải lớn hơn hoặc bằng giá nhập.');
+        }
+    }
+
+    private function translateSqlError($msg) {
+        if (strpos($msg, '1062') !== false && strpos($msg, 'barcode') !== false) {
+            return 'Mã vạch này đã tồn tại. Vui lòng nhập mã khác!';
+        } elseif (strpos($msg, '1062') !== false) {
+            return 'Dữ liệu này đã bị trùng lặp trong hệ thống!';
+        }
+        return $msg;
     }
 }

@@ -7,10 +7,7 @@ require_once __DIR__ . '/../Models/Order.php';
 class CustomerController extends Controller {
 
     public function index() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-            return;
-        }
+        $this->requireLogin();
 
         $customerModel = new Customer();
         $customers = $customerModel->getAllWithOrderCount();
@@ -31,8 +28,9 @@ class CustomerController extends Controller {
         ]);
         return;
     }
-        $customerModel = new Customer();
-        $customer = $customerModel->find($id);
+
+    $customerModel = new Customer();
+    $customer = $customerModel->find($id);
 
         if (!$customer) {
             $this->json(['success' => false, 'message' => 'Khách hàng không tồn tại']);

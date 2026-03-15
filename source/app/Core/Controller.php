@@ -53,6 +53,28 @@ class Controller {
         }
     }
 
+    protected function requireLogin() {
+        if (!isset($_SESSION['user'])) {
+            $this->redirect('/login');
+            exit;
+        }
+    }
+
+    protected function requireAdmin() {
+        $this->requireLogin();
+        if ($_SESSION['user']->role !== 'admin') {
+            $this->redirect('/dashboard');
+            exit;
+        }
+    }
+
+    protected function verifyAdminJson() {
+        if (!isset($_SESSION['user']) || $_SESSION['user']->role !== 'admin') {
+            $this->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            exit;
+        }
+    }
+
     protected function sendMail($to, $subject, $body)
     {
         try {

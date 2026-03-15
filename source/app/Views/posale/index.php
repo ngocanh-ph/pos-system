@@ -276,12 +276,6 @@
         color: var(--pos-sky) !important;
         font-weight: 700;
     }
-    #orderDetailModal .modal-header {
-        background-color: var( --pos-navy) !important;
-    }
-    #detail_order_id {
-        color: var(--pos-sky) !important;
-    }
     /* Modals & Overlays */
     .overlay-receipt { 
         position: fixed; 

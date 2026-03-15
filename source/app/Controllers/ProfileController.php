@@ -5,10 +5,7 @@ require_once __DIR__ . '/../Models/User.php';
 class ProfileController extends Controller {
 
     public function index() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-            return;
-        }
+        $this->requireLogin();
         $this->view('profile/index',[
             'title' => 'Hồ sơ cá nhân'
         ]);

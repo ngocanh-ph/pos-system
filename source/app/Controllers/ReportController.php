@@ -5,10 +5,7 @@ require_once __DIR__ . '/../Models/User.php';
 
 class ReportController extends Controller {
     public function index() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-            return;
-        }
+        $this->requireLogin();
         $staffs = [];
         if ($_SESSION['user']->role === 'admin') {
             $userModel = new User();

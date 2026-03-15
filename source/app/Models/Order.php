@@ -35,13 +35,7 @@ class Order extends Model {
     }
    
     public function getKpiStats($startDate, $endDate, $staffId = null) {
-        $params = ['start' => $startDate, 'end' => $endDate];
-        $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
-
-        if (!empty($staffId)) {
-            $whereSql .= " AND o.user_id = :staff_id";
-            $params['staff_id'] = $staffId;
-        }
+        list($whereSql, $params) = $this->buildDateFilter($startDate, $endDate, $staffId);
         
         $sqlBasic = "SELECT COUNT(o.id) as total_orders, COALESCE(SUM(o.total_amount), 0) as revenue 
                      FROM orders o $whereSql";
@@ -64,13 +58,7 @@ class Order extends Model {
     }
 
     public function getChartData($startDate, $endDate, $mode = 'day', $staffId = null) {
-        $params = ['start' => $startDate, 'end' => $endDate];
-        $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
-
-        if (!empty($staffId)) {
-            $whereSql .= " AND o.user_id = :staff_id";
-            $params['staff_id'] = $staffId;
-        }
+        list($whereSql, $params) = $this->buildDateFilter($startDate, $endDate, $staffId);
 
         $groupBy = ($mode === 'hour') ? "HOUR(o.created_at)" : "DATE(o.created_at)";
         $selectTime = ($mode === 'hour') ? "HOUR(o.created_at)" : "DATE(o.created_at)";
@@ -90,13 +78,7 @@ class Order extends Model {
     }
 
     public function getCategoryStats($startDate, $endDate, $staffId = null) {
-        $params = ['start' => $startDate, 'end' => $endDate];
-        $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
-        
-        if (!empty($staffId)) {
-            $whereSql .= " AND o.user_id = :staff_id";
-            $params['staff_id'] = $staffId;
-        }
+        list($whereSql, $params) = $this->buildDateFilter($startDate, $endDate, $staffId);
 
         $sql = "SELECT c.name, SUM(oi.quantity) as qty 
                 FROM order_items oi 
@@ -110,13 +92,7 @@ class Order extends Model {
     }
 
     public function getOrdersByRange($startDate, $endDate, $staffId = null) {
-        $params = ['start' => $startDate, 'end' => $endDate];
-        $whereSql = " WHERE o.created_at BETWEEN :start AND :end ";
-
-        if (!empty($staffId)) {
-            $whereSql .= " AND o.user_id = :staff_id";
-            $params['staff_id'] = $staffId;
-        }
+        list($whereSql, $params) = $this->buildDateFilter($startDate, $endDate, $staffId);
 
         $sql = "SELECT o.id, o.created_at, c.name as customer_name, o.total_amount 
                 FROM orders o 
@@ -149,5 +125,15 @@ class Order extends Model {
         $stmt = $this->db->prepare($sql);
         $stmt->execute(['employee_id' => $employeeId]);
         return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    private function buildDateFilter($startDate, $endDate, $staffId = null) {
+        $params = ['start' => $startDate, 'end' => $endDate];
+        $where = " WHERE o.created_at BETWEEN :start AND :end ";
+        if (!empty($staffId)) {
+            $where .= " AND o.user_id = :staff_id";
+            $params['staff_id'] = $staffId;
+        }
+        return [$where, $params];
     }
 }

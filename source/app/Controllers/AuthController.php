@@ -42,9 +42,9 @@ class AuthController extends Controller {
         $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
     }
     // Xử lý khi người dùng bấm nút "Đăng nhập" trên Form
-   public function handleLogin() {
+    public function handleLogin() {
         $username = trim($_POST['username'] ?? '');
-$password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập password là 52400002
+        $password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập password là 52400002
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
@@ -133,12 +133,13 @@ $password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập pas
         }
         exit; 
     }
+
     public function logout() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION = [];
+        session_destroy();
+        $this->redirect('/login');
     }
-    $_SESSION = [];
-    session_destroy();
-    $this->redirect('/login');
-}
 }

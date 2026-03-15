@@ -6,10 +6,7 @@ require_once __DIR__ . '/../Models/Order.php';
 
 class PosController extends Controller {
     public function index() {
-        if (!isset($_SESSION['user'])){ 
-            $this->redirect('/login');
-            return;
-        }
+        $this->requireLogin();
         if ($_SESSION['user']->role === 'admin') {
             $this->redirect('/dashboard'); 
             return;
@@ -87,22 +84,23 @@ class PosController extends Controller {
         $items = $orderModel->getItemsByOrderId($id);
         require __DIR__ . '/../Views/posale/invoice_pdf_mock.php';
     }
-public function searchCustomer() {
-    $phone = $_GET['phone'] ?? '';   
-    $customerModel = new Customer(); 
-    $customer = $customerModel->findByPhone($phone);
 
-    if ($customer) {
-        $this->json([
-            'success' => true,
-            'customer' => [
-                'id' => $customer->id,
-                'name' => $customer->name,
-                'address' => $customer->address
-            ]
-        ]);
-    } else {
-        $this->json(['success' => false]);
+    public function searchCustomer() {
+        $phone = $_GET['phone'] ?? '';   
+        $customerModel = new Customer(); 
+        $customer = $customerModel->findByPhone($phone);
+
+        if ($customer) {
+            $this->json([
+                'success' => true,
+                'customer' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                    'address' => $customer->address
+                ]
+            ]);
+        } else {
+            $this->json(['success' => false]);
+        }
     }
-}
 }
