@@ -50,7 +50,8 @@
             <strong>Mã đơn:</strong> #<?= $order->id ?><br>
             <strong>Ngày:</strong> <?= $order->created_at ?><br>
             <strong>Nhân viên:</strong> <?= htmlspecialchars($order->staff_name) ?><br>
-            <strong>Khách hàng:</strong> <?= htmlspecialchars($order->customer_name) ?> (<?= htmlspecialchars($order->phone) ?>)<br>
+            <strong>Khách hàng:</strong> <?= htmlspecialchars($order->customer_name) ?><br>
+            <strong>Số điện thoại: </strong> <?= htmlspecialchars($order->phone) ?> <br>
             <strong>Địa chỉ:</strong> <?= htmlspecialchars($order->address) ?>
         </p>
 
@@ -81,7 +82,7 @@
         
         <div class="no-print" style="margin-top: 20px; text-align: center;">
             <button onclick="window.print()">In hóa đơn</button>
-            <a href="/posale">Quay lại</a>
+            <button onclick="window.close()" style="margin-left: 10px; ">Đóng</button>
         </div>
     </div>
 </body>
