@@ -165,7 +165,21 @@
             min-width: 36px;
             border-radius: 8px;
             object-fit: cover;
+            display:block;
         }
+        .user-avatar-text{
+            width:36px;
+            height:36px;
+            border-radius:8px;
+            background:#E2E8F0;
+            color:#334155;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:800;
+            font-size:0.9rem;
+        }
+       
         .user-info {
             white-space: nowrap;
             transition: opacity var(--transition-speed);
@@ -345,7 +359,17 @@
 
             <div class="mt-auto w-100">
                 <div class="sidebar-footer">
-                    <img src="<?= APP_URL ?>/uploads/logoMAV.png" class="user-avatar" alt="Avatar">
+                    <?php
+                    $fullName = trim($_SESSION['user']-> fullname ?? '');
+                    $firstLetter = mb_strtoupper(mb_substr($fullName,0,1,'UTF-8'),'UTF-8');
+                    $avatar = $_SESSION['user']->avatar ?? '';
+                    $hasAvatar = !empty($avatar) && $avatar !== 'default_avatar.png';
+                    ?>
+                    <?php if($hasAvatar): ?>
+                        <img src="<?= APP_URL ?>/uploads/<?= $avatar ?>" class="user-avatar" onerror="this.outerHTML='<div class=\'user-avatar-text\'><?= $firstLetter ?></div>'">
+                        <?php else: ?>
+                            <div class="user-avatar-text"><?= $firstLetter ?></div>
+                        <?php endif; ?>    
                     <div class="user-info">
                         <h6>Hệ thống Quản trị</h6>
                         <span><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></span>

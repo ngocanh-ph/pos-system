@@ -127,21 +127,29 @@
     }
     
     .avatar-frame {
-        width: 60px; 
-        height: 60px; 
+        width: 80px; 
+        height: 80px; 
         margin: 0 auto 0.75rem; 
         border-radius: 1.25rem; 
-        padding: 3px; 
-        background: white;
-        border: 2px solid #e2e8f0;
-        box-shadow: 0 5px 10px -3px #0000000d;
         overflow: hidden;
     }
+    
     .avatar-img { 
         width: 100%; 
         height: 100%; 
-        object-fit: cover; 
-        border-radius: 1rem; 
+    }
+    .avatar-text {
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+        background: #E2E8F0;
+        color:  #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 800;
+        text-transform: uppercase;
     }
 
     .staff-name { 
@@ -386,8 +394,23 @@
 
                 <div class="profile-box">
                     <div class="avatar-frame">
-                        <img src="<?= APP_URL ?>/uploads/<?= $emp->avatar ?? 'default_avatar.png' ?>" class="avatar-img">
+                        <?php 
+                            // Xử lý lấy chữ cái đầu tiên của họ tên (Hỗ trợ UTF-8 cho Tiếng Việt)
+                            $fullName = trim($emp->fullname);
+                            $firstLetter = mb_strtoupper(mb_substr($fullName, 0, 1, 'UTF-8'), 'UTF-8');
+                            
+                            // Kiểm tra xem user có avatar không
+                            $hasAvatar = !empty($emp->avatar) && $emp->avatar !== 'default_avatar.png';
+                        ?>
+
+                        <?php if($hasAvatar): ?>
+                            <img src="<?= APP_URL ?>/uploads/<?= $emp->avatar ?>" class="avatar-img" 
+                                 onerror="this.outerHTML='<div class=\'avatar-text\'><?= $firstLetter ?></div>'">
+                        <?php else: ?>
+                            <div class="avatar-text"><?= $firstLetter ?></div>
+                        <?php endif; ?>
                     </div>
+                    
                     <div class="staff-name"><?= htmlspecialchars($emp->fullname) ?></div>
                     <div class="staff-username">@<?= htmlspecialchars($emp->username) ?></div>
                     

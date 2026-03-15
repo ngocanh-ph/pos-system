@@ -322,6 +322,19 @@
         border-color: var(--pm-blue); 
         background: white; 
     }
+    .product-avatar-text{
+        width:36px;
+        height:36px;
+        border-radius:50%;
+        background:#E2E8F0;
+        color:#334155;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:800;
+        font-size:0.85rem;
+        text-transform:uppercase;
+    }
 </style>
 
 <div class="product-wrapper">
@@ -386,9 +399,16 @@
                         <?php foreach ($products as $p): ?>
                         <tr class="product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
                             <td>
-                                <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>" 
-                                     width="36" height="36" class="rounded-circle" style="object-fit:cover; background:#f1f5f9">
-                            </td>
+                               <?php
+                               $productName = trim($p->name);
+                               $firstLetter = mb_strtoupper(mb_substr($productName,0,1,'UTF-8'),'UTF-8');
+                               $hasImage = !empty($p->image) && $p->image !== 'default_product.png';
+                               ?>
+                               <?php if($hasImage): ?>
+                                <img src="<?= APP_URL ?>/uploads/<?= $p->image ?>"  width="36" height="36" class="rounded-circle" style="object-fit:cover" onerror="this.outerHTML='<div class=\'product-avatar-text\'><?= $firstLetter ?></div>'">
+                                <?php else: ?>
+                                    <div class="product-avatar-text"><?= $firstLetter ?></div>
+                                <?php endif; ?>
                             <td>
                                 <span class="product-name"><?= htmlspecialchars($p->name) ?></span>
                                 <span class="barcode-text"><?= htmlspecialchars($p->barcode) ?></span>
@@ -432,7 +452,18 @@
             <?php foreach ($products as $p): ?>
             <div class="product-card product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
                 <div class="card-img-box">
-                    <img src="<?= APP_URL ?>/uploads/<?= $p->image ? $p->image : 'default_product.png' ?>">
+                    <?php 
+                        $productName = trim($p->name);
+                        $firstLetter = mb_strtoupper(mb_substr($productName,0,1,'UTF-8'),'UTF-8');
+                        $hasImage = !empty($p->image) && $p->image !== 'default_product.png';
+                    ?>
+                    <?php if($hasImage): ?>
+                    <img src="<?= APP_URL ?>/uploads/<?= $p->image ?>">
+                    <?php else: ?>
+                    <div class="product-avatar-text" style="width:100%;height:100%;border-radius:1.5rem;font-size:2rem;">
+                        <?= $firstLetter ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 
                 <h5 style="font-weight: 600; color: var(--pm-navy); margin-bottom: 0.2rem; font-size:0.95rem">
@@ -451,9 +482,12 @@
                 <div class="card-price"><?= number_format($p->sale_price) ?></div>
 
                 <?php if($_SESSION['user']->role === 'admin'): ?>
-                <div class="card-actions">
+                <div class="card-actions d-flex gap-2">
                     <button class="btn-icon btn-edit shadow-sm" style="background:white" onclick='openEditModal(<?= htmlspecialchars(json_encode($p), ENT_QUOTES, 'UTF-8') ?>)'>
                         <i class="fas fa-pen" style="font-size: 0.75rem"></i>
+                    </button>
+                    <button class="btn-icon btn-delete shadow-sm" onclick="deleteProduct(<?= $p->id ?>)">
+                        <i class="fas fa-trash" style="font-size: 0.75rem"></i>
                     </button>
                 </div>
                 <?php endif; ?>
@@ -583,7 +617,7 @@
                             }
                         });
 
-                    } else { // Hiện Toast báo lỗi
+                    } else { 
                         $('#actionToast').removeClass('bg-success').addClass('bg-danger');
                         $('#toastMessage').text('Lỗi: ' + (res.message || 'Không thể lưu sản phẩm!'));
                         toast.show();
