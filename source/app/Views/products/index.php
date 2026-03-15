@@ -465,7 +465,7 @@
 
 <div class="modal fade modal-custom" id="productModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-content" style="border-radius: 2rem; border:none; padding: 0.5rem;">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTitle">Thêm sản phẩm mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
