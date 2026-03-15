@@ -23,8 +23,6 @@
             --sidebar-width-collapsed: 80px;  
             --transition-speed: 0.3s;
         }
-
-        /* KHÓA HOÀN TOÀN ANIMATION KHI LOAD TRANG */
         .preload * {
             -webkit-transition: none !important;
             -moz-transition: none !important;
@@ -41,7 +39,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Sidebar Styles --- */
+        /*Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -162,7 +160,9 @@
             flex-shrink: 0;
         }
         .user-avatar {
-            width: 36px; height: 36px; min-width: 36px;
+            width: 36px; 
+            height: 36px; 
+            min-width: 36px;
             border-radius: 8px;
             object-fit: cover;
         }
@@ -170,8 +170,16 @@
             white-space: nowrap;
             transition: opacity var(--transition-speed);
         }
-        .user-info h6 { margin: 0; color: white; font-size: 0.9rem; }
-        .user-info span { font-size: 0.75rem; color: #94A3B8; text-transform: uppercase; }
+        .user-info h6 { 
+            margin: 0; 
+            color: white; 
+            font-size: 0.9rem; 
+        }
+        .user-info span { 
+            font-size: 0.75rem; 
+            color: #94A3B8; 
+            text-transform: uppercase; 
+        }
 
         .btn-logout {
             color: #EF4444;
@@ -280,11 +288,9 @@
 </head>
 <body class="preload">
     <script>
-        // Xử lý logic thu gọn sidebar ngay từ đầu để tránh giật khung hình
         if (sessionStorage.getItem('sidebar-collapsed') === 'true') {
             document.body.classList.add('sidebar-collapsed');
         }
-        // Gỡ bỏ khóa animation ngay sau khi load xong DOM ban đầu
         document.addEventListener("DOMContentLoaded", function() {
             setTimeout(function() {
                 document.body.classList.remove('preload');
@@ -345,7 +351,7 @@
                         <span><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></span>
                     </div>
                 </div>
-                <a href="<?= APP_URL ?>/login" class="btn-logout" title="Đăng xuất">
+                <a href="<?= APP_URL ?>/logout" class="btn-logout" title="Đăng xuất">
                     <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
                 </a>
             </div>
