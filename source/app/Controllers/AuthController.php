@@ -13,7 +13,6 @@ class AuthController extends Controller {
         $this->renderAuthView('auth/login');
     }
 
-    // Xử lý khi người dùng Click Link từ Email
     public function verifyToken() {
         $token = $_GET['token'] ?? '';
 
@@ -31,17 +30,15 @@ class AuthController extends Controller {
             $this->redirect('/login?error=Liên kết đã hết hạn hoặc không hợp lệ.');
             return;
         }
-        // Biến này chứng minh người dùng đã click vào link hợp lệ
         $_SESSION['can_login_first_time'] = true;
         
-        // Xóa token (để link này không dùng lại được nữa)
+
         $tokenModel->destroyToken($token);
 
-        // KHÔNG ĐĂNG NHẬP 
-        // Mà chuyển hướng về trang LOGIN để người dùng tự nhập User & Password
+    
         $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
     }
-    // Xử lý khi người dùng bấm nút "Đăng nhập" trên Form
+    
     public function handleLogin() {
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? ''); // Nhân viên mới sẽ nhập password là 52400002
@@ -49,25 +46,23 @@ class AuthController extends Controller {
         $userModel = new User();
         $user = $userModel->findByUsername($username);
 
-        // Kiểm tra User và Pass trước
-        if ($user && $password === $user->password) { // (Lưu ý: Dùng password_verify nếu pass đã mã hóa)
+  
+        if ($user && $password === $user->password) {
 
-            //KIỂM TRA LOGIC NHÂN VIÊN MỚI 
+           
             if ($user->role === 'staff' && $user->is_first_login == 1) {
                 
-                // Kiểm tra: Người này có đường link từ email chưa?
+            
                 if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
-                    // NẾU KHÔNG CÓ -> CHẶN LẠI
                     $this->renderAuthView('auth/login', [
                         'error' => 'Vui lòng đăng nhập bằng cách nhấp vào liên kết trong email của bạn.'
                     ]);
                     return;
                 }
 
-                // NẾU CÓ  -> Hủy (dùng 1 lần thôi)
                 unset($_SESSION['can_login_first_time']);
                 
-                //BÂY GIỜ MỚI CHO ĐĂNG NHẬP
+
                 $_SESSION['user'] = $user;
                 
                 // Chuyển sang trang bắt buộc đổi mật khẩu
