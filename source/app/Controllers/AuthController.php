@@ -65,7 +65,7 @@ class AuthController extends Controller {
 
                 $_SESSION['user'] = $user;
                 
-                // Chuyển sang trang bắt buộc đổi mật khẩu
+                
                 $this->redirect('/force-change-password');
                 return;
             }
@@ -75,7 +75,6 @@ class AuthController extends Controller {
                 return;
             }
 
-            // Đăng nhập bình thường (Nhân viên cũ / Admin)
             session_regenerate_id(true);
             $_SESSION['user'] = $user;
             $this->redirect('/dashboard');
