@@ -37,6 +37,7 @@ class CategoryController extends Controller {
             ]);
             $this->json(['success' => true]);
         } catch (Exception $e) {
+             // Bắt lỗi trùng tên (do cột name là UNIQUE)
              $this->json(['success' => false, 'message' => 'Tên danh mục đã tồn tại hoặc lỗi hệ thống.']);
         }
     }
