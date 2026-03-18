@@ -41,7 +41,6 @@ class ProfileController extends Controller {
         $this->json(['success' => true, 'message' => 'Cập nhật hồ sơ thành công!']);
     }
 
-    // API: Đổi mật khẩu 
     public function changePassword() {
         if (!isset($_SESSION['user'])) {
             $this->json(['success' => false], 401); return;
@@ -50,8 +49,6 @@ class ProfileController extends Controller {
         $userId = $_SESSION['user']->id;
         $currentPass = $_POST['current_password'] ?? '';
         $newPass = $_POST['new_password'] ?? '';
-
-        // Kiểm tra độ dài mật khẩu mới
         if (strlen($newPass) < 6) {
              $this->json(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
              return;
@@ -59,8 +56,6 @@ class ProfileController extends Controller {
 
         $userModel = new User();
         $user = $userModel->find($userId);
-
-        // ĐÃ SỬA TẠI ĐÂY: Cho phép nhập đúng chữ 'admin' nếu trong database đang lưu chữ 'admin'
         if (!password_verify($currentPass, $user->password) && $currentPass !== $user->password) {
             $this->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
             return;

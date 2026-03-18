@@ -114,8 +114,6 @@ class ProductController extends Controller {
         return $filename;
     }
 
-    // verifyAdminJson() kế thừa từ base Controller
-
     private function validateProductData() {
         if (
             empty($_POST['barcode']) || 

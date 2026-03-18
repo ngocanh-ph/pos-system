@@ -35,13 +35,11 @@ class EmployeeController extends Controller {
             $this->json(['success' => false, 'message' => 'Email đã tồn tại.']);
             return;
         }
-
-        // Tạo User
         $userId = $userModel->create([
             'fullname' => $fullname,
             'email' => $email,
             'username' => $username,
-            'password' => DEFAULT_EMPLOYEE_PASSWORD, // 52400002
+            'password' => 52400002, 
             'role' => 'staff',
             'status' => 'active',
             'is_first_login' => 1
@@ -51,8 +49,6 @@ class EmployeeController extends Controller {
             $this->json(['success' => false, 'message' => 'Lỗi khi tạo nhân viên.']);
             return;
         }
-
-        // Tạo Token & Gửi Email 
         require_once __DIR__ . '/../Models/LoginToken.php';
         $tokenModel = new LoginToken();
         $token = $tokenModel->createToken($userId);
@@ -110,8 +106,6 @@ class EmployeeController extends Controller {
         
         $this->json(['success' => true]);
     }
-
-    // THÊM HÀM HISTORY Ở ĐÂY ĐỂ XỬ LÝ LỖI KHÔNG KẾT NỐI ĐƯỢC MÁY CHỦ
     public function history() {
         $this->verifyAdminJson();
 
@@ -123,8 +117,6 @@ class EmployeeController extends Controller {
 
         require_once __DIR__ . '/../Models/Order.php';
         $orderModel = new Order();
-        
-        // Lấy danh sách order của nhân viên
         $orders = $orderModel->getOrdersByEmployee($employeeId);
 
         $this->json(['success' => true, 'data' => $orders]);

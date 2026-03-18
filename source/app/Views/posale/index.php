@@ -303,7 +303,16 @@
         box-shadow: 0 25px 50px -12px #00000040; 
     }
     .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+
+    /* Custom CSS cho khung camera quét mã vạch (ĐÃ FIX LẬT GƯƠNG) */
+    #reader video { 
+        border-radius: 1rem; 
+        object-fit: cover; 
+        transform: scaleX(-1); /* Lệnh này lật ngược camera lại cho thuận tay */
+    }
+    #reader { border: none !important; }
 </style>
+
 <div class="pos-wrapper">
     <div class="row h-100 g-3">
         <div class="col-md-8 h-100 d-flex flex-column">
@@ -314,7 +323,7 @@
                     <input type="text" id="product_search" class="search-input" placeholder="Tìm tên sản phẩm hoặc quét mã vạch..." autocomplete="off">
                     <div id="search_results"></div> 
                 </div>
-                <button class="btn-barcode" title="Quét mã vạch"><i class="fas fa-barcode"></i></button>
+                <button class="btn-barcode" id="btn_open_scanner" title="Quét mã vạch"><i class="fas fa-barcode"></i></button>
             </div>
 
             <div class="cart-island">
@@ -430,6 +439,25 @@
     </div>
 </div>
 
+<div class="modal fade" id="scannerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="fas fa-camera me-2"></i>Quét mã vạch sản phẩm</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 bg-dark">
+                <div id="reader" style="width: 100%; min-height: 300px;"></div>
+            </div>
+            <div class="modal-footer justify-content-center bg-dark border-0">
+                <p class="text-white-50 small mb-0">Đưa mã vạch sản phẩm vào khung hình camera</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
 <script>
     const BASE_URL = "<?= APP_URL ?>";
     let cart = [];
@@ -487,6 +515,7 @@
         searchTimeout = setTimeout(() => {
             $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
                 if (data && data.length > 0) {
+                    // Cải tiến: Nếu quét mã vạch (khớp chính xác) tự thêm vào giỏ
                     if (data.length === 1 && data[0].is_exact) {
                         addToCart(data[0]); $('#product_search').val(''); $('#search_results').hide(); return;
                     }
@@ -649,4 +678,55 @@
         $('#cust_phone, #cust_name, #cust_address, #cash_given').val(''); 
         $('#cust_badge').hide(); $('#success_overlay').hide(); currentCustomerId = null; $('#btn_view_history').hide();
     };
+
+    /* --- MỚI: QUẢN LÝ CAMERA QUÉT MÃ VẠCH --- */
+    let html5QrCode;
+
+    // 1. Mở modal khi click nút Barcode
+    $('#btn_open_scanner').click(function() {
+        $('#scannerModal').modal('show');
+    });
+
+    // 2. Khởi động Camera khi Modal hiển thị xong
+    $('#scannerModal').on('shown.bs.modal', function () {
+        html5QrCode = new Html5Qrcode("reader");
+        
+        // Cấu hình Camera quét
+        html5QrCode.start(
+            { facingMode: "environment" }, // Ưu tiên dùng camera sau (nếu dùng trên di động)
+            {
+                fps: 10, // Frame per second (số khung hình/giây)
+                qrbox: { width: 250, height: 150 } // Khu vực định vị mã vạch (hình chữ nhật)
+            },
+            // Callback khi quét thành công
+            (decodedText, decodedResult) => {
+                // Tắt camera ngay lập tức
+                html5QrCode.stop().then((ignore) => {
+                    $('#scannerModal').modal('hide');
+                    
+                    // Điền mã vạch thu được vào ô input và kích hoạt sự kiện input
+                    // Từ đó hệ thống tự động gọi AJAX load sản phẩm như khi ta gõ tay
+                    $('#product_search').val(decodedText).trigger('input');
+                    
+                }).catch((err) => {
+                    console.error(err);
+                });
+            },
+            // Callback khi đang dò tìm (thất bại 1 frame)
+            (errorMessage) => {
+                // Không làm gì, bỏ qua để chờ quét frame tiếp theo
+            }
+        ).catch((err) => {
+            console.error("Camera error:", err);
+            $('#reader').html('<div class="p-4 text-center text-danger"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>Không thể truy cập Camera. Vui lòng kiểm tra quyền trên trình duyệt!</div>');
+        });
+    });
+
+    // 3. Tắt Camera khi Modal đóng (Bảo vệ tài nguyên & pin)
+    $('#scannerModal').on('hidden.bs.modal', function () {
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().catch(err => console.error(err));
+        }
+    });
+
 </script>

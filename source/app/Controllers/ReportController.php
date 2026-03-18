@@ -22,8 +22,6 @@ class ReportController extends Controller {
             $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
             return;
         }
-
-        // XỬ LÝ LOGIC THỜI GIAN 
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $range = $_GET['range'] ?? 'today';
         $staffId = $_GET['staff_id'] ?? null;
@@ -91,7 +89,6 @@ class ReportController extends Controller {
             $this->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
-    // API: Lấy chi tiết một đơn hàng cụ thể (Chuẩn MVC)
     public function getOrderDetail() {
         if (!isset($_SESSION['user'])) {
             $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
