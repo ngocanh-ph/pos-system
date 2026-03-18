@@ -3,7 +3,6 @@ $title = 'Đăng nhập MAVPOS';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +29,6 @@ $title = 'Đăng nhập MAVPOS';
         margin: 0;
     }
 
-    /* Container chính */
     .login-container {
         width: 1000px;
         max-width: 95%;
@@ -42,7 +40,6 @@ $title = 'Đăng nhập MAVPOS';
         min-height: 600px;
     }
 
-    /* Phần bên trái */
     .left-panel {
         background-color: var(--color-primary);
         width: 45%;
@@ -77,7 +74,6 @@ $title = 'Đăng nhập MAVPOS';
         color: #9CD1FC;
     }
 
-    /* Phần bên phải (Form) */
     .right-panel {
         width: 55%;
         padding: 50px 60px;
@@ -85,12 +81,10 @@ $title = 'Đăng nhập MAVPOS';
         flex-direction: column;
         justify-content: center;
         background-color: white;
-        /* UPDATE: Áp dụng Times New Roman cho toàn bộ khung phải */
         font-family: 'Times New Roman', serif;
     }
 
     .greeting-text {
-        /* UPDATE: Đã sửa lỗi chính tả 'Time' thành 'Times' */
         font-family: 'Times New Roman', serif;
         color: var(--color-primary);
         font-size: 32px;
@@ -99,8 +93,6 @@ $title = 'Đăng nhập MAVPOS';
         margin-bottom: 40px;
         text-transform: uppercase;
     }
-
-    /* Form Group Styles */
     .form-group {
         margin-bottom: 25px;
     }
@@ -111,7 +103,6 @@ $title = 'Đăng nhập MAVPOS';
         font-size: 16px;
         margin-bottom: 8px;
         display: block;
-        /* UPDATE: Chuyển sang Times New Roman */
         font-family: 'Times New Roman', serif;
     }
 
@@ -128,13 +119,11 @@ $title = 'Đăng nhập MAVPOS';
         font-size: 14px;
         color: #333;
         transition: all 0.3s;
-        /* UPDATE: Input cũng dùng Times New Roman */
         font-family: 'Times New Roman', serif;
     }
 
     .form-control-custom::placeholder {
         color: #8faec7;
-        /* Placeholder cũng dùng Times New Roman */
         font-family: 'Times New Roman', serif;
     }
 
@@ -154,11 +143,9 @@ $title = 'Đăng nhập MAVPOS';
         font-size: 18px;
     }
 
-    /* Nút đăng nhập */
     .btn-login {
         background-color: var(--color-primary);
         color: white;
-        /* UPDATE: Chuyển nút sang Times New Roman */
         font-family: 'Times New Roman', serif;
         font-weight: 700;
         font-size: 20px;
@@ -176,7 +163,6 @@ $title = 'Đăng nhập MAVPOS';
         box-shadow: 0 5px 15px rgba(4, 38, 66, 0.3);
     }
 
-    /* Alert lỗi */
     .alert-error {
         background-color: #fee2e2;
         border: 1px solid #ef4444;
@@ -190,8 +176,6 @@ $title = 'Đăng nhập MAVPOS';
         gap: 10px;
         font-family: 'Times New Roman', serif;
     }
-
-    /* Responsive */
     @media (max-width: 768px) {
         .login-container {
             flex-direction: column;

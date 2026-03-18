@@ -1,5 +1,4 @@
 <style>
-    /* --- DESIGN SYSTEM: ENTERPRISE SECURITY UI (COMPACT & ROUNDED) --- */
     :root {
         --emp-bg: #F0F8FF;
         --emp-navy: #011628;
@@ -16,16 +15,12 @@
         --shadow-card: 0 10px 25px -5px #01162814;
         --shadow-btn: 0 4px 10px -2px #04437733;
     }
-
-    /* Base Layout */
     .emp-wrapper {
         background-color: var(--emp-bg);
         font-family: 'Inter', sans-serif;
         padding: 0.5rem; 
         min-height: 85vh;
     }
-
-    /* Header & Action Bar */
     .emp-header {
         display: flex; 
         justify-content: space-between; 
@@ -69,16 +64,12 @@
         background-color: #033055; 
         color: white;
     }
-
-    /* Employee Grid */
     .emp-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
         gap: 1rem; 
         padding-bottom: 2rem;
     }
-
-    /* Employee Card */
     .emp-card {
         background: var(--emp-white);
         border-radius: var(--radius-card); 
@@ -94,8 +85,6 @@
         box-shadow: var(--shadow-card);
         border-color: #B0DAFD;
     }
-
-    /* Status Ribbon */
     .status-ribbon {
         position: absolute; 
         top: 1rem; 
@@ -120,7 +109,6 @@
         color: var(--emp-warning); 
     }
 
-    /* Profile Section */
     .profile-box { 
         text-align: center; 
         margin-bottom: 1.25rem; 
@@ -192,7 +180,6 @@
         background: var(--emp-warning); 
         box-shadow: 0 0 0 2px #fef3c7; 
     }
-    /* Action Buttons */
     .actions-grid {
         display: grid; 
         grid-template-columns: 1fr 1fr; 
@@ -253,7 +240,6 @@
         background: #1e293b; 
     }
 
-    /* Modal Design */
     .modal-security .modal-content {
         border-radius: var(--radius-card); 
         border: none; 
@@ -395,11 +381,8 @@
                 <div class="profile-box">
                     <div class="avatar-frame">
                         <?php 
-                            // Xử lý lấy chữ cái đầu tiên của họ tên (Hỗ trợ UTF-8 cho Tiếng Việt)
                             $fullName = trim($emp->fullname);
                             $firstLetter = mb_strtoupper(mb_substr($fullName, 0, 1, 'UTF-8'), 'UTF-8');
-                            
-                            // Kiểm tra xem user có avatar không
                             $hasAvatar = !empty($emp->avatar) && $emp->avatar !== 'default_avatar.png';
                         ?>
 
@@ -545,8 +528,6 @@
 
 <script>
     let staffModal;
-
-    // --- HÀM TIỆN ÍCH: HIỂN THỊ TOAST ---
     function showToast(message, type = 'success') {
         const toastEl = document.getElementById('appToast');
         const toastMessage = document.getElementById('toastMessage');
@@ -590,11 +571,8 @@
             .then(data => {
                 if (data.success) {
                     showToast('Thêm nhân viên thành công!', 'success');
-                    
-                    // KHÔNG RELOAD TRANG: Ẩn form và hiện UI thành công kèm link
                     $('#addStaffForm').hide();
                     $('#successView').fadeIn();
-                    // Lưu ý: Đảm bảo API store của bạn trả về data.debug_link giống hàm resend
                     $('#generatedLink').text(data.debug_link || 'Link kích hoạt đã được gửi vào email'); 
                 } else {
                     showToast(data.message || 'Thêm thất bại!', 'danger');
@@ -622,23 +600,17 @@
         $.post('<?= APP_URL ?>/employees/toggle-status', {id: id, status: status}, function(res) {
             if(res.success) {
                 showToast('Cập nhật trạng thái thành công!', 'success');
-                
-                // KHÔNG RELOAD TRANG: Cập nhật trực tiếp UI thẻ nhân viên
                 const card = $(`#card-${id}`);
                 const btn = card.find(`button[onclick="toggleStatus(${id}, '${status}')"]`);
                 const ribbon = card.find('.status-ribbon');
-                
-                // Lấy trạng thái kích hoạt từ attribute
                 const isActivated = card.data('activated') == '1';
 
                 if (status === 'locked') {
-                    // Cập nhật giao diện thành Bị Khóa
                     ribbon.removeClass('status-active status-pending').addClass('status-locked').text('Bị khóa');
                     btn.removeClass('btn-lock').addClass('btn-unlock')
                        .attr('onclick', `toggleStatus(${id}, 'active')`)
                        .html('<i class="fas fa-unlock"></i> Mở khóa');
                 } else {
-                    // Cập nhật giao diện thành Đang Hoạt Động hoặc Chờ Kích Hoạt
                     if (isActivated) {
                         ribbon.removeClass('status-locked status-pending').addClass('status-active').text('Đang hoạt động');
                     } else {
@@ -678,17 +650,15 @@
     let historyModal;
 
     function viewHistory(employeeId, employeeName) {
-        // Set tên nhân viên lên modal
+
         $('#historyEmployeeName').text(employeeName);
         $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-muted">Đang tải dữ liệu...</td></tr>');
         
-        // Mở modal
         if (!historyModal) {
             historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
         }
         historyModal.show();
 
-        // Gọi AJAX lấy lịch sử bán hàng
         $.get('<?= APP_URL ?>/employees/history', { id: employeeId }, function(res) {
             if (res.success) {
                 let rows = '';
@@ -696,7 +666,6 @@
                     rows = '<tr><td colspan="4" class="text-center">Chưa có giao dịch nào.</td></tr>';
                 } else {
                     res.data.forEach(function(order) {
-                        // Format số tiền (vd: 6000000 -> 6M, 2500000 -> 2.5M)
                         let totalAmount = parseFloat(order.total_amount);
                         let totalStr = totalAmount >= 1000000 
                             ? (totalAmount / 1000000).toFixed(1).replace('.0', '') + 'M' 

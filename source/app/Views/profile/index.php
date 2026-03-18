@@ -22,7 +22,6 @@
         min-height: 85vh;
     }
 
-    /* Typography */
     .font-black {
         font-weight: 800;
         letter-spacing: -0.01em;
@@ -38,7 +37,6 @@
         display: block;
     }
 
-    /* HERO CARD */
     .hero-card {
         background: white;
         border-radius: var(--p-radius-card);
@@ -128,7 +126,6 @@
         color: #0369A1;
     }
 
-    /* MAIN CARDS */
     .content-card {
         background: white;
         border-radius: var(--p-radius-card);
@@ -137,7 +134,6 @@
         box-shadow: 0 4px 6px -1px #00000005;
     }
 
-    /*Header Icon Box*/
     .card-header-flex {
         display: flex;
         align-items: center;
@@ -171,7 +167,6 @@
         margin: 0;
     }
 
-    /* INPUT STYLES */
     .input-wrapper {
         position: relative;
         margin-bottom: 1.5rem;
@@ -234,7 +229,6 @@
         color: var(--p-navy);
     }
 
-    /* BUTTONS */
     .btn-action {
         width: 100%;
         height: 52px;
@@ -388,7 +382,6 @@
 <script>
     const BASE_URL = "<?= APP_URL ?>";
 
-    // Xử lý xem trước ảnh đại diện
     $('#avatarUpload').change(function() {
         const file = this.files[0];
         if (!file) return;
@@ -403,13 +396,10 @@
         reader.readAsDataURL(file);
     });
 
-    // Ẩn/hiện mật khẩu
     function togglePass(id) {
         const input = document.getElementById(id);
         input.type = input.type === 'password' ? 'text' : 'password';
     }
-
-    // Hiển thị thông báo Toast
     function showToast(msg, isError = false) {
         const toastEl = document.getElementById('profileActionToast');
         if (toastEl) {
@@ -429,8 +419,6 @@
             alert((isError ? "LỖI: " : "THÀNH CÔNG: ") + msg);
         }
     }
-
-    // Xử lý form lưu hồ sơ
     $('#infoForm').submit(function(e) {
         e.preventDefault();
         const btn = $(this).find('button');
@@ -460,8 +448,6 @@
             }
         });
     });
-
-    // Xử lý form đổi mật khẩu
     $('#securityForm').submit(function(e) {
         e.preventDefault();
 

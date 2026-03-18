@@ -81,8 +81,6 @@
     .filter-select:hover { 
         background: #e2e8f0; 
     }
-
-    /* KPI CARDS */
     .kpi-grid { 
         display: grid; 
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -127,7 +125,6 @@
         transform: rotate(-15deg); 
     }
     
-    /* CHART SECTION */
     .charts-row { 
         display: grid; 
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); 
@@ -160,8 +157,6 @@
         width: 100%; 
         min-height: 350px; 
     }
-
-    /* TABLE */
     .audit-box { 
         background: var(--r-white); 
         border-radius: var(--r-radius); 
@@ -200,8 +195,6 @@
         font-weight: 700; 
         font-size: 0.7rem; 
     }
-
-    /* DATE MODAL */
     .modal-overlay { 
         position: fixed; 
         top: 0; 
@@ -285,7 +278,6 @@
         transform: scale(1); 
     } }
     
-    /* RECEIPT MODAL*/
     .receipt-modal {
         border-radius: 20px;
         border: none;
@@ -702,12 +694,9 @@
             }
         });
     }
-
-    // --- LOGIC ĐỔ DỮ LIỆU VÀO MODAL RECEIPT ---
     function viewOrderDetail(orderId) {
         $.get('<?= APP_URL ?>/report/getOrderDetail', { id: orderId }, function(res) {
             if (res.success) {
-                // Định dạng hiển thị dấu phẩy gọn gàng (VD: 12.000.000 thay vì 12.000.000 đ)
                 const fmtMoney = (n) => new Intl.NumberFormat('vi-VN').format(n);
                 
                 const order = res.data.order;
@@ -715,7 +704,6 @@
 
                 $('#modalOrderId').text('#' + order.id);
                 $('#modalCustomerName').text(order.customer_name || 'Khách lẻ');
-                // Format rút gọn lại ngày giờ giống ảnh
                 const dateObj = new Date(order.created_at);
                 const formattedDate = dateObj.toLocaleDateString('vi-VN') + ' ' + dateObj.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
                 $('#modalOrderDate').text(formattedDate);

@@ -14,10 +14,8 @@ class Router {
     public function resolve() {
     $method = $_SERVER['REQUEST_METHOD'];
     
-    // Lấy đường dẫn gốc từ URI
     $path = $_SERVER['REQUEST_URI'];
     $path = parse_url($path, PHP_URL_PATH);
-    // Tự động tìm thư mục chứa file 
     $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
     if ($scriptDir !== '/' && strpos($path, $scriptDir) === 0) {
         $path = substr($path, strlen($scriptDir));

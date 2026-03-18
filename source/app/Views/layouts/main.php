@@ -38,8 +38,6 @@
             font-size: 14px; 
             overflow-x: hidden;
         }
-
-        /*Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-sidebar);
@@ -57,13 +55,9 @@
             scrollbar-width: none;  
             -ms-overflow-style: none;  
         }
-        
-        /* Ẩn scrollbar */
         .sidebar::-webkit-scrollbar {
             display: none;
         }
-
-        /* Header Sidebar */
         .sidebar-header {
             display: flex;
             align-items: center;
@@ -98,7 +92,6 @@
             color: #FFFFFF;
         }
 
-        /* Nút Toggle Menu */
         #sidebarToggle {
             background: transparent;
             border: none;
@@ -111,7 +104,6 @@
             color: white;
         }
 
-        /* Navigation Links */
         .nav-link {
             color: #94A3B8;
             font-weight: 500;
@@ -145,8 +137,7 @@
             font-weight: 600;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        
-        /* Sidebar Footer */
+
         .sidebar-footer {
             margin-top: auto;
             background: rgba(255,255,255,0.05);
@@ -213,7 +204,6 @@
             background: rgba(239, 68, 68, 0.1);
         }
 
-        /* Main Panel */
         .main-panel {
             margin-left: var(--sidebar-width);
             padding: 1.5rem 2rem; 
@@ -221,7 +211,6 @@
             transition: margin-left var(--transition-speed), width var(--transition-speed);
         }
 
-        /* TRẠNG THÁI COLLAPSED */
         body.sidebar-collapsed .sidebar {
             width: var(--sidebar-width-collapsed);
         }
@@ -279,7 +268,6 @@
             margin: 0 auto 10px auto;
         }
 
-        /* Top Bar & Others */
         .top-bar {
             display: flex;
             justify-content: space-between;

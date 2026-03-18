@@ -44,18 +44,13 @@ class User extends Model {
         $stmt = $this->db->prepare("UPDATE {$this->table} SET password = :password, is_first_login = 0 WHERE id = :id");
         return $stmt->execute(['password' => $hashedPassword, 'id' => $id]);
     }
-
-    // Lấy danh sách nhân viên đầy đủ (Dùng cho trang Quản lý nhân viên)
     public function getAllStaff() {
         return $this->query("SELECT * FROM {$this->table} WHERE role = 'staff'")->fetchAll(PDO::FETCH_OBJ);
     }
-
-    // Lấy thông tin cơ bản của nhân viên (Dùng cho trang Báo cáo)
     public function getStaffBasicInfo() {
         return $this->query("SELECT id, fullname FROM {$this->table} WHERE role != 'admin'")->fetchAll(PDO::FETCH_OBJ);
     }
 
-    // Cập nhật trạng thái khóa/mở khóa tài khoản
     public function updateStatus($id, $status) {
         return $this->query("UPDATE {$this->table} SET status = :status WHERE id = :id", [
             'status' => $status,
@@ -63,7 +58,6 @@ class User extends Model {
         ]);
     }
 
-    // Cập nhật hồ sơ cá nhân
     public function updateProfile($id, $fullname, $avatar, $phone) {
         return $this->query("UPDATE {$this->table} SET fullname = :name, avatar = :avatar, phone = :phone WHERE id = :id", [
             'name' => $fullname,

@@ -20,7 +20,6 @@
         color: var(--d-navy);
         padding: 0;
         min-height: 85vh;
-        /* Đảm bảo wrapper không bị tràn */
         width: 100%;
         overflow-x: hidden;
     }
@@ -96,7 +95,6 @@
 
     .kpi-grid {
         display: grid; 
-        /* FIX: Dùng minmax(0, 1fr) thay vì 1fr để thẻ tự ép nhỏ lại khi sidebar mở ra */
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 1.5rem; margin-bottom: 1.5rem;
     }
@@ -141,7 +139,6 @@
         font-size: 2rem; 
         line-height: 1; 
         margin-top: 0.5rem; 
-        /* Cắt chữ nếu dài quá để tránh tràn */
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -149,7 +146,6 @@
 
     .main-split {
         display: grid; 
-        /* FIX: Áp dụng tương tự cho chia cột 2/1 */
         grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
         gap: 1.5rem;
     }
@@ -238,11 +234,9 @@
         font-size: 0.9rem; 
     }
 
-    /* Scrollbar */
     .tx-list::-webkit-scrollbar { width: 4px; }
     .tx-list::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
 
-    /* Responsive */
     @media (max-width: 1024px) {
         .kpi-grid { grid-template-columns: minmax(0, 1fr); }
         .main-split { grid-template-columns: minmax(0, 1fr); }
@@ -388,7 +382,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false, // Bắt buộc false để chart co giãn chuẩn theo div
+            maintainAspectRatio: false, 
             plugins: {
                 legend: { display: false },
                 tooltip: {

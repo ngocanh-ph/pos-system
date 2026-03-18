@@ -1,5 +1,4 @@
 <style>
-    /* --- DESIGN SYSTEM: PRODUCT MANAGER --- */
     :root {
         --pm-bg: #F0F8FF;         
         --pm-navy: #011628;       
@@ -14,7 +13,6 @@
         --pm-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.1);
     }
 
-    /* Reset & Base */
     .product-wrapper {
         background-color: var(--pm-bg);
         font-family: 'Inter', sans-serif;
@@ -22,7 +20,6 @@
         padding: 0.5rem;
     }
 
-    /* Header */
     .pm-header {
         display: flex; 
         justify-content: space-between; 
@@ -65,7 +62,6 @@
         color: white;
     }
 
-    /* Toolbar */
     .pm-toolbar {
         background: var(--pm-white);
         border-radius: var(--pm-radius-2xl); 
@@ -143,7 +139,6 @@
         box-shadow: 0 1px 2px #0000001a; 
     }
 
-    /* List View & Container */
     .pm-container {
         background: var(--pm-white);
         border-radius: var(--pm-radius-3xl); 
@@ -153,7 +148,6 @@
         min-height: 600px; 
     }
 
-    /* Table */
     .pm-table { 
         width: 100%; 
         border-collapse: separate; 
@@ -204,7 +198,6 @@
         color: var(--pm-blue); 
         font-size: 0.95rem; 
     }
-    /* Grid View */
     .grid-container {
         display: none;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -286,7 +279,6 @@
         background: #dc2626; 
         color: white; 
     }
-    /* Empty State */
     .empty-state {
         display: flex; 
         flex-direction: column; 
@@ -296,8 +288,6 @@
         height: 100%; 
         width: 100%;
     }
-
-    /* Modal */
     .form-label-caps {
         font-size: 0.7rem; 
         font-weight: 700; 

@@ -22,7 +22,6 @@
     input[type=number]::-webkit-outer-spin-button, 
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    /*Search Component */
     .search-container { 
         background: white; 
         border-radius: 1.2rem; 
@@ -124,7 +123,6 @@
         font-size: 0.75rem; 
         color: #94a3b8; 
     }
-    /*Cart Component */
     .cart-island { 
         background: white; 
         border-radius: 1.5rem; 
@@ -181,7 +179,6 @@
         justify-content: center; 
         color: #94a3b8; 
     }
-    /*Customer Component */
     .cust-card { 
         background: white; 
         border-radius: 2rem; 
@@ -218,8 +215,6 @@
     } .badge-old { 
         background-color: #16a34a; 
     }
-
-    /*Payment Component */
     .pay-card { 
         background-color: var(--pos-navy); 
         border-radius: 2rem; 
@@ -276,7 +271,6 @@
         color: var(--pos-sky) !important;
         font-weight: 700;
     }
-    /* Modals & Overlays */
     .overlay-receipt { 
         position: fixed; 
         top: 0; left: 0; 
@@ -303,12 +297,10 @@
         box-shadow: 0 25px 50px -12px #00000040; 
     }
     .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
-
-    /* Custom CSS cho khung camera quét mã vạch (ĐÃ FIX LẬT GƯƠNG) */
     #reader video { 
         border-radius: 1rem; 
         object-fit: cover; 
-        transform: scaleX(-1); /* Lệnh này lật ngược camera lại cho thuận tay */
+        transform: scaleX(-1); 
     }
     #reader { border: none !important; }
 </style>
@@ -464,7 +456,6 @@
     let currentInvoiceUrl = '';
     let currentCustomerId = null;
 
-    /* Quản lý giỏ hàng*/
     function renderCart() {
         const tbody = $('#cart_body'); tbody.empty();
         let total = 0;
@@ -504,8 +495,6 @@
     }
 
     function removeProduct(index) { cart.splice(index, 1); renderCart(); }
-
-    /* Tìm kiếm sản phẩm & khách hàng */
     let searchTimeout = null;
     $('#product_search').on('input', function() {
         let query = $(this).val();
@@ -515,7 +504,6 @@
         searchTimeout = setTimeout(() => {
             $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
                 if (data && data.length > 0) {
-                    // Cải tiến: Nếu quét mã vạch (khớp chính xác) tự thêm vào giỏ
                     if (data.length === 1 && data[0].is_exact) {
                         addToCart(data[0]); $('#product_search').val(''); $('#search_results').hide(); return;
                     }
@@ -573,7 +561,6 @@
         }
     });
 
-    /*Lịch sử khách hàng */
     $('#btn_view_history').click(function() {
         if(!currentCustomerId) return;
         $.get(BASE_URL + '/customers/details', { id: currentCustomerId }, function(res) {
@@ -641,7 +628,6 @@
         });
     });
 
-    /*Thanh toán và in ấn*/
     function calculateChange() {
         const total = parseInt($('#display_total').text().replace(/\./g, '')) || 0;
         const given = parseInt($('#cash_given').val()) || 0;
@@ -678,51 +664,34 @@
         $('#cust_phone, #cust_name, #cust_address, #cash_given').val(''); 
         $('#cust_badge').hide(); $('#success_overlay').hide(); currentCustomerId = null; $('#btn_view_history').hide();
     };
-
-    /* --- MỚI: QUẢN LÝ CAMERA QUÉT MÃ VẠCH --- */
     let html5QrCode;
-
-    // 1. Mở modal khi click nút Barcode
     $('#btn_open_scanner').click(function() {
         $('#scannerModal').modal('show');
     });
-
-    // 2. Khởi động Camera khi Modal hiển thị xong
     $('#scannerModal').on('shown.bs.modal', function () {
         html5QrCode = new Html5Qrcode("reader");
-        
-        // Cấu hình Camera quét
         html5QrCode.start(
-            { facingMode: "environment" }, // Ưu tiên dùng camera sau (nếu dùng trên di động)
+            { facingMode: "environment" }, 
             {
-                fps: 10, // Frame per second (số khung hình/giây)
-                qrbox: { width: 250, height: 150 } // Khu vực định vị mã vạch (hình chữ nhật)
+                fps: 10, 
+                qrbox: { width: 250, height: 150 }
             },
-            // Callback khi quét thành công
             (decodedText, decodedResult) => {
-                // Tắt camera ngay lập tức
                 html5QrCode.stop().then((ignore) => {
                     $('#scannerModal').modal('hide');
-                    
-                    // Điền mã vạch thu được vào ô input và kích hoạt sự kiện input
-                    // Từ đó hệ thống tự động gọi AJAX load sản phẩm như khi ta gõ tay
                     $('#product_search').val(decodedText).trigger('input');
                     
                 }).catch((err) => {
                     console.error(err);
                 });
             },
-            // Callback khi đang dò tìm (thất bại 1 frame)
             (errorMessage) => {
-                // Không làm gì, bỏ qua để chờ quét frame tiếp theo
             }
         ).catch((err) => {
             console.error("Camera error:", err);
             $('#reader').html('<div class="p-4 text-center text-danger"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>Không thể truy cập Camera. Vui lòng kiểm tra quyền trên trình duyệt!</div>');
         });
     });
-
-    // 3. Tắt Camera khi Modal đóng (Bảo vệ tài nguyên & pin)
     $('#scannerModal').on('hidden.bs.modal', function () {
         if (html5QrCode && html5QrCode.isScanning) {
             html5QrCode.stop().catch(err => console.error(err));

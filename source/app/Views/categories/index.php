@@ -1,5 +1,4 @@
 <style>
-    /* --- DESIGN SYSTEM: CATEGORY MANAGER --- */
     :root {
         --pm-bg: #F0F8FF;         
         --pm-navy: #011628;       
@@ -16,8 +15,6 @@
         color: var(--pm-navy);
         padding: 0.5rem;
     }
-
-    /* Header & Title */
     .pm-header {
         display: flex; 
         justify-content: space-between; 
@@ -60,8 +57,6 @@
         box-shadow: 0 6px 15px -3px #0443774d;
         color: white;
     }
-
-    /* Container Design */
     .pm-container {
         background: var(--pm-white);
         border-radius: var(--pm-radius-3xl);
@@ -73,7 +68,6 @@
         flex-direction: column;
     }
 
-    /* Table Design */
     .table-responsive { 
         width: 100%; 
         height: 100%; 
@@ -130,8 +124,6 @@
         gap: 6px;
         margin-bottom: 0.2rem;
     }
-
-    /* Empty State */
     .empty-row td {
         text-align: center;
         vertical-align: middle;
@@ -144,8 +136,6 @@
         justify-content: center;
         color: #94a3b8;
     }
-
-    /* Actions Buttons */
     .row-actions { 
         display: flex; 
         gap: 8px; 
@@ -182,8 +172,6 @@
         color: white; 
         transform: scale(1.05); 
     }
-
-    /* Modal Styling */
     .form-label-caps {
         font-size: 0.75rem; 
         font-weight: 700; 
@@ -365,8 +353,6 @@
                         $('#toastMessage').text(isEdit ? 'Cập nhật danh mục thành công!' : 'Thêm mới danh mục thành công!');
                         catModal.hide();
                         toast.show();
-                        
-                        // Cập nhật lại HTML ngầm (ko chớp trang)
                         $.get(location.href, function(newData) {
                             let parsedDOM = $('<div/>').append(newData);
                             let newTableContent = parsedDOM.find('.pm-container .table-responsive');
@@ -374,8 +360,6 @@
                         });
                     } else {
                         $('#actionToast').removeClass('bg-success').addClass('bg-danger');
-                        
-                        // Dịch lỗi nếu trùng danh mục
                         let errorMsg = res.message || 'Có lỗi xảy ra!';
                         if (errorMsg.includes('1062 Duplicate entry') && errorMsg.includes('name')) {
                             errorMsg = 'Tên danh mục này đã tồn tại. Vui lòng nhập tên khác!';

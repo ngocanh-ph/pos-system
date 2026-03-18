@@ -30,8 +30,6 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             justify-content: center;
             margin: 0;
         }
-
-        /* Card Container */
         .card-custom {
             width: 100%;
             max-width: 500px;
@@ -43,8 +41,6 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
         }
-
-        /* Logo & Header */
         .logo-wrapper {
             text-align: center;
             margin-bottom: 20px;
@@ -71,8 +67,6 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             margin-bottom: 30px;
             font-weight: 500;
         }
-
-        /* Input Styling */
         .form-group {
             margin-bottom: 20px;
         }
@@ -119,7 +113,6 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             font-size: 18px;
         }
 
-        /* Button Styling */
         .btn-submit {
             background-color: var(--color-primary);
             color: white;
@@ -156,7 +149,6 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             color: var(--color-primary);
         }
 
-        /* Alert Styling */
         .alert-custom {
             padding: 12px 15px;
             border-radius: 10px;
