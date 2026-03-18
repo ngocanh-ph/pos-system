@@ -365,7 +365,6 @@
             <div class="empty-state">
                 <i class="fas fa-box-open" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
                 <div style="font-weight: 600; font-size: 1.1rem;">Chưa có sản phẩm nào.</div>
-                <div style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.7;">Hãy thêm sản phẩm mới để bắt đầu quản lý.</div>
             </div>
         </div>
     <?php else: ?>
