@@ -358,11 +358,12 @@
                         <?php else: ?>
                             <div class="user-avatar-text"><?= $firstLetter ?></div>
                         <?php endif; ?>    
+                    
                     <div class="user-info">
-                        <h6>Hệ thống Quản trị</h6>
-                        <span><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></span>
+                        <h6><?= htmlspecialchars($_SESSION['user']->fullname ?? 'Người dùng') ?></h6>
+                        <span><?= (isset($_SESSION['user']->role) && $_SESSION['user']->role === 'admin') ? 'Quản trị viên' : 'Nhân viên' ?></span>
                     </div>
-                </div>
+                    </div>
                 <a href="<?= APP_URL ?>/logout" class="btn-logout" title="Đăng xuất">
                     <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
                 </a>

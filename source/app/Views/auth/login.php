@@ -115,7 +115,7 @@ $title = 'Đăng nhập MAVPOS';
         background-color: var(--color-bg-input);
         border: 1px solid transparent;
         border-radius: 10px;
-        padding: 15px 15px 15px 45px;
+        padding: 15px 45px 15px 45px;
         font-size: 14px;
         color: #333;
         transition: all 0.3s;
@@ -141,6 +141,21 @@ $title = 'Đăng nhập MAVPOS';
         transform: translateY(-50%);
         color: #6a8db1;
         font-size: 18px;
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6a8db1;
+        font-size: 18px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .toggle-password:hover {
+        color: var(--color-primary);
     }
 
     .btn-login {
@@ -243,8 +258,10 @@ $title = 'Đăng nhập MAVPOS';
                 <div class="form-group">
                     <label class="form-label-custom">Mật khẩu</label>
                     <div class="input-wrapper">
-                        <i class="fas fa-lock input-icon"></i> <input type="password" name="password"
+                        <i class="fas fa-lock input-icon"></i> 
+                        <input type="password" id="password" name="password"
                             class="form-control-custom" placeholder="••••••••" required>
+                        <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                     </div>
                 </div>
 
@@ -256,6 +273,18 @@ $title = 'Đăng nhập MAVPOS';
         </div>
     </div>
 
+    <script>
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    </script>
 </body>
 
 </html>
