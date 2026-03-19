@@ -85,7 +85,7 @@ class EmployeeController extends Controller {
         $link = APP_URL . "/auth/verify-token?token=" . $token;
 
         $subject = "[MAVPOS] Thông tin tài khoản & hướng dẫn đăng nhập lại hệ thống POS";
-        $body = $this->buildWelcomeEmailBody($fullname, $username, $link, true);
+        $body = $this->buildWelcomeEmailBody($user->fullname, $user->username, $link, true);
         $this->sendMail($user->email, $subject, $body);
         $this->json(['success' => true, 'debug_link' => $link]);
     }
