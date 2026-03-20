@@ -48,7 +48,7 @@
             flex-direction: column;
             padding: 1rem 0.75rem; 
             z-index: 1000;
-            transition: width var(--transition-speed) ease;
+            transition: width var(--transition-speed) ease, left var(--transition-speed) ease;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
             overflow-y: auto;
             overflow-x: hidden;
@@ -286,6 +286,41 @@
             font-size: 0.9rem; 
             color: #1F2937;
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -100%; 
+                box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+            }
+            .sidebar.show-mobile {
+                left: 0;
+            }
+            .main-panel {
+                width: 100% !important;
+                margin-left: 0 !important;
+                padding: 1rem; 
+            }
+            body.sidebar-collapsed .main-panel {
+                margin-left: 0;
+                width: 100%;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .mobile-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            }
+            .mobile-overlay.show {
+                display: block;
+            }
+        }
+
     </style>
 </head>
 <body class="preload">
@@ -302,14 +337,15 @@
 
     <?php if(isset($_SESSION['user'])): ?>
     <div class="wrapper">
+        <div class="mobile-overlay" id="mobileOverlay"></div>
+
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="<?= APP_URL ?>/dashboard" class="brand-logo">
                     <img src="<?= APP_URL ?>/uploads/logoMAV.png" alt="MAVPOS">
                     <span class="brand-text">POS</span>
                 </a>
-                <button id="sidebarToggle">
-                    <i class="fas fa-bars"></i>
+                <button id="sidebarToggle" class="d-none d-md-block"> <i class="fas fa-bars"></i>
                 </button>
             </div>
             
@@ -372,11 +408,18 @@
 
         <div class="main-panel">
             <div class="top-bar">
-               <div class="breadcrumbs">
-                <span style="color: #3B82F6;">Trang chủ</span> 
-                <i class="fas fa-chevron-right fa-xs mx-2" style="color: #94A3B8;"></i>
-                <span style="color: #64748B;"><?= mb_strtoupper($title ?? 'TỔNG QUAN', 'UTF-8') ?></span>
+               <div class="d-flex align-items-center gap-3">
+                   <button class="btn btn-light d-md-none shadow-sm" id="btnMobileMenu" style="padding: 6px 12px; border-radius: 8px;">
+                       <i class="fas fa-bars" style="color: var(--color-text-dark); font-size: 1.2rem;"></i>
+                   </button>
+                   
+                   <div class="breadcrumbs">
+                    <span style="color: #3B82F6;">Trang chủ</span> 
+                    <i class="fas fa-chevron-right fa-xs mx-2" style="color: #94A3B8;"></i>
+                    <span style="color: #64748B;"><?= mb_strtoupper($title ?? 'TỔNG QUAN', 'UTF-8') ?></span>
+                   </div>
                </div>
+
                 <div class="current-date">
                     <?= mb_strtoupper(['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][date('w')] . date(', d \t\h\á\n\g m \n\ă\m Y'), 'UTF-8') ?>
                 </div>
@@ -398,6 +441,15 @@
                 } else {
                     sessionStorage.setItem('sidebar-collapsed', 'false');
                 }
+            });
+
+            $('#btnMobileMenu').click(function() {
+                $('#sidebar').addClass('show-mobile');
+                $('#mobileOverlay').addClass('show');
+            });
+            $('#mobileOverlay').click(function() {
+                $('#sidebar').removeClass('show-mobile');
+                $(this).removeClass('show');
             });
         });
     </script>
