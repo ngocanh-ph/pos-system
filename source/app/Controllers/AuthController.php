@@ -10,8 +10,17 @@ class AuthController extends Controller {
             $this->redirect('/dashboard');
             return;
         }
-        $this->renderAuthView('auth/login');
+        $data = [];
+        if (isset($_GET['error'])) {
+            $data['error'] = $_GET['error'];
+        }
+        if (isset($_GET['success'])) {
+            $data['success'] = $_GET['success'];
+        }
+        
+        $this->renderAuthView('auth/login', $data);
     }
+
     public function verifyToken() {
         $token = $_GET['token'] ?? '';
 
@@ -25,13 +34,15 @@ class AuthController extends Controller {
         $tokenData = $tokenModel->findValidToken($token);
 
         if (!$tokenData) {
-            $this->redirect('/login?error=Liên kết đã hết hạn hoặc không hợp lệ.');
+            $this->redirect('/login?error=Link đăng nhập đã hết hạn');
             return;
         }
+        
         $_SESSION['can_login_first_time'] = true;
         $tokenModel->destroyToken($token);
         $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
     }
+
     public function handleLogin() {
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? ''); 
@@ -46,6 +57,7 @@ class AuthController extends Controller {
                     ]);
                     return;
                 }
+                
                 unset($_SESSION['can_login_first_time']);
                 $_SESSION['user'] = $user;
                 $this->redirect('/force-change-password');
