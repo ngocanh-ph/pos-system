@@ -9,14 +9,11 @@ hỗ trợ các chức năng như bán hàng, quản lý sản phẩm, nhân vi�
 Mô hình này được sử dụng phổ biến trong các cửa hàng bán lẻ tại Việt Nam.
 
 ------------------------------------------------------------
-
 2. LINK TRIỂN KHAI (DEPLOY)
 Website: https://mavpos.id.vn/
-
 ------------------------------------------------------------
 
 3. TÀI KHOẢN ĐĂNG NHẬP
-
 Admin:
 - Username: admin
 - Password: admin
@@ -24,7 +21,6 @@ Admin:
 Nhân viên:
 - Được tạo bởi admin
 - Đăng nhập lần đầu qua link email (hiệu lực 1 phút)
-
 ------------------------------------------------------------
 
 4. HƯỚNG DẪN CHẠY PROJECT (LOCAL)
@@ -50,16 +46,13 @@ Bước 4: Chạy hệ thống
 - Đặt project vào thư mục htdocs (XAMPP)
 - Truy cập:
   http://localhost/mav-web-pos/source/public
-
 ------------------------------------------------------------
 
 5. VIDEO DEMO
 Link video: 
-
 ------------------------------------------------------------
 
 6. CẤU TRÚC THƯ MỤC
-
 source/
 │
 ├── app/       : Controllers, Models, Views, Core, Libs
@@ -70,7 +63,6 @@ source/
 Ghi chú:
 Hệ thống được tổ chức theo mô hình MVC giúp tách biệt xử lý logic,
 dữ liệu và giao diện, từ đó dễ bảo trì và mở rộng.
-
 ------------------------------------------------------------
 
 7. CÔNG NGHỆ SỬ DỤNG
@@ -80,7 +72,6 @@ dữ liệu và giao diện, từ đó dễ bảo trì và mở rộng.
 - Database : MySQL
 - Mô hình  : MVC
 - Server   : Apache
-
 ------------------------------------------------------------
 
 8. GHI CHÚ
@@ -89,7 +80,6 @@ dữ liệu và giao diện, từ đó dễ bảo trì và mở rộng.
 - Áp dụng cơ chế Routing (Front Controller)
 - Có ràng buộc dữ liệu tại database để đảm bảo toàn vẹn
 - Backend thực hiện kiểm tra và tính toán lại dữ liệu 
-
 ------------------------------------------------------------
 
 9. LƯU Ý
@@ -98,5 +88,4 @@ dữ liệu và giao diện, từ đó dễ bảo trì và mở rộng.
 - Sử dụng tài khoản admin để kiểm tra đầy đủ chức năng
 - Khi chạy local cần cấu hình database như hướng dẫn
 - Nếu không cấu hình đúng database, hệ thống sẽ không kết nối được
-
 ------------------------------------------------------------
