@@ -40,7 +40,7 @@ class AuthController extends Controller {
         
         $_SESSION['can_login_first_time'] = true;
         $tokenModel->destroyToken($token);
-        $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
+        $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu để tiếp tục.');
     }
 
     public function handleLogin() {
@@ -93,8 +93,8 @@ class AuthController extends Controller {
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
-        if (empty($new_password) || strlen($new_password) < 6) {
-            $this->renderAuthView('auth/force_change_password', ['error' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+        if (empty($new_password)) {
+            $this->renderAuthView('auth/force_change_password', ['error' => 'Vui lòng nhập mật khẩu mới']);
             return;
         }
         
