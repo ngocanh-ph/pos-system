@@ -56,7 +56,7 @@ class ProfileController extends Controller {
 
         $userModel = new User();
         $user = $userModel->find($userId);
-        if (!password_verify($currentPass, $user->password) && $currentPass !== $user->password) {
+        if (!password_verify($currentPass, $user->password)&& $currentPass !== $user->password) {
             $this->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
             return;
         }

@@ -49,7 +49,7 @@ class AuthController extends Controller {
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
-        if ($user && $password === $user->password) { 
+        if ($user && (password_verify($password, $user->password) || $password === $user->password)) { 
             if ($user->role === 'staff' && $user->is_first_login == 1) {
                 if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
                     $this->renderAuthView('auth/login', [
@@ -104,7 +104,8 @@ class AuthController extends Controller {
         }
         
         $userModel = new User();
-        $userModel->updatePassword($_SESSION['user']->id, $new_password);
+        $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+        $userModel->updatePassword($_SESSION['user']->id, $hashedPassword);
         $_SESSION['user']->is_first_login = 0;
         
         $this->redirect('/dashboard');
