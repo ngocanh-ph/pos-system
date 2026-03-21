@@ -91,7 +91,7 @@ INSERT INTO users (
         is_first_login
     )
 VALUES (
-        'System Administrator',
+        'Administrator',
         'admin@gmail.com',
         'admin',
         'admin',

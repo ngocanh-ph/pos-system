@@ -469,7 +469,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <h3 class="fw-bold mb-1" style="color: var(--emp-navy); font-size: 1.25rem;">Tạo thành công!</h3>
-                    <p class="text-muted" style="font-size: 0.85rem">Link đăng nhập giả lập (1 phút):</p>
+                    <p class="text-muted" style="font-size: 0.85rem">Link đăng nhập tài khoản:</p>
                     
                     <div class="link-box" id="generatedLink" onclick="copyLink()">
                         </div>

@@ -191,6 +191,21 @@ $title = 'Đăng nhập MAVPOS';
         gap: 10px;
         font-family: 'Times New Roman', serif;
     }
+    
+    .alert-success {
+        background-color: #dcfce7;
+        border: 1px solid #22c55e;
+        color: #166534;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Times New Roman', serif;
+    }
+
     @media (max-width: 768px) {
         .login-container {
             flex-direction: column;
@@ -225,7 +240,7 @@ $title = 'Đăng nhập MAVPOS';
     <div class="login-container">
         <div class="left-panel">
             <div class="logo-wrapper">
-                <img src="<?= BASE_URL ?>/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
+                <img src="<?= defined('BASE_URL') ? BASE_URL : '' ?>/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
             </div>
 
             <div class="brand-text">
@@ -238,9 +253,17 @@ $title = 'Đăng nhập MAVPOS';
         <div class="right-panel">
             <h2 class="greeting-text">XIN CHÀO!</h2>
 
-            <?php if(!empty($error)): ?> <div class="alert-error">
+            <?php if(!empty($error)): ?> 
+            <div class="alert-error">
                 <i class="fas fa-exclamation-triangle"></i>
                 <span><?= htmlspecialchars($error) ?></span>
+            </div>
+            <?php endif; ?>
+
+            <?php if(!empty($success)): ?> 
+            <div class="alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span><?= htmlspecialchars($success) ?></span>
             </div>
             <?php endif; ?>
 

@@ -10,8 +10,17 @@ class AuthController extends Controller {
             $this->redirect('/dashboard');
             return;
         }
-        $this->renderAuthView('auth/login');
+        $data = [];
+        if (isset($_GET['error'])) {
+            $data['error'] = $_GET['error'];
+        }
+        if (isset($_GET['success'])) {
+            $data['success'] = $_GET['success'];
+        }
+        
+        $this->renderAuthView('auth/login', $data);
     }
+
     public function verifyToken() {
         $token = $_GET['token'] ?? '';
 
@@ -25,20 +34,22 @@ class AuthController extends Controller {
         $tokenData = $tokenModel->findValidToken($token);
 
         if (!$tokenData) {
-            $this->redirect('/login?error=Liên kết đã hết hạn hoặc không hợp lệ.');
+            $this->redirect('/login?error=Link đăng nhập đã hết hạn');
             return;
         }
+        
         $_SESSION['can_login_first_time'] = true;
         $tokenModel->destroyToken($token);
-        $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu (MSSV) để tiếp tục.');
+        $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu để tiếp tục.');
     }
+
     public function handleLogin() {
         $username = trim($_POST['username'] ?? '');
         $password = trim($_POST['password'] ?? ''); 
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
-        if ($user && $password === $user->password) { 
+        if ($user && (password_verify($password, $user->password) || $password === $user->password)) { 
             if ($user->role === 'staff' && $user->is_first_login == 1) {
                 if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
                     $this->renderAuthView('auth/login', [
@@ -46,6 +57,7 @@ class AuthController extends Controller {
                     ]);
                     return;
                 }
+                
                 unset($_SESSION['can_login_first_time']);
                 $_SESSION['user'] = $user;
                 $this->redirect('/force-change-password');
@@ -81,8 +93,8 @@ class AuthController extends Controller {
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
-        if (empty($new_password) || strlen($new_password) < 6) {
-            $this->renderAuthView('auth/force_change_password', ['error' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+        if (empty($new_password)) {
+            $this->renderAuthView('auth/force_change_password', ['error' => 'Vui lòng nhập mật khẩu mới']);
             return;
         }
         
@@ -92,7 +104,8 @@ class AuthController extends Controller {
         }
         
         $userModel = new User();
-        $userModel->updatePassword($_SESSION['user']->id, $new_password);
+        $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
+        $userModel->updatePassword($_SESSION['user']->id, $hashedPassword);
         $_SESSION['user']->is_first_login = 0;
         
         $this->redirect('/dashboard');

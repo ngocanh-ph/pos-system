@@ -26,6 +26,11 @@ class User extends Model {
         $stmt->execute(['token' => $token]);
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
+    public function find($id) {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
 
     public function create($data) {
         $sql = "INSERT INTO {$this->table} 

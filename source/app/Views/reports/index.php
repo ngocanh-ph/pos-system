@@ -321,12 +321,14 @@
                 <option value="custom_active" hidden>Tùy chọn...</option>
             </select>
 
-            <?php if(!empty($staffs)): ?>
+            <?php if($_SESSION['user']->role === 'admin'): ?>
             <select id="staffFilter" class="filter-select">
                 <option value="">Tất cả nhân viên</option>
-                <?php foreach($staffs as $s): ?>
-                    <option value="<?= $s->id ?>"><?= htmlspecialchars($s->fullname) ?></option>
-                <?php endforeach; ?>
+                <?php if(!empty($staffs)): ?>
+                    <?php foreach($staffs as $s): ?>
+                        <option value="<?= $s->id ?>"><?= htmlspecialchars($s->fullname) ?></option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
             <?php endif; ?>
         </div>
