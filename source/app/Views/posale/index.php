@@ -262,7 +262,7 @@
     }
 
     #orderDetailModal .modal-header {
-        background-color: var(--pos-accent) !important;
+        background-color: var(--pos-navy) !important; /* ĐÃ ĐỔI MÀU GIỐNG HISTORY MODAL */
         border-bottom: none;
     }
     #orderDetailModal .modal-title {
@@ -477,7 +477,7 @@
 
     function removeProduct(index) { cart.splice(index, 1); renderCart(); }
 
-    /* --- ĐÃ ĐIỀU CHỈNH: Tìm kiếm sản phẩm & khách hàng --- */
+    /* Tìm kiếm sản phẩm & khách hàng */
     let searchTimeout = null;
     $('#product_search').on('input', function() {
         let query = $(this).val();
