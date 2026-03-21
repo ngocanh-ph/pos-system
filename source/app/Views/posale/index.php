@@ -22,6 +22,7 @@
     input[type=number]::-webkit-outer-spin-button, 
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
+    /*Search Component */
     .search-container { 
         background: white; 
         border-radius: 1.2rem; 
@@ -123,6 +124,7 @@
         font-size: 0.75rem; 
         color: #94a3b8; 
     }
+    /*Cart Component */
     .cart-island { 
         background: white; 
         border-radius: 1.5rem; 
@@ -179,6 +181,7 @@
         justify-content: center; 
         color: #94a3b8; 
     }
+    /*Customer Component */
     .cust-card { 
         background: white; 
         border-radius: 2rem; 
@@ -215,6 +218,8 @@
     } .badge-old { 
         background-color: #16a34a; 
     }
+
+    /*Payment Component */
     .pay-card { 
         background-color: var(--pos-navy); 
         border-radius: 2rem; 
@@ -271,6 +276,7 @@
         color: var(--pos-sky) !important;
         font-weight: 700;
     }
+    /* Modals & Overlays */
     .overlay-receipt { 
         position: fixed; 
         top: 0; left: 0; 
@@ -297,14 +303,7 @@
         box-shadow: 0 25px 50px -12px #00000040; 
     }
     .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
-    #reader video { 
-        border-radius: 1rem; 
-        object-fit: cover; 
-        transform: scaleX(-1); 
-    }
-    #reader { border: none !important; }
 </style>
-
 <div class="pos-wrapper">
     <div class="row h-100 g-3">
         <div class="col-md-8 h-100 d-flex flex-column">
@@ -315,7 +314,7 @@
                     <input type="text" id="product_search" class="search-input" placeholder="Tìm tên sản phẩm hoặc quét mã vạch..." autocomplete="off">
                     <div id="search_results"></div> 
                 </div>
-                <button class="btn-barcode" id="btn_open_scanner" title="Quét mã vạch"><i class="fas fa-barcode"></i></button>
+                <button class="btn-barcode" title="Quét mã vạch"><i class="fas fa-barcode"></i></button>
             </div>
 
             <div class="cart-island">
@@ -431,31 +430,13 @@
     </div>
 </div>
 
-<div class="modal fade" id="scannerModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title"><i class="fas fa-camera me-2"></i>Quét mã vạch sản phẩm</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0 bg-dark">
-                <div id="reader" style="width: 100%; min-height: 300px;"></div>
-            </div>
-            <div class="modal-footer justify-content-center bg-dark border-0">
-                <p class="text-white-50 small mb-0">Đưa mã vạch sản phẩm vào khung hình camera</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
 <script>
     const BASE_URL = "<?= APP_URL ?>";
     let cart = [];
     let currentInvoiceUrl = '';
     let currentCustomerId = null;
 
+    /* Quản lý giỏ hàng*/
     function renderCart() {
         const tbody = $('#cart_body'); tbody.empty();
         let total = 0;
@@ -495,6 +476,8 @@
     }
 
     function removeProduct(index) { cart.splice(index, 1); renderCart(); }
+
+    /* --- ĐÃ ĐIỀU CHỈNH: Tìm kiếm sản phẩm & khách hàng --- */
     let searchTimeout = null;
     $('#product_search').on('input', function() {
         let query = $(this).val();
@@ -504,9 +487,6 @@
         searchTimeout = setTimeout(() => {
             $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
                 if (data && data.length > 0) {
-                    if (data.length === 1 && data[0].is_exact) {
-                        addToCart(data[0]); $('#product_search').val(''); $('#search_results').hide(); return;
-                    }
                     let html = '';
                     data.forEach(p => {
                         html += `
@@ -518,6 +498,8 @@
                         </div>`;
                     });
                     $('#search_results').html(html).show();
+                } else {
+                    $('#search_results').hide();
                 }
             }, 'json');
         }, 300);
@@ -561,6 +543,7 @@
         }
     });
 
+    /*Lịch sử khách hàng */
     $('#btn_view_history').click(function() {
         if(!currentCustomerId) return;
         $.get(BASE_URL + '/customers/details', { id: currentCustomerId }, function(res) {
@@ -628,6 +611,7 @@
         });
     });
 
+    /*Thanh toán và in ấn*/
     function calculateChange() {
         const total = parseInt($('#display_total').text().replace(/\./g, '')) || 0;
         const given = parseInt($('#cash_given').val()) || 0;
@@ -664,38 +648,4 @@
         $('#cust_phone, #cust_name, #cust_address, #cash_given').val(''); 
         $('#cust_badge').hide(); $('#success_overlay').hide(); currentCustomerId = null; $('#btn_view_history').hide();
     };
-    let html5QrCode;
-    $('#btn_open_scanner').click(function() {
-        $('#scannerModal').modal('show');
-    });
-    $('#scannerModal').on('shown.bs.modal', function () {
-        html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
-            { facingMode: "environment" }, 
-            {
-                fps: 10, 
-                qrbox: { width: 250, height: 150 }
-            },
-            (decodedText, decodedResult) => {
-                html5QrCode.stop().then((ignore) => {
-                    $('#scannerModal').modal('hide');
-                    $('#product_search').val(decodedText).trigger('input');
-                    
-                }).catch((err) => {
-                    console.error(err);
-                });
-            },
-            (errorMessage) => {
-            }
-        ).catch((err) => {
-            console.error("Camera error:", err);
-            $('#reader').html('<div class="p-4 text-center text-danger"><i class="fas fa-exclamation-triangle fa-2x mb-3"></i><br>Không thể truy cập Camera. Vui lòng kiểm tra quyền trên trình duyệt!</div>');
-        });
-    });
-    $('#scannerModal').on('hidden.bs.modal', function () {
-        if (html5QrCode && html5QrCode.isScanning) {
-            html5QrCode.stop().catch(err => console.error(err));
-        }
-    });
-
 </script>
