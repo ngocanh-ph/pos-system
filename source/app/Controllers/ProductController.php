@@ -34,7 +34,7 @@ class ProductController extends Controller {
 
             $image = 'default_product.png';
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-               $image = $this->processImage($_FILES['image']);
+               $image = $this->handleFileUpload($_FILES['image']);
             }
 
             $productModel = new Product();
@@ -59,7 +59,11 @@ class ProductController extends Controller {
 
     public function update() {
         $this->verifyAdminJson();
-        $id = $_POST['id'];
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->json(['success' => false, 'message' => 'Thiếu ID sản phẩm.']);
+            return;
+        }
         
         try {
             $this->validateProductData();
@@ -72,7 +76,7 @@ class ProductController extends Controller {
             ];
             
             if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-               $data['image'] = $this->processImage($_FILES['image']);
+               $data['image'] = $this->handleFileUpload($_FILES['image']);
             }
             
             $productModel = new Product();
@@ -88,7 +92,11 @@ class ProductController extends Controller {
 
     public function delete() {
         $this->verifyAdminJson();
-        $id = $_POST['id'];       
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            $this->json(['success' => false, 'message' => 'Thiếu ID sản phẩm.']);
+            return;
+        }       
         $productModel = new Product();
         if ($productModel->delete($id)) {
             $this->json(['success' => true]);
@@ -97,22 +105,7 @@ class ProductController extends Controller {
         }
     }
 
-    private function processImage($file) {
-        $target_dir = __DIR__ . "/../../public/uploads/";       
-        if (!file_exists($target_dir)) {
-            mkdir($target_dir, 0777, true);
-        }        
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];       
-        if (!in_array($ext, $allowed)) throw new Exception("Chỉ chấp nhận file ảnh (JPG, PNG, WEBP).");
-        if ($file['size'] > 2 * 1024 * 1024) throw new Exception("File ảnh quá lớn (>2MB).");
 
-        $filename = uniqid() . "." . $ext;       
-        if (!move_uploaded_file($file['tmp_name'], $target_dir . $filename)) {
-            throw new Exception("Lỗi khi lưu file ảnh.");
-        }       
-        return $filename;
-    }
 
     private function validateProductData() {
         if (

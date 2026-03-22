@@ -50,6 +50,12 @@ class AuthController extends Controller {
         $userModel = new User();
         $user = $userModel->findByUsername($username);
         if ($user && (password_verify($password, $user->password) || $password === $user->password)) { 
+            // Check locked TRƯỚC khi check first login
+            if ($user->status === 'locked') {
+                $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
+                return;
+            }
+
             if ($user->role === 'staff' && $user->is_first_login == 1) {
                 if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
                     $this->renderAuthView('auth/login', [
@@ -59,15 +65,12 @@ class AuthController extends Controller {
                 }
                 
                 unset($_SESSION['can_login_first_time']);
+                session_regenerate_id(true);
                 $_SESSION['user'] = $user;
                 $this->redirect('/force-change-password');
                 return;
             }
 
-            if ($user->status === 'locked') {
-                $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
-                return;
-            }
             session_regenerate_id(true);
             $_SESSION['user'] = $user;
             $this->redirect('/dashboard');

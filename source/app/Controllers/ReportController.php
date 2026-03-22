@@ -18,11 +18,8 @@ class ReportController extends Controller {
     }
 
     public function getReportData() {
-        if (!isset($_SESSION['user'])) {
-            $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
-            return;
-        }
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $this->requireLoginJson();
+
         $range = $_GET['range'] ?? 'today';
         $staffId = $_GET['staff_id'] ?? null;
         if ($staffId === 'undefined' || $staffId === '') $staffId = null;
@@ -90,10 +87,7 @@ class ReportController extends Controller {
         }
     }
     public function getOrderDetail() {
-        if (!isset($_SESSION['user'])) {
-            $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
-            return;
-        }
+        $this->requireLoginJson();
 
         $orderId = $_GET['id'] ?? 0;
         if (!$orderId) {

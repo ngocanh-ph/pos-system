@@ -24,7 +24,7 @@ class ProfileController extends Controller {
         
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
             try {
-                $avatarPath = $this->processAvatar($_FILES['avatar']);
+                $avatarPath = $this->handleFileUpload($_FILES['avatar'], 'avatar_' . $_SESSION['user']->id . '_');
             } catch (Exception $e) {
                 $this->json(['success' => false, 'message' => $e->getMessage()]);
                 return;
@@ -49,7 +49,7 @@ class ProfileController extends Controller {
         $userId = $_SESSION['user']->id;
         $currentPass = $_POST['current_password'] ?? '';
         $newPass = $_POST['new_password'] ?? '';
-        if (strlen($newPass)) {
+        if (empty($newPass)) {
              $this->json(['success' => false, 'message' => 'Vui lòng nhập mật khẩu mới']);
              return;
         }
@@ -65,20 +65,5 @@ class ProfileController extends Controller {
         $userModel->updatePassword($userId, $newHash);
 
         $this->json(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
-    }
-
-    private function processAvatar($file) {
-        $target_dir = __DIR__ . "/../../public/uploads/";
-        if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
-        
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($ext, $allowed)) throw new Exception("Định dạng ảnh không hỗ trợ.");
-        
-        if ($file['size'] > 2 * 1024 * 1024) throw new Exception("Ảnh quá lớn (Max 2MB).");
-
-        $filename = "avatar_" . $_SESSION['user']->id . "_" . time() . "." . $ext;
-        move_uploaded_file($file['tmp_name'], $target_dir . $filename);
-        return $filename;
     }
 }

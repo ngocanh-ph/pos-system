@@ -8,8 +8,6 @@ class DashboardController extends Controller {
     public function index() {
         $this->requireLogin();
         $orderModel = new Order();
-        
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
         $todayStart = date('Y-m-d 00:00:00');
         $todayEnd = date('Y-m-d 23:59:59');
 

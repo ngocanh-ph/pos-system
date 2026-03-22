@@ -169,7 +169,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
 
     <div class="card-custom">
         <div class="logo-wrapper">
-            <img src="/pos/public/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
+            <img src="<?= APP_URL ?>/uploads/logoMAV.png" alt="MAVPOS Logo" class="logo-img">
         </div>
 
         <h2 class="form-title"><?= $isForced ? 'YÊU CẦU ĐỔI MẬT KHẨU' : 'ĐỔI MẬT KHẨU' ?></h2>
@@ -208,11 +208,11 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
             </button>
 
             <?php if(!$isForced): ?>
-                <a href="/dashboard" class="btn-link-custom">
+                <a href="<?= APP_URL ?>/dashboard" class="btn-link-custom">
                     <i class="fas fa-arrow-left"></i> Hủy bỏ
                 </a>
             <?php else: ?>
-                <a href="/logout" class="btn-link-custom">
+                <a href="<?= APP_URL ?>/logout" class="btn-link-custom">
                     <i class="fas fa-sign-out-alt"></i> Đăng xuất
                 </a>
             <?php endif; ?>

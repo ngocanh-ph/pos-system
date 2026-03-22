@@ -35,11 +35,17 @@ class EmployeeController extends Controller {
             $this->json(['success' => false, 'message' => 'Email đã tồn tại.']);
             return;
         }
+
+        $existingUsername = $userModel->findByUsername($username);
+        if ($existingUsername) {
+            $username = $username . '_' . substr(uniqid(), -4);
+        }
+        $defaultPassword = '52400002';
         $userId = $userModel->create([
             'fullname' => $fullname,
             'email' => $email,
             'username' => $username,
-            'password' => 52400002, 
+            'password' => password_hash($defaultPassword, PASSWORD_DEFAULT),
             'role' => 'staff',
             'status' => 'active',
             'is_first_login' => 1
@@ -95,9 +101,10 @@ class EmployeeController extends Controller {
 
         $id = $_POST['id'] ?? null;
         $status = $_POST['status'] ?? null;
+        $allowedStatuses = ['active', 'locked'];
 
-        if (!$id || !$status) {
-            $this->json(['success' => false]);
+        if (!$id || !$status || !in_array($status, $allowedStatuses)) {
+            $this->json(['success' => false, 'message' => 'Dữ liệu không hợp lệ.']);
             return;
         }
 

@@ -16,6 +16,7 @@ class PosController extends Controller {
         ]);
     }
     public function searchProduct() {
+        $this->requireLogin();
         $q = $_GET['q'] ?? '';
         $productModel = new Product();        
         $exact = $productModel->findByBarcode($q);
@@ -26,6 +27,7 @@ class PosController extends Controller {
         $this->json($productModel->search($q));
     }
     public function checkout() {
+        $this->requireLogin();
         $data = json_decode(file_get_contents('php://input'), true);
         if (empty($data['cart'])) return $this->json(['success' => false, 'message' => 'Giỏ hàng trống.']);
         if (empty($data['customer']['phone'])) return $this->json(['success' => false, 'message' => 'Vui lòng nhập số điện thoại khách hàng.']);
@@ -48,6 +50,15 @@ class PosController extends Controller {
             }
         }
       
+        if (empty($verifiedCart)) {
+            return $this->json(['success' => false, 'message' => 'Không tìm thấy sản phẩm hợp lệ trong giỏ hàng.']);
+        }
+
+        $amountPaid = (float)($data['amount_paid'] ?? $calculatedTotal);
+        if ($amountPaid < $calculatedTotal) {
+            return $this->json(['success' => false, 'message' => 'Số tiền thanh toán không đủ.']);
+        }
+
         $customerModel = new Customer();
         $customer = $customerModel->findByPhone($data['customer']['phone']);
         $customerId = $customer ? $customer->id : $customerModel->create([
@@ -61,8 +72,8 @@ class PosController extends Controller {
             'customer_id' => $customerId,
             'user_id' => $_SESSION['user']->id,
             'total_amount' => $calculatedTotal,
-            'amount_paid' => $data['amount_paid'] ?? $calculatedTotal,
-            'change_amount' => ($data['amount_paid'] ?? $calculatedTotal) - $calculatedTotal
+            'amount_paid' => $amountPaid,
+            'change_amount' => $amountPaid - $calculatedTotal
         ]);
         foreach ($verifiedCart as $vItem) {
              $orderModel->addOrderItem([
@@ -86,6 +97,7 @@ class PosController extends Controller {
     }
 
     public function searchCustomer() {
+        $this->requireLogin();
         $phone = $_GET['phone'] ?? '';   
         $customerModel = new Customer(); 
         $customer = $customerModel->findByPhone($phone);

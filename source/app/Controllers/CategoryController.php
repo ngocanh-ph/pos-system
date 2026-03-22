@@ -43,17 +43,25 @@ class CategoryController extends Controller {
 
     public function update() {
         $this->verifyAdminJson();
-        $id = $_POST['id'];
-        $name = $_POST['name'];
-        $description = $_POST['description'];
+        $id = $_POST['id'] ?? null;
+        $name = trim($_POST['name'] ?? '');
+        $description = trim($_POST['description'] ?? '');
         
+        if (!$id || empty($name)) {
+            $this->json(['success' => false, 'message' => 'Thiếu thông tin bắt buộc.']);
+            return;
+        }
+
         $model = new Category();
-        $model->update($id, [
-            'name' => $name,
-            'description' => $description
-        ]);
-        
-        $this->json(['success' => true]);
+        try {
+            $model->update($id, [
+                'name' => $name,
+                'description' => $description
+            ]);
+            $this->json(['success' => true]);
+        } catch (Exception $e) {
+            $this->json(['success' => false, 'message' => 'Tên danh mục đã tồn tại hoặc lỗi hệ thống.']);
+        }
     }
 
     public function delete() {

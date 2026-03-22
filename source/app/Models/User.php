@@ -17,15 +17,6 @@ class User extends Model {
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
-    public function findByToken($token) {
-        $sql = "SELECT u.* FROM {$this->table} u
-                JOIN login_tokens lt ON u.id = lt.user_id
-                WHERE lt.token = :token AND lt.expires_at > NOW()";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['token' => $token]);
-        return $stmt->fetch(PDO::FETCH_OBJ);
-    }
     public function find($id) {
         $stmt = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = :id");
         $stmt->execute(['id' => $id]);

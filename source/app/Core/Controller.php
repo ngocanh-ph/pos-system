@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../Libs/PHPMailer/src/Exception.php';
 require_once __DIR__ . '/../Libs/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/../Libs/PHPMailer/src/SMTP.php';
@@ -75,19 +74,50 @@ class Controller {
         }
     }
 
+    protected function requireLoginJson() {
+        if (!isset($_SESSION['user'])) {
+            $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
+            exit;
+        }
+    }
+
+    protected function handleFileUpload($file, $prefix = '', $maxSize = 2097152) {
+        $target_dir = __DIR__ . "/../../public/uploads/";
+        if (!file_exists($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+        
+        if (!in_array($ext, $allowed)) {
+            throw new Exception("Chỉ chấp nhận file ảnh (JPG, PNG, WEBP).");
+        }
+        if ($file['size'] > $maxSize) {
+            throw new Exception("File ảnh quá lớn (>" . ($maxSize / 1024 / 1024) . "MB).");
+        }
+
+        $filename = $prefix . uniqid() . "." . $ext;
+        if (!move_uploaded_file($file['tmp_name'], $target_dir . $filename)) {
+            throw new Exception("Lỗi khi lưu file ảnh.");
+        }
+
+        return $filename;
+    }
+
     protected function sendMail($to, $subject, $body)
     {
         try {
             $mail = new PHPMailer(true);
             $mail->CharSet = 'UTF-8';
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
+            $mail->Host       = SMTP_HOST;
             $mail->SMTPAuth   = true;
-            $mail->Username   = 'mavpos.project@gmail.com';
-            $mail->Password   = 'pzgzawhxozkdgbmn';
+            $mail->Username   = SMTP_USERNAME;
+            $mail->Password   = SMTP_PASSWORD;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            $mail->setFrom('mavpos.project@gmail.com', 'MAVPOS System');
+            $mail->Port       = SMTP_PORT;
+            $mail->setFrom(SMTP_USERNAME, SMTP_FROM_NAME);
             $mail->addAddress($to);
             $mail->isHTML(true);
             $mail->Subject = $subject;
