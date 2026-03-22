@@ -49,14 +49,27 @@ class ProfileController extends Controller {
         $userId = $_SESSION['user']->id;
         $currentPass = $_POST['current_password'] ?? '';
         $newPass = $_POST['new_password'] ?? '';
+<<<<<<< HEAD
         if (empty($newPass)) {
              $this->json(['success' => false, 'message' => 'Vui lòng nhập mật khẩu mới']);
+=======
+
+        
+        if (strlen($newPass) < 6) {
+             $this->json(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+>>>>>>> f548fac (...)
              return;
         }
 
         $userModel = new User();
         $user = $userModel->find($userId);
+<<<<<<< HEAD
         if (!password_verify($currentPass, $user->password)&& $currentPass !== $user->password) {
+=======
+
+        
+        if (!password_verify($currentPass, $user->password) && $currentPass !== $user->password) {
+>>>>>>> f548fac (...)
             $this->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
             return;
         }
