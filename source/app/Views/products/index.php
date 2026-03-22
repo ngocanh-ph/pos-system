@@ -187,10 +187,12 @@
     .badge-cat { 
         background: #e0e7ff; 
         color: #4338ca; 
-        padding: 3px 10px; 
+        padding: 4px 12px; 
         border-radius: 20px; 
-        font-size: 0.7rem; 
+        font-size: 0.75rem; 
         font-weight: 700; 
+        display: inline-block;
+        white-space: nowrap; /* BẮT BUỘC CÓ: Chống rớt dòng chữ */
     }
     .price-text { 
         font-family: 'Inter', sans-serif; 
@@ -325,6 +327,17 @@
         font-size:0.85rem;
         text-transform:uppercase;
     }
+    .fade-in { 
+        animation: fadeIn 0.3s ease-out; 
+    }
+    @keyframes fadeIn { from { 
+        opacity: 0; 
+        transform: translateY(5px); 
+        } to {
+        opacity: 1; 
+        transform: translateY(0); 
+        } 
+    }
 </style>
 
 <div class="product-wrapper">
@@ -398,7 +411,7 @@
                                 <?php else: ?>
                                     <div class="product-avatar-text"><?= $firstLetter ?></div>
                                 <?php endif; ?>
-                            <td>
+                            </td> <td>
                                 <span class="product-name"><?= htmlspecialchars($p->name) ?></span>
                                 <span class="barcode-text"><?= htmlspecialchars($p->barcode) ?></span>
                             </td>
@@ -546,6 +559,7 @@
         </div>
     </div>
 </div>
+
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1060;">
     <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -556,6 +570,7 @@
         </div>
     </div>
 </div>
+
 <script>
     const BASE_URL = "<?= APP_URL ?>";
     let modal; 
