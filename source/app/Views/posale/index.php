@@ -22,7 +22,7 @@
     input[type=number]::-webkit-outer-spin-button, 
     input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-    /*Search Component */
+
     .search-container { 
         background: white; 
         border-radius: 1.2rem; 
@@ -124,7 +124,7 @@
         font-size: 0.75rem; 
         color: #94a3b8; 
     }
-    /*Cart Component */
+
     .cart-island { 
         background: white; 
         border-radius: 1.5rem; 
@@ -219,7 +219,7 @@
         background-color: #16a34a; 
     }
 
-    /*Payment Component */
+    
     .pay-card { 
         background-color: var(--pos-navy); 
         border-radius: 2rem; 
@@ -276,7 +276,7 @@
         color: var(--pos-sky) !important;
         font-weight: 700;
     }
-    /* Modals & Overlays */
+   
     .overlay-receipt { 
         position: fixed; 
         top: 0; left: 0; 
@@ -436,7 +436,7 @@
     let currentInvoiceUrl = '';
     let currentCustomerId = null;
 
-    /* Quản lý giỏ hàng*/
+   
     function renderCart() {
         const tbody = $('#cart_body'); tbody.empty();
         let total = 0;
@@ -477,7 +477,7 @@
 
     function removeProduct(index) { cart.splice(index, 1); renderCart(); }
 
-    /* Tìm kiếm sản phẩm & khách hàng */
+    
     let searchTimeout = null;
     $('#product_search').on('input', function() {
         let query = $(this).val();
@@ -543,7 +543,7 @@
         }
     });
 
-    /*Lịch sử khách hàng */
+  
     $('#btn_view_history').click(function() {
         if(!currentCustomerId) return;
         $.get(BASE_URL + '/customers/details', { id: currentCustomerId }, function(res) {

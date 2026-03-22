@@ -1,6 +1,6 @@
 CREATE DATABASE MAVPOS CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE MAVPOS;
--- USERS
+-- USERS --
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fullname VARCHAR(100) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
--- LOGIN TOKENS
+-- LOGIN TOKENS --
 CREATE TABLE login_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE login_tokens (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
--- CATEGORIES
+-- CATEGORIES --
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
@@ -34,7 +34,7 @@ CREATE TABLE categories (
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE
     SET NULL
 );
--- PRODUCTS
+-- PRODUCTS --
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     barcode VARCHAR(50) NOT NULL UNIQUE,
@@ -47,7 +47,7 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE
     SET NULL
 );
--- CUSTOMERS
+-- CUSTOMERS --
 CREATE TABLE customers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     phone VARCHAR(20) NOT NULL UNIQUE,
@@ -55,7 +55,7 @@ CREATE TABLE customers (
     address TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
--- ORDERS
+-- ORDERS --
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT,
@@ -69,7 +69,7 @@ CREATE TABLE orders (
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE
     SET NULL
 );
--- ORDER ITEMS
+-- ORDER ITEMS --
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
 );
--- ADMIN DEFAULT 
+-- ADMIN DEFAULT --
 INSERT INTO users (
         fullname,
         email,
