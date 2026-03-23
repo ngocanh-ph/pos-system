@@ -644,8 +644,13 @@
     $('#btn_print').click(function() { if(currentInvoiceUrl) window.open(currentInvoiceUrl, '_blank'); });
     
     window.resetPOS = function() { 
-        cart = []; renderCart(); 
         $('#cust_phone, #cust_name, #cust_address, #cash_given').val(''); 
-        $('#cust_badge').hide(); $('#success_overlay').hide(); currentCustomerId = null; $('#btn_view_history').hide();
+        $('#cust_badge').hide(); 
+        $('#success_overlay').hide(); 
+        $('#btn_view_history').hide();
+        currentCustomerId = null; 
+        cart = []; 
+        renderCart(); 
+        $('#display_change').text('0');
     };
 </script>
