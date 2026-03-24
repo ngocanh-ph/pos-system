@@ -479,31 +479,70 @@
 
     
     let searchTimeout = null;
+
+    $('#product_search').on('keypress', function(e) {
+        if (e.which == 13) { 
+            e.preventDefault();
+            let query = $(this).val().trim();
+            if (query.length > 0) {
+                clearTimeout(searchTimeout);
+                fetchProducts(query, true); 
+            }
+        }
+    });
+
     $('#product_search').on('input', function() {
-        let query = $(this).val();
+        let query = $(this).val().trim();
         clearTimeout(searchTimeout);
         if (query.length < 2) { $('#search_results').hide(); return; }
 
         searchTimeout = setTimeout(() => {
-            $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
-                if (data && data.length > 0) {
-                    let html = '';
-                    data.forEach(p => {
-                        html += `
-                        <div class="search-item" style="cursor:pointer;" onclick='handleSelect(${JSON.stringify(p)})'>
-                            <div class="search-item-info">
-                                <span class="search-item-name">${p.name}</span>
-                                <span class="search-item-barcode">${p.barcode} - ${Number(p.sale_price).toLocaleString('vi-VN')}đ</span>
-                            </div>
-                        </div>`;
-                    });
-                    $('#search_results').html(html).show();
-                } else {
-                    $('#search_results').hide();
-                }
-            }, 'json');
+            fetchProducts(query, false);
         }, 300);
     });
+
+    function fetchProducts(query, isEnterPressed) {
+        $.get(BASE_URL + '/posale/search-product', { q: query }, function(data) {
+            if (data && data.length > 0) {
+                if (data.length === 1) {
+                    let p = data[0];
+                    let qLower = query.toLowerCase();
+                    if (p.is_exact || isEnterPressed || 
+                       (p.barcode && p.barcode.toLowerCase() === qLower) || 
+                       (p.name && p.name.toLowerCase() === qLower)) {
+                        
+                        handleSelect(p); 
+                        return; 
+                    }
+                }
+
+                let html = '';
+                data.forEach(p => {
+                    html += `
+                    <div class="search-item" style="cursor:pointer;" onclick='handleSelect(${JSON.stringify(p)})'>
+                        <div class="search-item-info">
+                            <span class="search-item-name">${p.name}</span>
+                            <span class="search-item-barcode">${p.barcode || 'N/A'} - ${Number(p.sale_price).toLocaleString('vi-VN')}đ</span>
+                        </div>
+                    </div>`;
+                });
+                $('#search_results').html(html).show();
+                
+            } else {
+                $('#search_results').hide();
+                if(isEnterPressed) {
+                    alert("Không tìm thấy sản phẩm nào khớp với mã vừa quét!");
+                    $('#product_search').val('').focus();
+                }
+            }
+        }, 'json');
+    }
+
+    window.handleSelect = function(product) {
+        addToCart(product); 
+        $('#product_search').val('').focus(); 
+        $('#search_results').hide();
+    };
 
     window.handleSelect = function(product) {
         addToCart(product); $('#product_search').val('').focus(); $('#search_results').hide();
