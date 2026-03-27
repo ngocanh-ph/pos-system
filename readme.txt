@@ -5,19 +5,19 @@
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 1. GIỚI THIỆU
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MAVPOS là hệ thống ứng dụng web quản lý bán hàng theo mô hình Point of Sale 
+  MAVPOS là hệ thống ứng dụng web quản lý bán hàng theo mô hình Point of Sale 
 (POS). Hệ thống được thiết kế đặc biệt để phục vụ cho nhân viên và quản trị 
 viên, hỗ trợ tối ưu các nghiệp vụ như: bán hàng, quản lý sản phẩm, quản lý 
 nhân sự và trích xuất báo cáo thống kê. 
 
-Đây là mô hình vận hành được sử dụng rất phổ biến tại các cửa hàng bán lẻ 
+  Đây là mô hình vận hành được sử dụng rất phổ biến tại các cửa hàng bán lẻ 
 ở Việt Nam.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 2. TRIỂN KHAI & DEMO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - 🌐 Website chính thức : https://mavpos.id.vn/
-- 🎬 Video Demo dự án   : 
+- 🎬 Video Demo dự án   : https://youtu.be/XUnjpKDaIz0?si=_gls3KzaP9-unIie
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 3. TÀI KHOẢN ĐĂNG NHẬP
@@ -72,6 +72,13 @@ Bước 5: Chạy hệ thống
 - Đặt project vào thư mục htdocs (của XAMPP).
 - Truy cập vào trình duyệt bằng đường dẫn sau:
   http://localhost/mav-web-pos/source/public
+[ Lưu ý khi chạy trên MacOS ]
+Cấp quyền cho thư mục cần thiết:
+- Khi muốn uploads ảnh lên hệ thống cần cấp quyền cho thư mục:
+  Chmod -R 775 /Applications/XAMPP/xamppfiles/htdocs/mav-web-pos/source/public/uploads
+- Trong trường hợp bị lỗi quyền truy cập, có thể dùng:
+  Chmod -R 777 /Applications/XAMPP/xamppfiles/htdocs/mav-web-pos/source/public/uploads
+!Note: chmod 777 chỉ nên dùng trong môi trường local để debug.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 5. CẤU TRÚC THƯ MỤC
@@ -99,12 +106,13 @@ source/
 7. LƯU Ý QUAN TRỌNG
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [ Lưu ý khi kiểm thử ]
-- Project đã được deploy thành công, bạn có thể truy cập trực tiếp qua link ở 
+- Project đã được deploy thành công có thể truy cập trực tiếp qua link ở 
   Mục 2 mà không cần cài đặt rườm rà.
 - Hãy dùng tài khoản Admin (Mục 3) để test đầy đủ các chức năng.
 - Khi chạy trên Localhost, BẮT BUỘC phải cấu hình đúng Database (Bước 4), 
   nếu không hệ thống sẽ báo lỗi không thể kết nối.
 
+Liên hệ hỗ trợ: mavpos.project@gmail.com
 ═════════════════════════════════════════════════════════════════════════════════
                                   END OF README
 ═════════════════════════════════════════════════════════════════════════════════
