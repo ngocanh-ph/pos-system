@@ -8,7 +8,7 @@
 <style>
   text { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
   .thanks { font-size: 20px; font-weight: 700; fill: #2b2a27; letter-spacing: 3px; }
-  .mail { font-size: 13px; fill: #8a8478; }
+  .mail { font-size: 13px; fill: #0f766e; }
   .bar { fill: #2b2a27; transform-box: fill-box; transform-origin: bottom; transform: scaleY(0); animation: grow .35s ease-out forwards; }
   .in { opacity: 0; animation: fadeUp .6s ease-out forwards; }
   .laser { fill: #c0392b; opacity: 0; animation: scan 3.2s ease-in-out 2s infinite; }

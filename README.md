@@ -2,6 +2,15 @@
 
 <img src="assets/header.svg" alt="MAVPOS · Hệ thống quản lý bán hàng (POS) cho cửa hàng điện thoại & phụ kiện" width="640" />
 
+<br />
+
+<img alt="PHP" src="https://img.shields.io/badge/PHP-Core-3b5b8c?style=flat-square&logo=php&logoColor=white" />
+<img alt="MySQL" src="https://img.shields.io/badge/MySQL-MariaDB-0f766e?style=flat-square&logo=mysql&logoColor=white" />
+<img alt="Bootstrap" src="https://img.shields.io/badge/Bootstrap-5-3b5b8c?style=flat-square&logo=bootstrap&logoColor=white" />
+<img alt="MVC" src="https://img.shields.io/badge/Pattern-MVC-d97706?style=flat-square" />
+
+<br />
+
 [**Website**](https://mavpos.id.vn/)   ·   [**Video demo**](https://youtu.be/XUnjpKDaIz0?si=_gls3KzaP9-unIie)   ·   [**Liên hệ**](mailto:mavpos.project@gmail.com)
 
 </div>
@@ -27,17 +36,18 @@ MAVPOS là ứng dụng web quản lý bán hàng theo mô hình **Point of Sale
 
 | Nhóm | Chức năng | Admin | Nhân viên |
 |:--|:--|:--:|:--:|
-| **Bán hàng** | Tìm sản phẩm theo tên/mã vạch, giỏ hàng, thanh toán, in hóa đơn | ○ | ● |
-| **Khách hàng** | Tự nhận diện khách theo SĐT, xem lịch sử mua hàng | ● | ● |
-| **Sản phẩm** | Xem danh sách, tồn kho | ● | ● *(không thấy giá nhập)* |
-| | Thêm / sửa / xóa, ảnh, giá nhập, tồn kho | ● | ○ |
-| **Danh mục** | Quản lý danh mục sản phẩm | ● | ○ |
-| **Nhân viên** | Tạo tài khoản qua email, khóa / mở khóa, xem lịch sử bán | ● | ○ |
+| **Bán hàng** | Tìm sản phẩm theo tên/mã vạch, giỏ hàng, thanh toán, in hóa đơn | $\textcolor{#b8b2a6}{\circ}$ | $\textcolor{#0f766e}{\bullet}$ |
+| **Khách hàng** | Tự nhận diện khách theo SĐT, xem lịch sử mua hàng | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ |
+| **Sản phẩm** | Xem danh sách, tồn kho | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ *(không thấy giá nhập)* |
+| | Thêm / sửa / xóa, ảnh, giá nhập, tồn kho | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
+| **Danh mục** | Quản lý danh mục sản phẩm | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
+| **Nhân viên** | Tạo tài khoản qua email, khóa / mở khóa, xem lịch sử bán | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
 | **Báo cáo** | Doanh thu, đơn hàng, biểu đồ theo giờ/ngày, theo danh mục | Toàn cửa hàng + lợi nhuận | Chỉ của mình |
-| **Hồ sơ** | Đổi thông tin, ảnh đại diện, mật khẩu | ● | ● |
+| **Hồ sơ** | Đổi thông tin, ảnh đại diện, mật khẩu | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ |
 
-<sub>● có quyền   ○ không có quyền</sub>
+<sub>$\textcolor{#0f766e}{\bullet}$ có quyền   $\textcolor{#b8b2a6}{\circ}$ không có quyền</sub>
 
+> [!NOTE]
 > **Tồn kho.** Hệ thống trừ kho tự động khi bán, từ chối đơn nếu không đủ hàng và không bao giờ cho tồn kho xuống dưới 0.
 
 <img src="assets/divider.svg" alt="" width="100%" />
@@ -50,6 +60,9 @@ MAVPOS là ứng dụng web quản lý bán hàng theo mô hình **Point of Sale
 |:--|:--|:--|
 | **Quản trị viên** | Tài khoản mặc định `admin` / `admin` | Đổi mật khẩu ngay sau lần đăng nhập đầu tiên |
 | **Nhân viên** | Do Admin tạo | Nhận email gồm link kích hoạt (hiệu lực **30 phút**) và mật khẩu tạm thời, sau đó bắt buộc đổi mật khẩu |
+
+> [!WARNING]
+> Mật khẩu `admin` mặc định chỉ dùng để thử nghiệm. Hãy đổi ngay khi triển khai thật.
 
 <img src="assets/divider.svg" alt="" width="100%" />
 
@@ -69,6 +82,7 @@ MAVPOS là ứng dụng web quản lý bán hàng theo mô hình **Point of Sale
 
 Mở XAMPP Control Panel và **Start** hai module **Apache** và **MySQL**.
 
+> [!TIP]
 > Đảm bảo cổng `80` (Apache) và `3306` (MySQL) không bị ứng dụng khác chiếm.
 
 **Bước 2. Lấy mã nguồn** vào thư mục `htdocs` của XAMPP
@@ -106,12 +120,14 @@ define('SMTP_PASSWORD', 'app-password-gmail');
 // define('APP_DEBUG', true);
 ```
 
+> [!IMPORTANT]
 > `config.local.php` đã nằm trong `.gitignore`, **không bao giờ commit** file này.
 
 **Bước 5. Chạy hệ thống**
 
 Mở: <http://localhost/mav-web-pos/source/public>
 
+> [!NOTE]
 > Nếu bạn đặt project ở đường dẫn khác, sửa `APP_URL` trong `config.local.php` và `RewriteBase` trong `source/public/.htaccess`.
 
 <details>
@@ -131,6 +147,7 @@ Nếu vẫn lỗi quyền truy cập, có thể tạm dùng `777`:
 chmod -R 777 /Applications/XAMPP/xamppfiles/htdocs/mav-web-pos/source/public/uploads
 ```
 
+> [!CAUTION]
 > `chmod 777` chỉ nên dùng trong môi trường local để debug.
 
 </details>
