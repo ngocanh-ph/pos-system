@@ -75,7 +75,7 @@ Mở XAMPP Control Panel và **Start** hai module **Apache** và **MySQL**.
 
 ```bash
 cd C:/xampp/htdocs
-git clone https://gitlab.duthu.net/mav/mav-web-pos.git
+git clone https://github.com/ngocanh-ph/pos-system.git mav-web-pos
 ```
 
 **Bước 3. Tạo cơ sở dữ liệu**

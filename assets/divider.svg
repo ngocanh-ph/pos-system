@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 44" width="800" height="44" role="img" aria-label="Đường cắt hóa đơn">
+<title>divider</title>
+<style>
+  .cut { stroke: #8a8478; stroke-width: 1.6; stroke-dasharray: 7 7; opacity: .55; }
+  .sc { fill: none; stroke: #d97706; stroke-width: 2; stroke-linecap: round; }
+  .mover { animation: run 9s linear infinite; }
+  .jaw1 { transform-box: fill-box; transform-origin: 0% 100%; animation: snip1 .7s ease-in-out infinite; }
+  .jaw2 { transform-box: fill-box; transform-origin: 0% 0%; animation: snip2 .7s ease-in-out infinite; }
+  @keyframes run { from { transform: translateX(-10px); } to { transform: translateX(760px); } }
+  @keyframes snip1 { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-12deg); } }
+  @keyframes snip2 { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(12deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+</style>
+<line class="cut" x1="20" y1="22" x2="780" y2="22"/>
+<g class="mover">
+  <g transform="translate(14,22)">
+    <circle class="sc" cx="-2" cy="-7" r="3.4"/>
+    <circle class="sc" cx="-2" cy="7" r="3.4"/>
+    <path class="sc jaw1" d="M1 -5 L16 0"/>
+    <path class="sc jaw2" d="M1 5 L16 0"/>
+  </g>
+</g>
+</svg>

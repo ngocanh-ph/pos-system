@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36" role="img" aria-label="icon 06">
+<style>
+  .frame { fill: none; stroke: #d97706; stroke-width: 1.4; opacity: .55; }
+  .g { fill: none; stroke: #d97706; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 1.1s ease-out forwards; }
+  .pulse { fill: #d97706; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ping 3s ease-out 1.4s infinite; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes ping { 0% { opacity: .35; transform: scale(.4); } 70%,100% { opacity: 0; transform: scale(1.6); } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+</style>
+<rect class="frame" x="2" y="2" width="32" height="32" rx="9"/>
+<circle class="pulse" cx="30" cy="6" r="2"/>
+  <path class="g" pathLength="100" style="animation-delay:0.15s" d="M15 13l-5 5 5 5"/>
+  <path class="g" pathLength="100" style="animation-delay:0.27s" d="M21 13l5 5-5 5"/>
+  <path class="g" pathLength="100" style="animation-delay:0.39s" d="M19.5 11.5l-3 13"/>
+</svg>
