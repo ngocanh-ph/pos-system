@@ -36,16 +36,16 @@ MAVPOS là ứng dụng web quản lý bán hàng theo mô hình **Point of Sale
 
 | Nhóm | Chức năng | Admin | Nhân viên |
 |:--|:--|:--:|:--:|
-| **Bán hàng** | Tìm sản phẩm theo tên/mã vạch, giỏ hàng, thanh toán, in hóa đơn | $\textcolor{#b8b2a6}{\circ}$ | $\textcolor{#0f766e}{\bullet}$ |
-| **Khách hàng** | Tự nhận diện khách theo SĐT, xem lịch sử mua hàng | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ |
-| **Sản phẩm** | Xem danh sách, tồn kho | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ *(không thấy giá nhập)* |
-| | Thêm / sửa / xóa, ảnh, giá nhập, tồn kho | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
-| **Danh mục** | Quản lý danh mục sản phẩm | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
-| **Nhân viên** | Tạo tài khoản qua email, khóa / mở khóa, xem lịch sử bán | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#b8b2a6}{\circ}$ |
+| **Bán hàng** | Tìm sản phẩm theo tên/mã vạch, giỏ hàng, thanh toán, in hóa đơn | ➖ | ✅ |
+| **Khách hàng** | Tự nhận diện khách theo SĐT, xem lịch sử mua hàng | ✅ | ✅ |
+| **Sản phẩm** | Xem danh sách, tồn kho | ✅ | ✅ *(không thấy giá nhập)* |
+| | Thêm / sửa / xóa, ảnh, giá nhập, tồn kho | ✅ | ➖ |
+| **Danh mục** | Quản lý danh mục sản phẩm | ✅ | ➖ |
+| **Nhân viên** | Tạo tài khoản qua email, khóa / mở khóa, xem lịch sử bán | ✅ | ➖ |
 | **Báo cáo** | Doanh thu, đơn hàng, biểu đồ theo giờ/ngày, theo danh mục | Toàn cửa hàng + lợi nhuận | Chỉ của mình |
-| **Hồ sơ** | Đổi thông tin, ảnh đại diện, mật khẩu | $\textcolor{#0f766e}{\bullet}$ | $\textcolor{#0f766e}{\bullet}$ |
+| **Hồ sơ** | Đổi thông tin, ảnh đại diện, mật khẩu | ✅ | ✅ |
 
-<sub>$\textcolor{#0f766e}{\bullet}$ có quyền   $\textcolor{#b8b2a6}{\circ}$ không có quyền</sub>
+<sub>✅ có quyền   ➖ không có quyền</sub>
 
 > [!NOTE]
 > **Tồn kho.** Hệ thống trừ kho tự động khi bán, từ chối đơn nếu không đủ hàng và không bao giờ cho tồn kho xuống dưới 0.
