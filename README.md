@@ -45,8 +45,6 @@ MAVPOS là ứng dụng web quản lý bán hàng theo mô hình **Point of Sale
 | **Báo cáo** | Doanh thu, đơn hàng, biểu đồ theo giờ/ngày, theo danh mục | Toàn cửa hàng + lợi nhuận | Chỉ của mình |
 | **Hồ sơ** | Đổi thông tin, ảnh đại diện, mật khẩu | ✅ | ✅ |
 
-<sub>✅ có quyền   ➖ không có quyền</sub>
-
 > [!NOTE]
 > **Tồn kho.** Hệ thống trừ kho tự động khi bán, từ chối đơn nếu không đủ hàng và không bao giờ cho tồn kho xuống dưới 0.
 
