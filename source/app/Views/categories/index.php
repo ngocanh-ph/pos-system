@@ -251,7 +251,7 @@
                             <?php if($_SESSION['user']->role === 'admin'): ?>
                             <td>
                                 <div class="row-actions">
-                                    <button class="btn-icon btn-edit" title="Chỉnh sửa" onclick='openEditModal(<?= json_encode($c) ?>)'>
+                                    <button class="btn-icon btn-edit" title="Chỉnh sửa" onclick='openEditModal(<?= htmlspecialchars(json_encode($c), ENT_QUOTES, 'UTF-8') ?>)'>
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <button class="btn-icon btn-delete" title="Xóa" onclick="deleteCategory(<?= $c->id ?>)">

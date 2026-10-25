@@ -12,28 +12,35 @@ class ProfileController extends Controller {
     }
 
     public function updateInfo() {
-        if (!isset($_SESSION['user'])) {
-            $this->json(['success' => false, 'message' => 'Unauthorized'], 401);
-            return;
-        }
+        $this->requireLoginJson();
 
         $userId = $_SESSION['user']->id;
-        $fullname = $_POST['fullname'] ?? '';
-        $phone = $_POST['phone'] ?? '';
-        $avatarPath = $_SESSION['user']->avatar; 
-        
+        $fullname = trim($_POST['fullname'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $oldAvatar = $_SESSION['user']->avatar;
+        $avatarPath = $oldAvatar;
+
+        if ($fullname === '' || mb_strlen($fullname) > 100) {
+            $this->json(['success' => false, 'message' => 'Họ tên không được để trống và tối đa 100 ký tự.']);
+        }
+        if ($phone !== '' && !preg_match('/^\+?[0-9 .\-]{8,20}$/', $phone)) {
+            $this->json(['success' => false, 'message' => 'Số điện thoại không hợp lệ.']);
+        }
+
         if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === 0) {
             try {
-                $avatarPath = $this->processAvatar($_FILES['avatar']);
+                $avatarPath = $this->handleFileUpload($_FILES['avatar'], 'avatar_' . $userId . '_');
             } catch (Exception $e) {
                 $this->json(['success' => false, 'message' => $e->getMessage()]);
-                return;
             }
         }
-        
-        $userModel = new User();
-        $userModel->updateProfile($userId, $fullname, $avatarPath, $phone);
-        
+
+        (new User())->updateProfile($userId, $fullname, $avatarPath, $phone);
+
+        if ($avatarPath !== $oldAvatar) {
+            $this->deleteUpload($oldAvatar);
+        }
+
         $_SESSION['user']->fullname = $fullname;
         $_SESSION['user']->phone = $phone;
         $_SESSION['user']->avatar = $avatarPath;
@@ -41,49 +48,27 @@ class ProfileController extends Controller {
         $this->json(['success' => true, 'message' => 'Cập nhật hồ sơ thành công!']);
     }
 
-    // API: Đổi mật khẩu 
     public function changePassword() {
-        if (!isset($_SESSION['user'])) {
-            $this->json(['success' => false], 401); return;
-        }
+        $this->requireLoginJson();
 
         $userId = $_SESSION['user']->id;
-        $currentPass = $_POST['current_password'] ?? '';
-        $newPass = $_POST['new_password'] ?? '';
+        $currentPass = (string)($_POST['current_password'] ?? '');
+        $newPass = (string)($_POST['new_password'] ?? '');
 
-        // Kiểm tra độ dài mật khẩu mới
         if (strlen($newPass) < 6) {
-             $this->json(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
-             return;
+            $this->json(['success' => false, 'message' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
         }
 
         $userModel = new User();
         $user = $userModel->find($userId);
 
-        // ĐÃ SỬA TẠI ĐÂY: Cho phép nhập đúng chữ 'admin' nếu trong database đang lưu chữ 'admin'
-        if (!password_verify($currentPass, $user->password) && $currentPass !== $user->password) {
+        if (!$user || !$userModel->verifyPassword($user, $currentPass)) {
             $this->json(['success' => false, 'message' => 'Mật khẩu hiện tại không đúng.']);
-            return;
         }
 
-        $newHash = password_hash($newPass, PASSWORD_DEFAULT);
-        $userModel->updatePassword($userId, $newHash);
+        $userModel->updatePassword($userId, password_hash($newPass, PASSWORD_DEFAULT));
+        session_regenerate_id(true);
 
         $this->json(['success' => true, 'message' => 'Đổi mật khẩu thành công!']);
-    }
-
-    private function processAvatar($file) {
-        $target_dir = __DIR__ . "/../../public/uploads/";
-        if (!file_exists($target_dir)) mkdir($target_dir, 0777, true);
-        
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp'];
-        if (!in_array($ext, $allowed)) throw new Exception("Định dạng ảnh không hỗ trợ.");
-        
-        if ($file['size'] > 2 * 1024 * 1024) throw new Exception("Ảnh quá lớn (Max 2MB).");
-
-        $filename = "avatar_" . $_SESSION['user']->id . "_" . time() . "." . $ext;
-        move_uploaded_file($file['tmp_name'], $target_dir . $filename);
-        return $filename;
     }
 }

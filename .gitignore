@@ -1,0 +1,5 @@
+source/config/config.local.php
+source/public/uploads/*
+!source/public/uploads/logoMAV.png
+!source/public/uploads/.htaccess
+.env

@@ -6,9 +6,11 @@ class LoginToken extends Model {
     protected $table = 'login_tokens';
 
     public function createToken($userId) {
+        // Mỗi user chỉ có một token còn hiệu lực
+        $this->db->prepare("DELETE FROM {$this->table} WHERE user_id = :uid")->execute(['uid' => $userId]);
         $token = bin2hex(random_bytes(32));
         $sql = "INSERT INTO {$this->table} (user_id, token, expires_at) 
-                VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 1 MINUTE))";
+                VALUES (:user_id, :token, DATE_ADD(NOW(), INTERVAL 30 MINUTE))";
         $this->db->prepare($sql)->execute([
             'user_id' => $userId,
             'token' => $token

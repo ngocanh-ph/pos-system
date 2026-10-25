@@ -48,10 +48,30 @@ class User extends Model {
     }
 
     public function updateStatus($id, $status) {
-        return $this->query("UPDATE {$this->table} SET status = :status WHERE id = :id", [
+        $this->query("UPDATE {$this->table} SET status = :status WHERE id = :id", [
             'status' => $status,
             'id' => $id
         ]);
+        return true;
+    }
+
+    /**
+     * Xác thực mật khẩu bằng password_verify. Riêng tài khoản cũ còn lưu plaintext
+     * (chưa phải hash) thì so khớp bằng hash_equals rồi tự nâng cấp lên hash.
+     */
+    public function verifyPassword($user, $password) {
+        $isHash = password_get_info($user->password)['algo'] !== null;
+        if ($isHash) {
+            return password_verify($password, $user->password);
+        }
+        if (!hash_equals((string)$user->password, (string)$password)) {
+            return false;
+        }
+        $this->query("UPDATE {$this->table} SET password = :p WHERE id = :id", [
+            'p' => password_hash($password, PASSWORD_DEFAULT),
+            'id' => $user->id
+        ]);
+        return true;
     }
 
     public function updateProfile($id, $fullname, $avatar, $phone) {

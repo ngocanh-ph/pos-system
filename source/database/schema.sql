@@ -22,6 +22,15 @@ CREATE TABLE login_tokens (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+-- LOGIN ATTEMPTS --
+CREATE TABLE login_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    ip VARCHAR(45) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_login_attempts_username (username, created_at),
+    INDEX idx_login_attempts_ip (ip, created_at)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 -- CATEGORIES --
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,6 +49,7 @@ CREATE TABLE products (
     import_price DECIMAL(15, 2) NOT NULL DEFAULT 0,
     sale_price DECIMAL(15, 2) NOT NULL DEFAULT 0,
     category_id INT,
+    stock INT UNSIGNED NOT NULL DEFAULT 0,
     image VARCHAR(255) DEFAULT 'default_product.png',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE
@@ -62,6 +72,8 @@ CREATE TABLE orders (
     amount_paid DECIMAL(15, 2) NOT NULL,
     change_amount DECIMAL(15, 2) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_orders_created_at (created_at),
+    INDEX idx_orders_user_created (user_id, created_at),
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE
     SET NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE
@@ -74,6 +86,7 @@ CREATE TABLE order_items (
     product_id INT NOT NULL,
     quantity INT NOT NULL,
     unit_price DECIMAL(15, 2) NOT NULL,
+    import_price DECIMAL(15, 2) NULL,
     total_price DECIMAL(15, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE RESTRICT
@@ -92,7 +105,7 @@ VALUES (
         'Administrator',
         'admin@gmail.com',
         'admin',
-        'admin',
+        '$2y$10$lOkrwG8bD/NlfYU/pPeMS.lWhfc9D1N5KyKQGMErZ9ihaM2doqYd2',
         'admin',
         'active',
         0

@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Core/Model.php';
 class Product extends Model {
     protected $table = 'products';
     public function search($q) {
-        $sql = "SELECT id, name, barcode, sale_price, image FROM products 
+        $sql = "SELECT id, name, barcode, sale_price, image, stock FROM products 
                 WHERE name LIKE :q OR barcode LIKE :q LIMIT 20";
         return $this->query($sql, ['q' => "%$q%"])->fetchAll();
     }
@@ -21,14 +21,14 @@ class Product extends Model {
     }
     
     public function findByBarcode($barcode) {
-        $stmt = $this->db->prepare("SELECT * FROM products WHERE barcode = :barcode");
+        $stmt = $this->db->prepare("SELECT id, name, barcode, sale_price, image, stock FROM products WHERE barcode = :barcode");
         $stmt->execute(['barcode' => $barcode]);
         return $stmt->fetch();
     }
 
     public function create($data) {
-        $sql = "INSERT INTO {$this->table} (barcode, name, import_price, sale_price, category_id, image) 
-                VALUES (:barcode, :name, :import_price, :sale_price, :category_id, :image)";
+        $sql = "INSERT INTO {$this->table} (barcode, name, import_price, sale_price, category_id, stock, image) 
+                VALUES (:barcode, :name, :import_price, :sale_price, :category_id, :stock, :image)";
         return $this->db->prepare($sql)->execute($data);
     }
 
@@ -38,7 +38,8 @@ class Product extends Model {
                 name = :name, 
                 import_price = :import_price, 
                 sale_price = :sale_price, 
-                category_id = :category_id";
+                category_id = :category_id,
+                stock = :stock";
         
         if (!empty($data['image'])) {
             $sql .= ", image = :image";
@@ -52,6 +53,7 @@ class Product extends Model {
             'import_price' => $data['import_price'],
             'sale_price' => $data['sale_price'],
             'category_id' => $data['category_id'],
+            'stock' => $data['stock'],
             'id' => $id
         ];
         

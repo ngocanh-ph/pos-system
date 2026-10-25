@@ -9,66 +9,60 @@ class CustomerController extends Controller {
     public function index() {
         $this->requireLogin();
 
-        $customerModel = new Customer();
-        $customers = $customerModel->getAllWithOrderCount();
+        $perPage = 20;
+        $search = trim((string)($_GET['q'] ?? ''));
+        $page = max(1, (int)($_GET['page'] ?? 1));
+
+        [$customers, $total] = (new Customer())->paginateWithOrderCount($search, $page, $perPage);
 
         $this->view('customers/index', [
             'title' => 'Khách hàng',
-            'customers' => $customers
+            'customers' => $customers,
+            'search' => $search,
+            'page' => $page,
+            'totalPages' => max(1, (int)ceil($total / $perPage)),
+            'total' => $total
         ]);
     }
 
     public function getDetails() {
+        $this->requireLoginJson();
         $id = (int)($_GET['id'] ?? 0);
-        
-        if ($id <= 0) {
-        $this->json([
-            'success' => false,
-            'message' => 'ID không hợp lệ'
-        ]);
-        return;
-    }
 
-    $customerModel = new Customer();
-    $customer = $customerModel->find($id);
+        if ($id <= 0) {
+            $this->json(['success' => false, 'message' => 'ID không hợp lệ']);
+        }
+
+        $customerModel = new Customer();
+        $customer = $customerModel->find($id);
 
         if (!$customer) {
             $this->json(['success' => false, 'message' => 'Khách hàng không tồn tại']);
-            return;
         }
-
-        $stats = $customerModel->getSpendingStats($id);
-
-        $history = $customerModel->getHistory($id);
 
         $this->json([
             'success' => true,
             'customer' => $customer,
-            'stats' => $stats,
-            'history' => $history
+            'stats' => $customerModel->getSpendingStats($id),
+            'history' => $customerModel->getHistory($id)
         ]);
     }
 
-
     public function getOrderDetails() {
-        $orderId = $_GET['order_id'] ?? 0;
+        $this->requireLoginJson();
+        $orderId = (int)($_GET['order_id'] ?? 0);
         $orderModel = new Order();
-
 
         $order = $orderModel->getByIdWithDetails($orderId);
 
         if (!$order) {
             $this->json(['success' => false, 'message' => 'Đơn hàng không tồn tại']);
-            return;
         }
-        
-       
-        $items = $orderModel->getItemsByOrderId($orderId);
 
         $this->json([
             'success' => true,
             'order' => $order,
-            'items' => $items
+            'items' => $orderModel->getItemsByOrderId($orderId)
         ]);
     }
 }

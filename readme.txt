@@ -61,12 +61,15 @@ Bước 3: Thiết lập Cơ sở dữ liệu (Database)
 - Import file cơ sở dữ liệu có sẵn tại đường dẫn: database/schema.sql
 
 Bước 4: Cấu hình kết nối
-- Mở file config/database.php trong thư mục mã nguồn.
-- Cập nhật thông tin kết nối:
-  define('DB_HOST', 'localhost');
+- Sao chép config/config.local.example.php thành config/config.local.php (file này không được commit).
+- Điền thông tin của bạn, ví dụ:
   define('DB_NAME', 'mavpos');
   define('DB_USER', 'root');
   define('DB_PASS', '');
+  define('SMTP_USERNAME', 'ten@gmail.com');
+  define('SMTP_PASSWORD', 'app-password-gmail');
+- Tài khoản mặc định: admin / admin (hãy đổi mật khẩu ngay sau khi đăng nhập).
+- Kiểm thử tự động (tùy chọn): php tests/run.php
 
 Bước 5: Chạy hệ thống
 - Đặt project vào thư mục htdocs (của XAMPP).

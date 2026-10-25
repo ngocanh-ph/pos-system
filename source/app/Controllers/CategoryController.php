@@ -5,27 +5,26 @@ require_once __DIR__ . '/../Models/Category.php';
 
 class CategoryController extends Controller {
 
-    public function __construct() {
-        $this->requireAdmin();
-    }
-
     public function index(){
+        $this->requireAdmin();
         $categoryModel = new Category();
         $categories = $categoryModel->getAllWithCreator();
         $this->view('categories/index', [
             'title'      => 'Danh mục',
             'categories' => $categories
-        ]);   
+        ]);
     }
 
     public function store() {
         $this->verifyAdminJson();
-        $name = $_POST['name'] ?? '';
-        $description = $_POST['description'] ?? '';
-        
-        if (empty($name)) {
+        $name = trim($_POST['name'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+
+        if ($name === '') {
             $this->json(['success' => false, 'message' => 'Tên danh mục không được để trống.']);
-            return;
+        }
+        if (mb_strlen($name) > 100) {
+            $this->json(['success' => false, 'message' => 'Tên danh mục tối đa 100 ký tự.']);
         }
 
         $model = new Category();
@@ -36,20 +35,22 @@ class CategoryController extends Controller {
                 'created_by' => $_SESSION['user']->id
             ]);
             $this->json(['success' => true]);
-        } catch (Exception $e) {
-             $this->json(['success' => false, 'message' => 'Tên danh mục đã tồn tại hoặc lỗi hệ thống.']);
+        } catch (PDOException $e) {
+            $this->json(['success' => false, 'message' => $this->translateError($e)]);
         }
     }
 
     public function update() {
         $this->verifyAdminJson();
-        $id = $_POST['id'] ?? null;
+        $id = (int)($_POST['id'] ?? 0);
         $name = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
-        
-        if (!$id || empty($name)) {
+
+        if (!$id || $name === '') {
             $this->json(['success' => false, 'message' => 'Thiếu thông tin bắt buộc.']);
-            return;
+        }
+        if (mb_strlen($name) > 100) {
+            $this->json(['success' => false, 'message' => 'Tên danh mục tối đa 100 ký tự.']);
         }
 
         $model = new Category();
@@ -59,30 +60,40 @@ class CategoryController extends Controller {
                 'description' => $description
             ]);
             $this->json(['success' => true]);
-        } catch (Exception $e) {
-            $this->json(['success' => false, 'message' => 'Tên danh mục đã tồn tại hoặc lỗi hệ thống.']);
+        } catch (PDOException $e) {
+            $this->json(['success' => false, 'message' => $this->translateError($e)]);
         }
     }
 
     public function delete() {
         $this->verifyAdminJson();
-        $id = $_POST['id'];       
+        $id = (int)($_POST['id'] ?? 0);
+        if (!$id) {
+            $this->json(['success' => false, 'message' => 'Thiếu ID danh mục.']);
+        }
         try {
             $categoryModel = new Category();
-            if ($categoryModel->delete($id)) {
-                $this->json(['success' => true]);
-            } else {
+            if (!$categoryModel->delete($id)) {
                 throw new Exception('Lỗi không xác định khi xóa danh mục.');
             }
+            $this->json(['success' => true]);
         } catch (Exception $e) {
             $msg = $e->getMessage();
-            if ($msg === 'HAS_PRODUCTS') {
+            if ($msg === 'HAS_PRODUCTS' || strpos($msg, '1451') !== false) {
                 $msg = 'Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này.';
-            } 
-            elseif (strpos($msg, '1451') !== false || strpos($msg, 'foreign key constraint') !== false) {
-                $msg = 'Không thể xóa danh mục vì vẫn còn sản phẩm thuộc danh mục này';
+            } else {
+                error_log($msg);
+                $msg = 'Lỗi hệ thống khi xóa danh mục.';
             }
             $this->json(['success' => false, 'message' => $msg]);
         }
+    }
+
+    private function translateError(PDOException $e) {
+        if (strpos($e->getMessage(), '1062') !== false) {
+            return 'Tên danh mục đã tồn tại.';
+        }
+        error_log($e->getMessage());
+        return 'Lỗi hệ thống, vui lòng thử lại.';
     }
 }

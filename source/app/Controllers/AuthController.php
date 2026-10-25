@@ -1,116 +1,115 @@
 <?php
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/User.php';
-
+require_once __DIR__ . '/../Models/LoginToken.php';
+require_once __DIR__ . '/../Models/LoginAttempt.php';
 
 class AuthController extends Controller {
-    
+
     public function login() {
         if (isset($_SESSION['user'])) {
             $this->redirect('/dashboard');
             return;
         }
         $data = [];
-        if (isset($_GET['error'])) {
-            $data['error'] = $_GET['error'];
+        if ($error = Security::pullFlash('error')) {
+            $data['error'] = $error;
         }
-        if (isset($_GET['success'])) {
-            $data['success'] = $_GET['success'];
+        if ($success = Security::pullFlash('success')) {
+            $data['success'] = $success;
         }
-        
+
         $this->renderAuthView('auth/login', $data);
     }
 
     public function verifyToken() {
         $token = $_GET['token'] ?? '';
 
-        if (empty($token)) {
-            $this->redirect('/login?error=Token không hợp lệ');
-            return;
+        if (empty($token) || !is_string($token)) {
+            Security::flash('error', 'Token không hợp lệ');
+            $this->redirect('/login');
         }
 
-        require_once __DIR__ . '/../Models/LoginToken.php';
-        $tokenModel = new LoginToken();     
+        $tokenModel = new LoginToken();
         $tokenData = $tokenModel->findValidToken($token);
 
         if (!$tokenData) {
-            $this->redirect('/login?error=Link đăng nhập đã hết hạn');
-            return;
+            Security::flash('error', 'Link đăng nhập đã hết hạn');
+            $this->redirect('/login');
         }
-        
-        $_SESSION['can_login_first_time'] = true;
+
+        // Chỉ cho phép đúng tài khoản được mời đăng nhập lần đầu
+        $_SESSION['can_login_first_time'] = (int)$tokenData->user_id;
         $tokenModel->destroyToken($token);
-        $this->redirect('/login?success=Xác thực thành công. Vui lòng nhập Username và Mật khẩu để tiếp tục.');
+        Security::flash('success', 'Xác thực thành công. Vui lòng nhập Username và Mật khẩu để tiếp tục.');
+        $this->redirect('/login');
     }
 
     public function handleLogin() {
         $username = trim($_POST['username'] ?? '');
-        $password = trim($_POST['password'] ?? ''); 
+        $password = (string)($_POST['password'] ?? '');
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+
+        $attempts = new LoginAttempt();
+        if ($attempts->tooManyAttempts($username, $ip)) {
+            $this->renderAuthView('auth/login', [
+                'error' => 'Đăng nhập sai quá nhiều lần. Vui lòng thử lại sau ' . LoginAttempt::WINDOW_MINUTES . ' phút.'
+            ]);
+        }
 
         $userModel = new User();
         $user = $userModel->findByUsername($username);
-        if ($user && (password_verify($password, $user->password) || $password === $user->password)) { 
-            // Check locked TRƯỚC khi check first login
-            if ($user->status === 'locked') {
-                $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
-                return;
-            }
 
-            if ($user->role === 'staff' && $user->is_first_login == 1) {
-                if (!isset($_SESSION['can_login_first_time']) || $_SESSION['can_login_first_time'] !== true) {
-                    $this->renderAuthView('auth/login', [
-                        'error' => 'Vui lòng đăng nhập bằng cách nhấp vào liên kết trong email của bạn.'
-                    ]);
-                    return;
-                }
-                
-                unset($_SESSION['can_login_first_time']);
-                session_regenerate_id(true);
-                $_SESSION['user'] = $user;
-                $this->redirect('/force-change-password');
-                return;
-            }
-
-            session_regenerate_id(true);
-            $_SESSION['user'] = $user;
-            $this->redirect('/dashboard');
-            return;
-
-        } else {
+        if (!$user || !$userModel->verifyPassword($user, $password)) {
+            $attempts->record($username, $ip);
             $this->renderAuthView('auth/login', ['error' => 'Tên đăng nhập hoặc mật khẩu không đúng.']);
         }
-    }
-    
-    public function forceChangePassword() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
+
+        if ($user->status === 'locked') {
+            $this->renderAuthView('auth/login', ['error' => 'Tài khoản đã bị khóa.']);
         }
+
+        if ($user->role === 'staff' && $user->is_first_login == 1) {
+            if (($_SESSION['can_login_first_time'] ?? null) !== (int)$user->id) {
+                $this->renderAuthView('auth/login', [
+                    'error' => 'Vui lòng đăng nhập bằng cách nhấp vào liên kết trong email của bạn.'
+                ]);
+            }
+            unset($_SESSION['can_login_first_time']);
+        }
+
+        $attempts->clear($username);
+        unset($user->password);
+        session_regenerate_id(true);
+        $_SESSION['user'] = $user;
+        $this->redirect($user->is_first_login ? '/force-change-password' : '/dashboard');
+    }
+
+    public function forceChangePassword() {
+        $this->requireLogin();
         $this->renderAuthView('auth/force_change_password');
     }
 
     public function handleForceChangePassword() {
-        if (!isset($_SESSION['user'])) {
-            $this->redirect('/login');
-        }
-        
+        $this->requireLogin();
+
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
 
         if (empty($new_password)) {
             $this->renderAuthView('auth/force_change_password', ['error' => 'Vui lòng nhập mật khẩu mới']);
-            return;
         }
-        
+        if (strlen($new_password) < 6) {
+            $this->renderAuthView('auth/force_change_password', ['error' => 'Mật khẩu mới phải có ít nhất 6 ký tự.']);
+        }
         if ($new_password !== $confirm_password) {
-             $this->renderAuthView('auth/force_change_password', ['error' => 'Mật khẩu xác nhận không khớp.']);
-             return;
+            $this->renderAuthView('auth/force_change_password', ['error' => 'Mật khẩu xác nhận không khớp.']);
         }
-        
+
         $userModel = new User();
-        $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
-        $userModel->updatePassword($_SESSION['user']->id, $hashedPassword);
+        $userModel->updatePassword($_SESSION['user']->id, password_hash($new_password, PASSWORD_DEFAULT));
         $_SESSION['user']->is_first_login = 0;
-        
+
         $this->redirect('/dashboard');
     }
 
@@ -120,17 +119,20 @@ class AuthController extends Controller {
         if (file_exists($file)) {
             require $file;
         } else {
-            echo "View not found: $file";
+            http_response_code(500);
+            echo "View not found";
         }
-        exit; 
+        exit;
     }
 
     public function logout() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
         $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
         session_destroy();
-        $this->redirect('/login');
+        header('Location: ' . rtrim(APP_URL, '/') . '/login');
+        exit;
     }
 }

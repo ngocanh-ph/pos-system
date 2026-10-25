@@ -392,6 +392,7 @@
                             <th>Ngày tạo</th>
                             <?php if($_SESSION['user']->role === 'admin'): ?><th>Giá nhập</th><?php endif; ?>
                             <th>Giá bán</th>
+                            <th>Tồn kho</th>
                             <?php if($_SESSION['user']->role === 'admin'): ?>
                                 <th width="100" style="text-align: right;">Thao tác</th>
                             <?php endif; ?>
@@ -399,15 +400,16 @@
                     </thead>
                     <tbody id="productTableBody">
                         <?php foreach ($products as $p): ?>
-                        <tr class="product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
+                        <tr class="product-row" data-name="<?= htmlspecialchars(mb_strtolower($p->name)) ?>" data-barcode="<?= htmlspecialchars($p->barcode) ?>" data-cat="<?= (int)$p->category_id ?>">
                             <td>
                                <?php
                                $productName = trim($p->name);
                                $firstLetter = mb_strtoupper(mb_substr($productName,0,1,'UTF-8'),'UTF-8');
+                $firstLetter = preg_match('/^[\p{L}\p{N}]$/u', $firstLetter) ? $firstLetter : '?';
                                $hasImage = !empty($p->image) && $p->image !== 'default_product.png';
                                ?>
                                <?php if($hasImage): ?>
-                                <img src="<?= APP_URL ?>/uploads/<?= $p->image ?>"  width="36" height="36" class="rounded-circle" style="object-fit:cover" onerror="this.outerHTML='<div class=\'product-avatar-text\'><?= $firstLetter ?></div>'">
+                                <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($p->image) ?>"  width="36" height="36" class="rounded-circle" style="object-fit:cover" onerror="this.outerHTML='<div class=\'product-avatar-text\'><?= $firstLetter ?></div>'">
                                 <?php else: ?>
                                     <div class="product-avatar-text"><?= $firstLetter ?></div>
                                 <?php endif; ?>
@@ -431,6 +433,10 @@
                             <td>
                                 <span class="price-text"><?= number_format($p->sale_price) ?></span>
                             </td>
+                            <td>
+                                <?php $stock = max(0, (int)$p->stock); ?>
+                                <span class="badge <?= $stock > 0 ? ($stock <= 5 ? 'bg-warning text-dark' : 'bg-success') : 'bg-danger' ?>"><?= $stock > 0 ? number_format($stock) : 'Hết hàng' ?></span>
+                            </td>
                             <?php if($_SESSION['user']->role === 'admin'): ?>
                             <td>
                                 <div class="row-actions">
@@ -452,15 +458,16 @@
 
         <div id="gridView" class="grid-container">
             <?php foreach ($products as $p): ?>
-            <div class="product-card product-row" data-name="<?= strtolower($p->name) ?>" data-barcode="<?= $p->barcode ?>" data-cat="<?= $p->category_id ?>">
+            <div class="product-card product-row" data-name="<?= htmlspecialchars(mb_strtolower($p->name)) ?>" data-barcode="<?= htmlspecialchars($p->barcode) ?>" data-cat="<?= (int)$p->category_id ?>">
                 <div class="card-img-box">
                     <?php 
                         $productName = trim($p->name);
                         $firstLetter = mb_strtoupper(mb_substr($productName,0,1,'UTF-8'),'UTF-8');
+                $firstLetter = preg_match('/^[\p{L}\p{N}]$/u', $firstLetter) ? $firstLetter : '?';
                         $hasImage = !empty($p->image) && $p->image !== 'default_product.png';
                     ?>
                     <?php if($hasImage): ?>
-                    <img src="<?= APP_URL ?>/uploads/<?= $p->image ?>">
+                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($p->image) ?>">
                     <?php else: ?>
                     <div class="product-avatar-text" style="width:100%;height:100%;border-radius:1.5rem;font-size:2rem;">
                         <?= $firstLetter ?>
@@ -482,6 +489,8 @@
                 <div style="font-size:0.75rem; color:#94a3b8; margin-top:0.25rem">Nhập: <?= number_format($p->import_price) ?></div>
                 <?php endif; ?>
                 <div class="card-price"><?= number_format($p->sale_price) ?></div>
+                <?php $stock = max(0, (int)$p->stock); ?>
+                <div style="font-size:0.75rem; margin-top:0.25rem; color:<?= $stock > 0 ? '#64748b' : '#dc2626' ?>"><?= $stock > 0 ? 'Tồn: ' . number_format($stock) : 'Hết hàng' ?></div>
 
                 <?php if($_SESSION['user']->role === 'admin'): ?>
                 <div class="card-actions d-flex gap-2">
@@ -533,6 +542,13 @@
                             <input type="number" class="form-input-lg" name="sale_price" id="p_sale" required>
                         </div>
                     </div>
+
+                    <?php if($_SESSION['user']->role === 'admin'): ?>
+                    <div class="mb-3">
+                        <label class="form-label-caps">Tồn kho</label>
+                        <input type="number" class="form-input-lg" name="stock" id="p_stock" min="0" step="1" value="0" required>
+                    </div>
+                    <?php endif; ?>
 
                     <div class="mb-3">
                         <label class="form-label-caps">Danh mục</label>
@@ -688,6 +704,7 @@
         }
         
         $('#p_sale').val(product.sale_price);
+        $('#p_stock').val(Math.max(0, parseInt(product.stock, 10) || 0));
         $('#p_category').val(product.category_id);
         if(modal) modal.show();
     }

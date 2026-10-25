@@ -21,10 +21,10 @@ class ReportController extends Controller {
         $this->requireLoginJson();
 
         $range = $_GET['range'] ?? 'today';
-        $staffId = $_GET['staff_id'] ?? null;
-        if ($staffId === 'undefined' || $staffId === '') $staffId = null;
-        if ($_SESSION['user']->role !== 'admin') {
-            $staffId = null;
+        $staffId = (int)($_GET['staff_id'] ?? 0) ?: null;
+        // Nhân viên chỉ xem báo cáo của chính mình
+        if (!$this->isAdmin()) {
+            $staffId = $_SESSION['user']->id;
         }
 
         $startDate = date('Y-m-d 00:00:00');
@@ -48,7 +48,11 @@ class ReportController extends Controller {
                 $endDate = date('Y-m-t 23:59:59');
                 break;
             case 'custom':
-                if (!empty($_GET['start']) && !empty($_GET['end'])) {
+                $validDate = function ($d) {
+                    $dt = DateTime::createFromFormat('Y-m-d', (string)$d);
+                    return $dt && $dt->format('Y-m-d') === $d;
+                };
+                if ($validDate($_GET['start'] ?? '') && $validDate($_GET['end'] ?? '') && $_GET['start'] <= $_GET['end']) {
                     $startDate = $_GET['start'] . ' 00:00:00';
                     $endDate = $_GET['end'] . ' 23:59:59';
                     if (date('Y-m-d', strtotime($startDate)) === date('Y-m-d', strtotime($endDate))) {
@@ -66,7 +70,7 @@ class ReportController extends Controller {
             $catData = $orderModel->getCategoryStats($startDate, $endDate, $staffId);
             $orderList = $orderModel->getOrdersByRange($startDate, $endDate, $staffId);
             
-            if ($_SESSION['user']->role !== 'admin') {
+            if (!$this->isAdmin()) {
                 $kpiStats['profit'] = null;
                 foreach ($chartData as &$row) {
                     $row['profit'] = 0;
@@ -83,13 +87,14 @@ class ReportController extends Controller {
             ]);
 
         } catch (Exception $e) {
-            $this->json(['success' => false, 'message' => $e->getMessage()]);
+            error_log($e->getMessage());
+            $this->json(['success' => false, 'message' => 'Không thể tải dữ liệu báo cáo.'], 500);
         }
     }
     public function getOrderDetail() {
         $this->requireLoginJson();
 
-        $orderId = $_GET['id'] ?? 0;
+        $orderId = (int)($_GET['id'] ?? 0);
         if (!$orderId) {
             $this->json(['success' => false, 'message' => 'ID đơn hàng không hợp lệ!']);
             return;
@@ -98,7 +103,7 @@ class ReportController extends Controller {
         try {
             $orderModel = new Order();
             $order = $orderModel->getByIdWithDetails($orderId);
-            if (!$order) {
+            if (!$order || !$this->canAccessOrder($order)) {
                 $this->json(['success' => false, 'message' => 'Không tìm thấy hóa đơn!']);
                 return;
             }
@@ -114,7 +119,8 @@ class ReportController extends Controller {
             ]);
 
         } catch (Exception $e) {
-            $this->json(['success' => false, 'message' => $e->getMessage()]);
+            error_log($e->getMessage());
+            $this->json(['success' => false, 'message' => 'Không thể tải hóa đơn.'], 500);
         }
     }
     

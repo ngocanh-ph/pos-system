@@ -269,6 +269,7 @@ $title = 'Đăng nhập MAVPOS';
             <?php endif; ?>
 
             <form action="login" method="POST">
+                <?= Security::csrfField() ?>
 
                 <div class="form-group">
                     <label class="form-label-custom">Tài khoản</label>

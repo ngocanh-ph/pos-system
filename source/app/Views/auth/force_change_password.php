@@ -186,6 +186,7 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
         <?php endif; ?>
 
         <form action="<?= APP_URL ?>/force-change-password" method="POST">
+            <?= Security::csrfField() ?>
             
             <div class="form-group">
                 <label class="form-label-custom">Mật khẩu mới</label>
@@ -212,9 +213,9 @@ $isForced = $_SESSION['user']->is_first_login ?? 0;
                     <i class="fas fa-arrow-left"></i> Hủy bỏ
                 </a>
             <?php else: ?>
-                <a href="<?= APP_URL ?>/logout" class="btn-link-custom">
+                <button type="submit" formaction="<?= APP_URL ?>/logout" formnovalidate class="btn-link-custom" style="border:0;background:none;">
                     <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </a>
+                </button>
             <?php endif; ?>
 
         </form>

@@ -435,6 +435,11 @@
     let cart = [];
     let currentInvoiceUrl = '';
     let currentCustomerId = null;
+    let lastResults = [];
+
+    function esc(s) {
+        return $('<div>').text(s == null ? '' : s).html();
+    }
 
    
     function renderCart() {
@@ -449,7 +454,7 @@
                 const lineTotal = item.sale_price * item.quantity; total += lineTotal;
                 tbody.append(`
                 <div class="cart-item">
-                    <div><span class="fw-bold d-block">${item.name}</span><small class="text-muted">${item.barcode}</small></div>
+                    <div><span class="fw-bold d-block">${esc(item.name)}</span><small class="text-muted">${esc(item.barcode)}</small></div>
                     <div class="qty-control mx-auto">
                         <button class="btn-qty" onclick="updateQty(${index}, -1)">-</button>
                         <span class="px-2 fw-bold">${item.quantity}</span>
@@ -464,14 +469,24 @@
         calculateChange();
     }
 
+    function stockOf(p) { return Math.max(0, parseInt(p.stock, 10) || 0); }
+
     function addToCart(product) {
         const existing = cart.find(p => p.id === product.id);
-        if (existing) { existing.quantity++; } else { cart.push({ ...product, quantity: 1 }); }
+        const stock = stockOf(product);
+        if (stock <= 0) { alert("Sản phẩm \"" + product.name + "\" đã hết hàng."); return; }
+        if (existing) {
+            if (existing.quantity + 1 > stock) { alert("Chỉ còn " + stock + " sản phẩm trong kho."); return; }
+            existing.quantity++;
+        } else { cart.push({ ...product, quantity: 1 }); }
         renderCart();
     }
 
     function updateQty(index, change) {
-        if (cart[index].quantity + change <= 0) { cart.splice(index, 1); } else { cart[index].quantity += change; }
+        const next = cart[index].quantity + change;
+        if (next <= 0) { cart.splice(index, 1); }
+        else if (next > stockOf(cart[index])) { alert("Chỉ còn " + stockOf(cart[index]) + " sản phẩm trong kho."); return; }
+        else { cart[index].quantity = next; }
         renderCart();
     }
 
@@ -517,12 +532,13 @@
                 }
 
                 let html = '';
-                data.forEach(p => {
+                lastResults = data;
+                data.forEach((p, i) => {
                     html += `
-                    <div class="search-item" style="cursor:pointer;" onclick='handleSelect(${JSON.stringify(p)})'>
+                    <div class="search-item" style="cursor:pointer;" onclick="handleSelect(lastResults[${i}])">
                         <div class="search-item-info">
-                            <span class="search-item-name">${p.name}</span>
-                            <span class="search-item-barcode">${p.barcode || 'N/A'} - ${Number(p.sale_price).toLocaleString('vi-VN')}đ</span>
+                            <span class="search-item-name">${esc(p.name)}</span>
+                            <span class="search-item-barcode">${esc(p.barcode || 'N/A')} - ${Number(p.sale_price).toLocaleString('vi-VN')}đ - ${stockOf(p) > 0 ? 'Còn ' + stockOf(p) : '<b class="text-danger">Hết hàng</b>'}</span>
                         </div>
                     </div>`;
                 });
@@ -597,7 +613,7 @@
                         tbody.append(`
                         <tr>
                             <td class="fw-bold">#${order.id}</td>
-                            <td>${order.created_at}</td>
+                            <td>${esc(order.created_at)}</td>
                             <td class="text-danger fw-bold text-end">${Number(order.total_amount).toLocaleString('vi-VN')} đ</td>
                             <td class="text-end">${Number(order.amount_paid).toLocaleString('vi-VN')} đ</td>
                             <td class="text-end">${Number(order.change_amount).toLocaleString('vi-VN')} đ</td>
@@ -610,14 +626,7 @@
                 }
                 $('#historyModal').modal('show');
             } else { alert("Lỗi tải dữ liệu lịch sử!"); }
-        }, 'json').fail(function() {
-            $.get(BASE_URL + '/customers/order-details', { 
-                order_id: currentCustomerId }, function(res) {
-                if(res.success) {
-                   $('#historyModal').modal('show');
-                }
-            }, 'json');
-        });
+        }, 'json');
     });
 
     $(document).on('click', '.btn-view-detail', function() {
@@ -630,7 +639,7 @@
                 res.items.forEach(item => {
                     tbody.append(`
                     <tr>
-                        <td class="fw-bold">${item.product_name}</td>
+                        <td class="fw-bold">${esc(item.product_name)}</td>
                         <td class="text-end">${Number(item.unit_price).toLocaleString('vi-VN')} đ</td>
                         <td class="text-center">${item.quantity}</td>
                         <td class="fw-bold text-danger text-end">${Number(item.total_price).toLocaleString('vi-VN')} đ</td>
@@ -642,12 +651,7 @@
             } else { 
                 alert("Không thể tải chi tiết đơn hàng!"); 
             }
-        }, 'json').fail(function() {
-             $.get(BASE_URL + '/customers/get-order-details', { order_id: orderId }, function(res) {
-                $('#historyModal').modal('hide');
-                $('#orderDetailModal').modal('show');
-             }, 'json');
-        });
+        }, 'json');
     });
 
     /*Thanh toán và in ấn*/

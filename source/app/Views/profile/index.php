@@ -267,6 +267,7 @@
             <?php
                 $fullName = trim($_SESSION['user']->fullname);
                 $firstLetter = mb_strtoupper(mb_substr($fullName, 0, 1, 'UTF-8'), 'UTF-8');
+                $firstLetter = preg_match('/^[\p{L}\p{N}]$/u', $firstLetter) ? $firstLetter : '?';
                 $avatar = $_SESSION['user']->avatar ?? '';
                 $hasAvatar = !empty($avatar) && $avatar !== 'default_avatar.png';
             ?>
@@ -274,7 +275,7 @@
             <?php if($hasAvatar): ?>
                 <img 
                     id="avatarPreview"
-                    src="<?= APP_URL ?>/uploads/<?= $avatar ?>"
+                    src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($avatar) ?>"
                     class="avatar-img"
                     onerror="this.outerHTML='<div class=\'avatar-text\'><?= $firstLetter ?></div>'"
                 >

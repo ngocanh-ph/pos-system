@@ -16,11 +16,32 @@ class Customer extends Model {
             $this->db->prepare($sql)->execute($data);
             return $this->db->lastInsertId();
         } catch (PDOException $e) {
-            return false;
+            // Trùng SĐT do request song song: dùng lại khách hàng đã có
+            $existing = $this->findByPhone($data['phone']);
+            return $existing ? $existing->id : false;
         }
     }
 
    
+    /** Danh sách khách hàng có tìm kiếm và phân trang: trả về [rows, total]. */
+    public function paginateWithOrderCount($search, $page, $perPage) {
+        $where = '';
+        $params = [];
+        if ($search !== '') {
+            $where = "WHERE c.name LIKE :s1 OR c.phone LIKE :s2";
+            $params = ['s1' => "%$search%", 's2' => "%$search%"];
+        }
+        $total = (int)$this->query("SELECT COUNT(*) FROM customers c $where", $params)->fetchColumn();
+        $sql = "SELECT c.*, COUNT(o.id) as order_count
+                FROM customers c
+                LEFT JOIN orders o ON c.id = o.customer_id
+                $where
+                GROUP BY c.id
+                ORDER BY c.created_at DESC, c.id DESC
+                LIMIT " . (int)$perPage . " OFFSET " . (int)(($page - 1) * $perPage);
+        return [$this->query($sql, $params)->fetchAll(), $total];
+    }
+
     public function getAllWithOrderCount() {
         $sql = "SELECT c.*, COUNT(o.id) as order_count 
                 FROM customers c 

@@ -8,7 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="csrf-token" content="<?= htmlspecialchars(Security::csrfToken()) ?>">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Tự động gắn CSRF token cho mọi request AJAX (jQuery và fetch) tới cùng origin
+        (function () {
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            $.ajaxSetup({ headers: { 'X-CSRF-Token': token, 'X-Requested-With': 'XMLHttpRequest' } });
+            const nativeFetch = window.fetch;
+            window.fetch = function (input, init) {
+                init = init || {};
+                init.headers = new Headers(init.headers || {});
+                init.headers.set('X-CSRF-Token', token);
+                init.headers.set('X-Requested-With', 'XMLHttpRequest');
+                return nativeFetch.call(this, input, init);
+            };
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -387,11 +403,12 @@
                     <?php
                     $fullName = trim($_SESSION['user']-> fullname ?? '');
                     $firstLetter = mb_strtoupper(mb_substr($fullName,0,1,'UTF-8'),'UTF-8');
+                $firstLetter = preg_match('/^[\p{L}\p{N}]$/u', $firstLetter) ? $firstLetter : '?';
                     $avatar = $_SESSION['user']->avatar ?? '';
                     $hasAvatar = !empty($avatar) && $avatar !== 'default_avatar.png';
                     ?>
                     <?php if($hasAvatar): ?>
-                        <img src="<?= APP_URL ?>/uploads/<?= $avatar ?>" class="user-avatar" onerror="this.outerHTML='<div class=\'user-avatar-text\'><?= $firstLetter ?></div>'">
+                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($avatar) ?>" class="user-avatar" onerror="this.outerHTML='<div class=\'user-avatar-text\'><?= $firstLetter ?></div>'">
                         <?php else: ?>
                             <div class="user-avatar-text"><?= $firstLetter ?></div>
                         <?php endif; ?>    
@@ -401,9 +418,12 @@
                         <span><?= (isset($_SESSION['user']->role) && $_SESSION['user']->role === 'admin') ? 'Quản trị viên' : 'Nhân viên' ?></span>
                     </div>
                     </div>
-                <a href="<?= APP_URL ?>/logout" class="btn-logout" title="Đăng xuất">
-                    <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
-                </a>
+                <form action="<?= APP_URL ?>/logout" method="POST" class="m-0">
+                    <?= Security::csrfField() ?>
+                    <button type="submit" class="btn-logout w-100" title="Đăng xuất" style="border:0;background:none;">
+                        <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
+                    </button>
+                </form>
             </div>
         </nav>
 

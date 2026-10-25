@@ -556,11 +556,12 @@
             tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>'); 
             return; 
         }
+        const esc = s => $('<div>').text(s == null ? '' : s).html();
         data.forEach(row => {
             tbody.append(`<tr>
                 <td class="font-black text-indigo">#${row.id}</td>
-                <td>${row.created_at}</td>
-                <td>${row.customer_name ?? 'Khách lẻ'}</td>
+                <td>${esc(row.created_at)}</td>
+                <td>${esc(row.customer_name ?? 'Khách lẻ')}</td>
                 <td class="text-end font-black text-navy">${Number(row.total_amount).toLocaleString('vi-VN')}</td>
                 <td class="text-end">
                     <button class="btn-audit-detail" onclick="viewOrderDetail(${row.id})"><i class="fas fa-eye"></i> Chi tiết</button>
@@ -711,10 +712,11 @@
                 $('#modalOrderDate').text(formattedDate);
 
                 let itemsHtml = '';
+                const esc = s => $('<div>').text(s == null ? '' : s).html();
                 items.forEach(item => {
                     itemsHtml += `
                         <tr>
-                            <td class="text-start pe-2 fw-bold text-navy" style="max-width: 140px; white-space: normal; line-height: 1.2;">${item.product_name}</td>
+                            <td class="text-start pe-2 fw-bold text-navy" style="max-width: 140px; white-space: normal; line-height: 1.2;">${esc(item.product_name)}</td>
                             <td class="text-end">${fmtMoney(item.unit_price)}</td>
                             <td class="text-center">${item.quantity}</td>
                             <td class="text-end fw-bold">${fmtMoney(item.total_price || (item.quantity * item.unit_price))}</td>

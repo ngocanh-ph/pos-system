@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . '/../Core/Model.php';
 
+/** Ném ra khi không đủ tồn kho để bán. */
+class OutOfStockException extends Exception {
+    public $productId;
+
+    public function __construct($productId) {
+        parent::__construct('OUT_OF_STOCK');
+        $this->productId = $productId;
+    }
+}
+
 class Order extends Model {
     protected $table = 'orders';
 
@@ -29,9 +39,32 @@ class Order extends Model {
     }
 
     public function addOrderItem($data) {
-        $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) 
-                VALUES (:order_id, :product_id, :quantity, :unit_price, :total_price)";
+        $sql = "INSERT INTO order_items (order_id, product_id, quantity, unit_price, import_price, total_price) 
+                VALUES (:order_id, :product_id, :quantity, :unit_price, :import_price, :total_price)";
         $this->db->prepare($sql)->execute($data);
+    }
+
+    /** Tạo đơn và các dòng chi tiết trong một transaction: lỗi giữa chừng thì không để lại đơn dở dang. */
+    public function createOrderWithItems($orderData, $items) {
+        $this->db->beginTransaction();
+        try {
+            $orderId = $this->createOrder($orderData);
+            // Trừ kho nguyên tử: chỉ trừ khi còn đủ hàng, tồn kho không bao giờ xuống dưới 0
+            $deduct = $this->db->prepare("UPDATE products SET stock = stock - :qty WHERE id = :id AND stock >= :qty2");
+            foreach ($items as $item) {
+                $deduct->execute(['qty' => $item['quantity'], 'qty2' => $item['quantity'], 'id' => $item['product_id']]);
+                if ($deduct->rowCount() === 0) {
+                    throw new OutOfStockException($item['product_id']);
+                }
+                $item['order_id'] = $orderId;
+                $this->addOrderItem($item);
+            }
+            $this->db->commit();
+            return $orderId;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
    
     public function getKpiStats($startDate, $endDate, $staffId = null) {
@@ -42,7 +75,7 @@ class Order extends Model {
         $basic = $this->query($sqlBasic, $params)->fetch();
 
         $sqlProd = "SELECT COALESCE(SUM(oi.quantity), 0) as total_products, 
-                           COALESCE(SUM(oi.quantity * p.import_price), 0) as total_cost
+                           COALESCE(SUM(oi.quantity * COALESCE(oi.import_price, p.import_price)), 0) as total_cost
                     FROM orders o 
                     LEFT JOIN order_items oi ON o.id = oi.order_id 
                     LEFT JOIN products p ON oi.product_id = p.id 
@@ -66,7 +99,7 @@ class Order extends Model {
         $sql = "SELECT 
                     $selectTime as time_point, 
                     COALESCE(SUM(oi.quantity * oi.unit_price), 0) as revenue,
-                    COALESCE(SUM(oi.quantity * (oi.unit_price - p.import_price)), 0) as profit
+                    COALESCE(SUM(oi.quantity * (oi.unit_price - COALESCE(oi.import_price, p.import_price))), 0) as profit
                 FROM orders o
                 LEFT JOIN order_items oi ON o.id = oi.order_id
                 LEFT JOIN products p ON oi.product_id = p.id
@@ -103,13 +136,15 @@ class Order extends Model {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
  
-    public function getRecentOrders($limit = 6) {
+    public function getRecentOrders($limit = 6, $staffId = null) {
+        $where = $staffId ? "WHERE o.user_id = :staff_id" : "";
         $sql = "SELECT o.id, o.total_amount, o.created_at, c.name as customer_name
                 FROM orders o
                 LEFT JOIN customers c ON o.customer_id = c.id
+                $where
                 ORDER BY o.created_at DESC 
                 LIMIT " . (int)$limit;
-        return $this->db->query($sql)->fetchAll(PDO::FETCH_OBJ);
+        return $this->query($sql, $staffId ? ['staff_id' => $staffId] : [])->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function getOrdersByEmployee($employeeId) {

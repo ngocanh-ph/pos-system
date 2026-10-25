@@ -383,11 +383,12 @@
                         <?php 
                             $fullName = trim($emp->fullname);
                             $firstLetter = mb_strtoupper(mb_substr($fullName, 0, 1, 'UTF-8'), 'UTF-8');
+                $firstLetter = preg_match('/^[\p{L}\p{N}]$/u', $firstLetter) ? $firstLetter : '?';
                             $hasAvatar = !empty($emp->avatar) && $emp->avatar !== 'default_avatar.png';
                         ?>
 
                         <?php if($hasAvatar): ?>
-                            <img src="<?= APP_URL ?>/uploads/<?= $emp->avatar ?>" class="avatar-img" 
+                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($emp->avatar) ?>" class="avatar-img" 
                                  onerror="this.outerHTML='<div class=\'avatar-text\'><?= $firstLetter ?></div>'">
                         <?php else: ?>
                             <div class="avatar-text"><?= $firstLetter ?></div>
@@ -420,7 +421,7 @@
                         </button>
                     <?php endif; ?>
                     
-                    <button class="btn-action btn-history" onclick="viewHistory(<?= $emp->id ?>, '<?= htmlspecialchars($emp->fullname) ?>')">
+                    <button class="btn-action btn-history" data-name="<?= htmlspecialchars($emp->fullname) ?>" onclick="viewHistory(<?= (int)$emp->id ?>, this.dataset.name)">
                         <i class="fas fa-history"></i> Lịch sử
                     </button>
 
@@ -469,9 +470,9 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <h3 class="fw-bold mb-1" style="color: var(--emp-navy); font-size: 1.25rem;">Tạo thành công!</h3>
-                    <p class="text-muted" style="font-size: 0.85rem">Link đăng nhập tài khoản:</p>
+                    <p class="text-muted" style="font-size: 0.85rem">Thông tin tài khoản:</p>
                     
-                    <div class="link-box" id="generatedLink" onclick="copyLink()">
+                    <div class="link-box" id="generatedLink">
                         </div>
 
                     <button class="btn btn-light w-100 rounded-pill py-2 fw-bold" onclick="location.reload()">
@@ -570,10 +571,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Thêm nhân viên thành công!', 'success');
+                    showToast(data.message, data.email_sent ? 'success' : 'warning');
                     $('#addStaffForm').hide();
                     $('#successView').fadeIn();
-                    $('#generatedLink').text(data.debug_link || 'Link kích hoạt đã được gửi vào email'); 
+                    $('#generatedLink').text(data.message);
                 } else {
                     showToast(data.message || 'Thêm thất bại!', 'danger');
                 }
@@ -586,13 +587,6 @@
                 btn.disabled = false;
                 btn.innerText = originalText;
             });
-        });
-    }
-
-    function copyLink() {
-        const text = $('#generatedLink').text();
-        navigator.clipboard.writeText(text).then(() => {
-            showToast('Đã copy link vào clipboard!', 'success');
         });
     }
 
@@ -627,10 +621,14 @@
     }
 
     function resendEmail(id) {
-        if(!confirm('Gửi lại link kích hoạt mới? Link cũ sẽ vô hiệu hóa.')) return;
+        if(!confirm('Gửi lại email kích hoạt? Link cũ và mật khẩu tạm thời cũ sẽ vô hiệu hóa.')) return;
 
         $.post('<?= APP_URL ?>/employees/resend-email', {id: id}, function(res) {
-            if(res.success) {
+            if(!res.success) {
+                showToast(res.message || 'Gửi lại thất bại!', 'danger');
+                return;
+            }
+            {
                 if (!staffModal) {
                     const modalElement = document.getElementById('addStaffModal');
                     staffModal = new bootstrap.Modal(modalElement);
@@ -638,15 +636,19 @@
                 
                 $('#addStaffForm').hide();
                 $('#successView').show();
-                $('#generatedLink').text(res.debug_link);
-                $('#modalTitle').text('Link kích hoạt mới');
+                $('#generatedLink').text(res.message);
+                $('#modalTitle').text('Đã gửi lại email kích hoạt');
                 staffModal.show();
                 
-                showToast('Đã tạo link kích hoạt mới!', 'success');
+                showToast(res.message, 'success');
             }
         }, 'json');
     }
     
+    function escapeHtml(s) {
+        return $('<div>').text(s == null ? '' : s).html();
+    }
+
     let historyModal;
 
     function viewHistory(employeeId, employeeName) {
@@ -673,15 +675,15 @@
 
                         rows += `<tr>
                             <td>#${order.id}</td>
-                            <td>${order.created_at}</td>
-                            <td>${order.customer_name || 'Khách lẻ'}</td>
+                            <td>${escapeHtml(order.created_at)}</td>
+                            <td>${escapeHtml(order.customer_name || 'Khách lẻ')}</td>
                             <td class="text-success fw-bold">${totalStr}</td>
                         </tr>`;
                     });
                 }
                 $('#historyTableBody').html(rows);
             } else {
-                $('#historyTableBody').html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${res.message}</td></tr>`);
+                $('#historyTableBody').html(`<tr><td colspan="4" class="text-center text-danger">Lỗi: ${escapeHtml(res.message)}</td></tr>`);
             }
         }, 'json').fail(function() {
             $('#historyTableBody').html('<tr><td colspan="4" class="text-center text-danger">Không thể kết nối đến máy chủ.</td></tr>');
